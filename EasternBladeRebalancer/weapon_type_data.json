@@ -1,0 +1,110 @@
+[
+  {
+    "keyword": "ShWeapTypeClub",
+    "grip": "1h"
+  },
+  {
+    "keyword": "ShWeapTypeGlaive",
+    "grip": "2h"
+  },
+  {
+    "keyword": "ShWeapTypeHalberd",
+    "grip": "2h"
+  },
+  {
+    "keyword": "ShWeapTypeHatchet",
+    "grip": "1h"
+  },
+  {
+    "keyword": "ShWeapTypeLongMace",
+    "grip": "2h"
+  },
+  {
+    "keyword": "ShWeapTypeMaul",
+    "grip": "1h"
+  },
+  {
+    "keyword": "ShWeapTypeQuarterStaff",
+    "grip": "2h"
+  },
+  {
+    "keyword": "ShWeapTypeShortspear",
+    "grip": "1h"
+  },
+  {
+    "keyword": "ShWeapTypeShortsword",
+    "grip": "1h"
+  },
+  {
+    "keyword": "ShWeapTypeSpear",
+    "grip": "2h"
+  },
+  {
+    "keyword": "ShWeapTypeTrident",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeJavelin",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeSpear",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeClaw",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeHalberd",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeKatana",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypePike",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeQtrStaff",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeRapier",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeWhip",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeSword",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeWarAxe",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeDagger",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeMace",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeGreatsword",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeWarhammer",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeBattleaxe",
+    "grip": "2h"
+  }
+] 

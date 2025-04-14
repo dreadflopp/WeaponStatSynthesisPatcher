@@ -1,0 +1,32 @@
+[
+  {
+    "keyword": "WeapTypeDaiKatana",
+    "name": "daikatana",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeDaiKatana",
+    "name": "dai-katana",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeDaiKatana",
+    "name": "dai katana",
+    "grip": "2h"
+  },
+  {
+    "keyword": "WeapTypeKatana",
+    "name": "katana",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeWakizashi",
+    "name": "wakizashi",
+    "grip": "1h"
+  },
+  {
+    "keyword": "WeapTypeTanto",
+    "name": "tanto",
+    "grip": "1h"
+  }
+] 

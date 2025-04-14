@@ -1,0 +1,65 @@
+[
+  {
+    "keyword": "skyforge",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "redguard",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "blades",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "akaviri",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "dawnguard elite",
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 3,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "dg elite",
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 6
+  },
+  {
+    "keyword": "dawnguard",
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 3,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "forsworn",
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 3
+  },
+  {
+    "keyword": "orichalcum",
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 6
+  }
+] 

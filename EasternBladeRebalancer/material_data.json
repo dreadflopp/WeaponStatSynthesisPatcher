@@ -1,0 +1,191 @@
+[
+  {
+    "keyword": "WeapMaterialWood",
+    "damage_offset_1h": -1,
+    "damage_offset_2h": -2,
+    "damage_offset_1h_waccf": -1,
+    "damage_offset_2h_waccf": -2
+  },
+  {
+    "keyword": "WeapMaterialIron",
+    "damage_offset_1h": 0,
+    "damage_offset_2h": 0,
+    "damage_offset_1h_waccf": 0,
+    "damage_offset_2h_waccf": 1
+  },
+  {
+    "keyword": "WeapMaterialSteel",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "WeapMaterialImperial",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 3,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 3
+  },
+  {
+    "keyword": "WeapMaterialSilver",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "WeapMaterialDraugr",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "WeapMaterialGhost",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "WeapMaterialOrcish",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "WeapMaterialBound",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 3
+  },
+  {
+    "keyword": "WeapMaterialDwarven",
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 3
+  },
+  {
+    "keyword": "WeapMaterialFalmer",
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 3,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "ShWeapMaterialSilverPolished",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "DLC2WeaponMaterialNordic",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "WeapMaterialDraugrHoned",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 3,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "WeapMaterialElven",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 3,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "ccBGSSSE025_WeapMaterialGolden",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 6
+  },
+  {
+    "keyword": "ccBGSSSE025_WeapMaterialDark",
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "WeapMaterialFalmerHoned",
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 6
+  },
+  {
+    "keyword": "WeapMaterialGlass",
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 6
+  },
+  {
+    "keyword": "WeapMaterialEbony",
+    "damage_offset_1h": 6,
+    "damage_offset_2h": 8,
+    "damage_offset_1h_waccf": 6,
+    "damage_offset_2h_waccf": 7
+  },
+  {
+    "keyword": "DLC2WeaponMaterialStalhrim",
+    "damage_offset_1h": 6,
+    "damage_offset_2h": 8,
+    "damage_offset_1h_waccf": 6,
+    "damage_offset_2h_waccf": 7
+  },
+  {
+    "keyword": "DLC1LD_CraftingMaterialAetherium",
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9,
+    "damage_offset_1h_waccf": 7,
+    "damage_offset_2h_waccf": 9
+  },
+  {
+    "keyword": "WeapMaterialDaedric",
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9,
+    "damage_offset_1h_waccf": 8,
+    "damage_offset_2h_waccf": 9
+  },
+  {
+    "keyword": "WeapMaterialMysticBound",
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9,
+    "damage_offset_1h_waccf": 7,
+    "damage_offset_2h_waccf": 9
+  },
+  {
+    "keyword": "DLC1WeapMaterialDragonbone",
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10,
+    "damage_offset_1h_waccf": 7,
+    "damage_offset_2h_waccf": 8
+  },
+  {
+    "keyword": "ccBGSSSE025_WeapMaterialAmber",
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10,
+    "damage_offset_1h_waccf": 8,
+    "damage_offset_2h_waccf": 10
+  },
+  {
+    "keyword": "ccBGSSSE025_WeapMaterialMadness",
+    "damage_offset_1h": 9,
+    "damage_offset_2h": 11,
+    "damage_offset_1h_waccf": 9,
+    "damage_offset_2h_waccf": 11
+  }
+] 
