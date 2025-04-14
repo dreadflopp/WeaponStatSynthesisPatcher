@@ -103,8 +103,12 @@ namespace Weapon_Mod_Synergy
         public PluginFilter PluginFilter { get; set; } = PluginFilter.IncludePlugins;
 
         [SettingName("Plugin List")]
-        [Tooltip("Semi-colon separated list of plugins (e.g., 'Plugin1.esp;Plugin2.esp')")]
-        public string PluginList { get; set; } = "PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp";
+        [Tooltip("List of plugins to include or exclude (semicolon separated)")]
+        public string PluginList { get; set; } = "PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
+
+        [SettingName("Ignored Weapon Editor IDs")]
+        [Tooltip("List of weapon editor IDs to ignore (semicolon separated)")]
+        public string IgnoredWeaponEditorIDs { get; set; } = "MAG_WeaponWindshear";
 
         [SettingName("WACCF material tiers")]
         [Tooltip("Enable support for WACCF material tiers")]

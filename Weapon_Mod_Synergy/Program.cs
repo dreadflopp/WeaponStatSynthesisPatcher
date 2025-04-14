@@ -45,6 +45,11 @@ namespace Weapon_Mod_Synergy
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+            // Get the list of ignored weapon editor IDs
+            var ignoredWeaponEditorIDs = Settings.Value.IgnoredWeaponEditorIDs
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             Console.WriteLine("Plugin Processing Settings:");
             Console.WriteLine($"Filter Mode: {Settings.Value.PluginFilter}");
             Console.WriteLine("Plugin List:");
@@ -209,6 +214,30 @@ namespace Weapon_Mod_Synergy
                 // Process each weapon
                 foreach (var weapon in weapons)
                 {
+                    // Skip if weapon is a template
+                    if (weapon.EditorID?.Contains("Template", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        Console.WriteLine($"Skipping template weapon: {weapon.EditorID}");
+                        continue;
+                    }
+
+                    // Skip if weapon is non-playable and not a bound weapon
+                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true)
+                    {
+                        if (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) != true)
+                        {
+                            Console.WriteLine($"Skipping non-playable weapon: {weapon.EditorID}");
+                            continue;
+                        }
+                    }
+
+                    // Skip if weapon is in the ignored editor IDs list
+                    if (weapon.EditorID != null && ignoredWeaponEditorIDs.Contains(weapon.EditorID))
+                    {
+                        Console.WriteLine($"Skipping ignored weapon: {weapon.EditorID}");
+                        continue;
+                    }
+
                     if (weapon.Keywords == null) continue;
 
                     var weaponKeywords = weapon.Keywords
