@@ -232,6 +232,31 @@ namespace Weapon_Mod_Synergy
                             continue;
                         }
                         
+                        // Skip non-playable weapons (except bound weapons)
+                        if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true)
+                        {
+                            // Check if this is a bound weapon
+                            bool isBoundWeapon = weapon.EditorID != null && 
+                                weapon.EditorID.Contains("bound", StringComparison.OrdinalIgnoreCase);
+                            
+                            if (!isBoundWeapon)
+                            {
+                                Console.WriteLine("  Skipped: Non-playable weapon");
+                                continue;
+                            }
+                            else
+                            {
+                                Console.WriteLine("  Processing non-playable bound weapon");
+                            }
+                        }
+                        
+                        // Skip weapons with "dummy" in their editor ID
+                        if (weapon.EditorID != null && weapon.EditorID.Contains("dummy", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Console.WriteLine("  Skipped: Dummy weapon");
+                            continue;
+                        }
+                        
                         // Check if this weapon matches any of our enabled weapon types
                         string? weaponType = WeaponHelper.GetWeaponType(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
                         Console.WriteLine(weaponType);

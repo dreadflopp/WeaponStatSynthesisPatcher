@@ -135,7 +135,7 @@
   {
     "keyword": "WeapMaterialEbony",
     "damage_offset_1h": 6,
-    "damage_offset_2h": 8,
+    "damage_offset_2h": 7,
     "damage_offset_1h_waccf": 6,
     "damage_offset_2h_waccf": 7
   },

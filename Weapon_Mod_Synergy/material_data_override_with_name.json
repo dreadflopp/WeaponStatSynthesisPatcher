@@ -61,5 +61,19 @@
     "damage_offset_2h": 4,
     "damage_offset_1h_waccf": 5,
     "damage_offset_2h_waccf": 6
+  },
+  {
+    "keyword": "dragon priest",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 3
+  },
+  {
+    "keyword": "nord hero",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 3,
+    "damage_offset_2h_waccf": 4
   }
 ] 

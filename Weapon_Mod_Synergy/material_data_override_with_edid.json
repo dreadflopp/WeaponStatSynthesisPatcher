@@ -56,20 +56,6 @@
     "damage_offset_2h_waccf": 5
   },
   {
-    "keyword": "DragonPriestClaws",
-    "damage_offset_1h": 2,
-    "damage_offset_2h": 2,
-    "damage_offset_1h_waccf": 2,
-    "damage_offset_2h_waccf": 2
-  },
-  {
-    "keyword": "DragonPriestClawsLeft",
-    "damage_offset_1h": 2,
-    "damage_offset_2h": 2,
-    "damage_offset_1h_waccf": 2,
-    "damage_offset_2h_waccf": 2
-  },
-  {
     "keyword": "DBClaws",
     "damage_offset_1h": 8,
     "damage_offset_2h": 8,
@@ -78,10 +64,10 @@
   },
   {
     "keyword": "DBClawsLeft",
-    "damage_offset_1h": 6,
-    "damage_offset_2h": 6,
-    "damage_offset_1h_waccf": 6,
-    "damage_offset_2h_waccf": 6
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 8,
+    "damage_offset_1h_waccf": 8,
+    "damage_offset_2h_waccf": 8
   },
   {
     "keyword": "StormWhip01",
@@ -201,5 +187,144 @@
     "damage_offset_2h": -1,
     "damage_offset_1h_waccf": -1,
     "damage_offset_2h_waccf": -1
+  },
+  {
+    "keyword": "T03Nettlebane",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 2
+  },{
+    "keyword": "MAG_T03Nettlebane",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "DA03RuefulAxe",
+    "damage_offset_1h": 6,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 6,
+    "damage_offset_2h_waccf": 6
+  },
+  {
+    "keyword": "MAG_RuefulAxe",
+    "damage_offset_1h": 9,
+    "damage_offset_2h": 9,
+    "damage_offset_1h_waccf": 9,
+    "damage_offset_2h_waccf": 9
+  },
+  {
+    "keyword": "dunPinewoodGroveWoodsmansFriend",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 1,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 1
+  },
+  {
+    "keyword": "MAG_dunPinewoodGroveWoodsmansFriend",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 1,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 1
+  },
+  {
+    "keyword": "DA10RustyMace",
+    "damage_offset_1h": -2,
+    "damage_offset_2h": -2,
+    "damage_offset_1h_waccf": -2,
+    "damage_offset_2h_waccf": -2
+  },
+  {
+    "keyword": "DA06Volendrung",
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 7,
+    "damage_offset_1h_waccf": 7,
+    "damage_offset_2h_waccf": 7
+  },
+  {
+    "keyword": "MAG_Volendrung",
+    "damage_offset_1h": 9,
+    "damage_offset_2h": 9,
+    "damage_offset_1h_waccf": 9,
+    "damage_offset_2h_waccf": 9
+  },
+  {
+    "keyword": "MS02Shiv",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 1,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 1
+  },
+  {
+    "keyword": "FFRiften13ArkayDagger",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 1,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 1
+  },
+  {
+    "keyword": "DA08EbonyBlade",
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 7,
+    "damage_offset_1h_waccf": 7,
+    "damage_offset_2h_waccf": 7
+  },
+  {
+    "keyword": "MAG_EbonyBlade",
+    "damage_offset_1h": 9,
+    "damage_offset_2h": 9,
+    "damage_offset_1h_waccf": 9,
+    "damage_offset_2h_waccf": 9
+  },
+  {
+    "keyword": "DA09Dawnbreaker",
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "MAG_Dawnbreaker",
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 7,
+    "damage_offset_1h_waccf": 7,
+    "damage_offset_2h_waccf": 7
+  },
+  {
+    "keyword": "MGRKeening",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "MAG_Keening",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "dunPOITrollsbane",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "MAG_WeaponTrollsbane",
+    "damage_offset_1h": 0,
+    "damage_offset_2h": 0,
+    "damage_offset_1h_waccf": 0,
+    "damage_offset_2h_waccf": 0
+  },
+  {
+    "keyword": "dunKatariahScimitar",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 4,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 4
   }
-] 
+]
