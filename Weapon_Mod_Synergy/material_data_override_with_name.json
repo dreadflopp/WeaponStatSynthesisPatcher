@@ -29,10 +29,10 @@
   },
   {
     "keyword": "dawnguard elite",
-    "damage_offset_1h": 3,
-    "damage_offset_2h": 4,
-    "damage_offset_1h_waccf": 3,
-    "damage_offset_2h_waccf": 4
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 6
   },
   {
     "keyword": "dg elite",
