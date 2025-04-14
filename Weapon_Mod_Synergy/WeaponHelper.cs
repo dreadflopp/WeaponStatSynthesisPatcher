@@ -11,7 +11,7 @@ using System.Text;
 using Mutagen.Bethesda.Synthesis;
 using System.Text.Json;
 
-namespace EasternBladeRebalancer
+namespace Weapon_Mod_Synergy
 {
     // Classes for JSON deserialization
     public class MaterialData

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Mutagen.Bethesda.Synthesis.Settings;
 using Newtonsoft.Json;
 
-namespace EasternBladeRebalancer
+namespace Weapon_Mod_Synergy
 {
     public enum PluginFilter
     {

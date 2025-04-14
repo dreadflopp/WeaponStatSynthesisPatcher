@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace EasternBladeRebalancer
+namespace Weapon_Mod_Synergy
 {
     public class Program
     {
@@ -22,7 +22,7 @@ namespace EasternBladeRebalancer
                     nickname: "Settings",
                     path: "settings.json",
                     out Settings)
-                .SetTypicalOpen(GameRelease.SkyrimSE, "EasternBladeRebalancer.esp")
+                .SetTypicalOpen(GameRelease.SkyrimSE, "Weapon_Mod_Synergy.esp")
                 .Run(args);
         }
 
