@@ -7,17 +7,17 @@ namespace Weapon_Mod_Synergy
 {
     public enum PluginFilter
     {
-        [SettingName("All Plugins")]
-        [Tooltip("Process weapons from all plugins")]
         AllPlugins,
 
-        [SettingName("Exclude Listed Plugins")]
-        [Tooltip("Process weapons from all plugins except the specified ones")]
         ExcludePlugins,
 
-        [SettingName("Include Listed Plugins Only")]
-        [Tooltip("Only process weapons from the specified plugins")]
         IncludePlugins
+    }
+
+    public enum LogicOperator
+    {
+        AND,
+        OR
     }
 
     public class Settings
@@ -26,340 +26,177 @@ namespace Weapon_Mod_Synergy
         {
             // Set default plugin filter
             PluginFilter = PluginFilter.IncludePlugins;
-            
-            // Set default plugin list
-            PluginList = "PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
-            
+
             // Set default WACCF material tiers setting
             WACCFMaterialTiers = false;
-            
-            // Set default weapon processing flags
-            ProcessDaggers = true;
-            ProcessTantos = true;
-            ProcessClaws = true;
-            ProcessJavelins = true;
-            ProcessRapiers = true;
-            ProcessWakizashis = true;
-            ProcessShortswords = true;
-            ProcessSpears1h = true;
-            ProcessSwords = true;
-            ProcessKatanas = true;
-            ProcessHatchets = true;
-            ProcessClubs = true;
-            ProcessShortspears = true;
-            ProcessWhips = true;
-            ProcessWarAxes = true;
-            ProcessMaces = true;
-            ProcessHeavyArmoryQuarterstaffs = true;
-            ProcessAnimatedArmouryQuarterstaffs = true;
-            ProcessMauls = true;
-            ProcessSpears2h = true;
-            ProcessPikes = true;
-            ProcessGlaives = true;
-            ProcessTridents = true;
-            ProcessGreatswords = true;
-            ProcessDaiKatanas = true;
-            ProcessHeavyArmoryHalberds = true;
-            ProcessAnimatedArmouryHalberds = true;
-            ProcessLongMaces = true;
-            ProcessBattleaxes = true;
-            ProcessWarhammers = true;
-            
+
             // Set default weapon settings
-            Dagger = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, CriticalDamage = 2, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Tanto = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, CriticalDamage = 2, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Claw = new WeaponSettings { Damage = 5, Reach = 0.7f, Speed = 1.2f, Stagger = 0.0f, CriticalDamage = 1, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Javelin = new WeaponSettings { Damage = 5, Reach = 1.0f, Speed = 1.2f, Stagger = 0.5f, CriticalDamage = 2, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Rapier = new WeaponSettings { Damage = 5, Reach = 1.1f, Speed = 1.15f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Wakizashi = new WeaponSettings { Damage = 5, Reach = 0.9f, Speed = 1.215f, Stagger = 0.6f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Shortsword = new WeaponSettings { Damage = 6, Reach = 0.9f, Speed = 1.15f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Spear1h = new WeaponSettings { Damage = 6, Reach = 1.3f, Speed = 1.1f, Stagger = 0.75f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false };
-            Sword = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.75f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Katana = new WeaponSettings { Damage = 6, Reach = 1.0f, Speed = 1.125f, Stagger = 0.75f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Hatchet = new WeaponSettings { Damage = 7, Reach = 0.85f, Speed = 1.1f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Club = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.9f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Shortspear = new WeaponSettings { Damage = 7, Reach = 1.2f, Speed = 0.9f, Stagger = 0.75f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false };
-            Whip = new WeaponSettings { Damage = 6, Reach = 2.0f, Speed = 0.9f, Stagger = 0.4f, CriticalDamage = 1, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            WarAxe = new WeaponSettings { Damage = 8, Reach = 1.0f, Speed = 0.9f, Stagger = 0.85f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Mace = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            HeavyArmoryQuarterstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            AnimatedArmouryQuarterstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Maul = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 5, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false };
-            Spear2h = new WeaponSettings { Damage = 12, Reach = 1.6f, Speed = 0.8f, Stagger = 1.0f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Pike = new WeaponSettings { Damage = 12, Reach = 1.7f, Speed = 0.7f, Stagger = 1.0f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Glaive = new WeaponSettings { Damage = 13, Reach = 1.6f, Speed = 0.8f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false };
-            Trident = new WeaponSettings { Damage = 14, Reach = 1.5f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 9, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Greatsword = new WeaponSettings { Damage = 15, Reach = 1.3f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            DaiKatana = new WeaponSettings { Damage = 14, Reach = 1.3f, Speed = 0.85f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            HeavyArmoryHalberd = new WeaponSettings { Damage = 15, Reach = 1.45f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            AnimatedArmouryHalberd = new WeaponSettings { Damage = 15, Reach = 1.55f, Speed = 0.65f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            LongMace = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Battleaxe = new WeaponSettings { Damage = 16, Reach = 1.3f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
-            Warhammer = new WeaponSettings { Damage = 18, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, CriticalDamage = 9, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true };
+            Dagger = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, CriticalDamage = 2, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-tanto;-claw", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeDagger" };
+            Tanto = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, CriticalDamage = 2, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "tanto", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeDagger;-WeapTypeClaw" };
+            Claw = new WeaponSettings { Damage = 5, Reach = 0.7f, Speed = 1.2f, Stagger = 0.0f, CriticalDamage = 1, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "claw", KeywordIDs = "WeapTypeClaw" };
+            Javelin = new WeaponSettings { Damage = 5, Reach = 1.0f, Speed = 1.2f, Stagger = 0.5f, CriticalDamage = 2, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "javelin", KeywordIDs = "WeapTypeJavelin" };
+            Rapier = new WeaponSettings { Damage = 5, Reach = 1.1f, Speed = 1.15f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "rapier", KeywordIDs = "WeapTypeRapier" };
+            Wakizashi = new WeaponSettings { Damage = 5, Reach = 0.9f, Speed = 1.215f, Stagger = 0.6f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "wakizashi;ninjato", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" };
+            Shortsword = new WeaponSettings { Damage = 6, Reach = 0.9f, Speed = 1.15f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "shortsword", KeywordIDs = "ShWeapTypeShortsword" };
+            Spear1h = new WeaponSettings { Damage = 6, Reach = 1.3f, Speed = 1.1f, Stagger = 0.75f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.OneHanded, NamedIDs = "spear", KeywordIDs = "WeapTypeSpear" };
+            Sword = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.75f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-katana;-spear;-shortspear;-javelin;-scimitar", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword;-ShWeapTypeShortspear;-WeapTypeWhip;-WeapTypeKatana;-WeapTypeScimitar" };
+            Scimitar = new WeaponSettings { Damage = 6, Reach = 0.95f, Speed = 1.15f, Stagger = 0.7f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar", KeywordIDs = "WeapTypeScimitar" };
+            Katana = new WeaponSettings { Damage = 6, Reach = 1.0f, Speed = 1.125f, Stagger = 0.75f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "katana", KeywordIDs = "WeapTypeKatana" };
+            Hatchet = new WeaponSettings { Damage = 7, Reach = 0.85f, Speed = 1.1f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "hatchet", KeywordIDs = "ShWeapTypeHatchet" };
+            Club = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.9f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "club", KeywordIDs = "ShWeapTypeClub" };
+            Shortspear = new WeaponSettings { Damage = 7, Reach = 1.2f, Speed = 0.9f, Stagger = 0.75f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.OneHanded, NamedIDs = "shortspear", KeywordIDs = "ShWeapTypeShortspear" };
+            Whip = new WeaponSettings { Damage = 6, Reach = 2.0f, Speed = 0.9f, Stagger = 0.4f, CriticalDamage = 1, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "whip", KeywordIDs = "WeapTypeWhip" };
+            WarAxe = new WeaponSettings { Damage = 8, Reach = 1.0f, Speed = 0.9f, Stagger = 0.85f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-hatchet", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarAxe;-ShWeapTypeHatchet" };
+            Mace = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-club;-mallet;-hammer;-war pick", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeMace;-ShWeapTypeMaul" };
+            Shortstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "short*staff", KeywordIDs = "ShWeapTypeQuarterStaff" };
+            Quarterstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "battle*staff;quarterstaff;-short*staff", KeywordIDs = "WeapTypeQtrStaff" };
+            Maul = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 5, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.TwoHanded, NamedIDs = "maul", KeywordIDs = "ShWeapTypeMaul" };
+            Spear2h = new WeaponSettings { Damage = 12, Reach = 1.6f, Speed = 0.8f, Stagger = 1.0f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "spear;half*pike", KeywordIDs = "ShWeapTypeSpear" };
+            Pike = new WeaponSettings { Damage = 12, Reach = 1.7f, Speed = 0.7f, Stagger = 1.0f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "pike", KeywordIDs = "WeapTypePike" };
+            Glaive = new WeaponSettings { Damage = 13, Reach = 1.6f, Speed = 0.8f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.TwoHanded, NamedIDs = "glaive", KeywordIDs = "ShWeapTypeGlaive" };
+            Trident = new WeaponSettings { Damage = 14, Reach = 1.5f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 9, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "trident", KeywordIDs = "ShWeapTypeTrident" };
+            Greatsword = new WeaponSettings { Damage = 15, Reach = 1.3f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "-dai*katana;-nodachi;-glaive;-pike;-trident;-*spear", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeGreatsword;-WeapTypePike;-ShWeapTypeGlaive;-ShWeapTypeTrident;-ShWeapTypeSpear" };
+            DaiKatana = new WeaponSettings { Damage = 14, Reach = 1.3f, Speed = 0.85f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "dai*katana;nodachi", KeywordIDs = "" };
+            ShortHalberd = new WeaponSettings { Damage = 15, Reach = 1.45f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "", KeywordIDs = "ShWeapTypeHalberd;" };
+            LongHalberd = new WeaponSettings { Damage = 15, Reach = 1.55f, Speed = 0.65f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "halberd", KeywordIDs = "WeapTypeHalberd;-ShWeapTypeHalberd" };
+            LongMace = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "long*mace", KeywordIDs = "ShWeapTypeLongMace" };
+            Battleaxe = new WeaponSettings { Damage = 16, Reach = 1.3f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "-halberd", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeBattleaxe" };
+            Warhammer = new WeaponSettings { Damage = 18, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, CriticalDamage = 9, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "-maul;-*mace;-*staff", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarhammer" };
         }
 
         [SettingName("Plugin Processing")]
         [Tooltip("Choose which plugins to process")]
         public PluginFilter PluginFilter { get; set; } = PluginFilter.IncludePlugins;
 
-        [SettingName("Plugin List")]
+        [SettingName("Plugin List (semicolon separated)")]
         [Tooltip("List of plugins to include or exclude (semicolon separated)")]
-        public string PluginList { get; set; } = "PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
+        public string PluginList { get; set; } = "Skyrim.esm;Dawnguard.esm;Dragonborn.esm;PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
 
-        [SettingName("Ignored Weapon Editor IDs")]
-        [Tooltip("List of weapon editor IDs to ignore (semicolon separated)")]
-        public string IgnoredWeaponEditorIDs { get; set; } = "MAG_WeaponWindshear";
+        [SettingName("Ignored Weapons Form Keys (semicolon separated)")]
+        [Tooltip("List of weapon form keys to ignore (semicolon separated)")]
+        public string IgnoredWeaponFormKeys { get; set; } = "02F2F4:Skyrim.esm;0E3C16:Skyrim.esm;0E7A31:Skyrim.esm;004D91:Hearthfires.esm";
 
         [SettingName("WACCF material tiers")]
         [Tooltip("Enable support for WACCF material tiers")]
         public bool WACCFMaterialTiers { get; set; } = false;
 
-        // Process flags for vanilla weapons
-        [SettingName("Process Daggers")]
-        [Tooltip("Enable processing of Dagger weapons")]
-        public bool ProcessDaggers { get; set; } = true;
+        [SettingName("Artificer")]
+        [Tooltip("Honor Artificer changes")]
+        public bool Artificer { get; set; } = true;
 
-        [SettingName("Process Tantos")]
-        [Tooltip("Enable processing of Tanto weapons")]
-        public bool ProcessTantos { get; set; } = true;
-
-        [SettingName("Process Claws")]
-        [Tooltip("Enable processing of Claw weapons")]
-        public bool ProcessClaws { get; set; } = true;
-
-        [SettingName("Process Javelins")]
-        [Tooltip("Enable processing of Javelin weapons")]
-        public bool ProcessJavelins { get; set; } = true;
-
-        [SettingName("Process Rapiers")]
-        [Tooltip("Enable processing of Rapier weapons")]
-        public bool ProcessRapiers { get; set; } = true;
-
-        [SettingName("Process Wakizashis")]
-        [Tooltip("Enable processing of Wakizashi weapons")]
-        public bool ProcessWakizashis { get; set; } = true;
-
-        [SettingName("Process Shortswords")]
-        [Tooltip("Enable processing of Shortsword weapons")]
-        public bool ProcessShortswords { get; set; } = true;
-
-        [SettingName("Process One-Handed Spears")]
-        [Tooltip("Enable processing of one-handed Spear weapons")]
-        public bool ProcessSpears1h { get; set; } = true;
-
-        [SettingName("Process Swords")]
-        [Tooltip("Enable processing of Sword weapons")]
-        public bool ProcessSwords { get; set; } = true;
-
-        [SettingName("Process Katanas")]
-        [Tooltip("Enable processing of Katana weapons")]
-        public bool ProcessKatanas { get; set; } = true;
-
-        [SettingName("Process Hatchets")]
-        [Tooltip("Enable processing of Hatchet weapons")]
-        public bool ProcessHatchets { get; set; } = true;
-
-        [SettingName("Process Clubs")]
-        [Tooltip("Enable processing of Club weapons")]
-        public bool ProcessClubs { get; set; } = true;
-
-        [SettingName("Process Shortspears")]
-        [Tooltip("Enable processing of Shortspear weapons")]
-        public bool ProcessShortspears { get; set; } = true;
-
-        [SettingName("Process Whips")]
-        [Tooltip("Enable processing of Whip weapons")]
-        public bool ProcessWhips { get; set; } = true;
-
-        [SettingName("Process War Axes")]
-        [Tooltip("Enable processing of War Axe weapons")]
-        public bool ProcessWarAxes { get; set; } = true;
-
-        [SettingName("Process Maces")]
-        [Tooltip("Enable processing of Mace weapons")]
-        public bool ProcessMaces { get; set; } = true;
-
-        [SettingName("Process Heavy Armory Quarterstaffs")]
-        [Tooltip("Enable processing of Quarterstaff weapons from Heavy Armory")]
-        public bool ProcessHeavyArmoryQuarterstaffs { get; set; } = true;
-
-        [SettingName("Process Animated Armoury Quarterstaffs")]
-        [Tooltip("Enable processing of Quarterstaff weapons from Animated Armoury")]
-        public bool ProcessAnimatedArmouryQuarterstaffs { get; set; } = true;
-
-        [SettingName("Process Mauls")]
-        [Tooltip("Enable processing of Maul weapons")]
-        public bool ProcessMauls { get; set; } = true;
-
-        [SettingName("Process Two-Handed Spears")]
-        [Tooltip("Enable processing of two-handed Spear weapons")]
-        public bool ProcessSpears2h { get; set; } = true;
-
-        [SettingName("Process Pikes")]
-        [Tooltip("Enable processing of Pike weapons")]
-        public bool ProcessPikes { get; set; } = true;
-
-        [SettingName("Process Glaives")]
-        [Tooltip("Enable processing of Glaive weapons")]
-        public bool ProcessGlaives { get; set; } = true;
-
-        [SettingName("Process Tridents")]
-        [Tooltip("Enable processing of Trident weapons")]
-        public bool ProcessTridents { get; set; } = true;
-
-        [SettingName("Process Greatswords")]
-        [Tooltip("Enable processing of Greatsword weapons")]
-        public bool ProcessGreatswords { get; set; } = true;
-
-        [SettingName("Process Dai-Katanas")]
-        [Tooltip("Enable processing of Dai-Katana weapons")]
-        public bool ProcessDaiKatanas { get; set; } = true;
-
-        [SettingName("Process Heavy Armory Halberds")]
-        [Tooltip("Enable processing of Halberd weapons from Heavy Armory")]
-        public bool ProcessHeavyArmoryHalberds { get; set; } = true;
-
-        [SettingName("Process Animated Armoury Halberds")]
-        [Tooltip("Enable processing of Halberd weapons from Animated Armoury")]
-        public bool ProcessAnimatedArmouryHalberds { get; set; } = true;
-
-        [SettingName("Process Long Maces")]
-        [Tooltip("Enable processing of Long Mace weapons")]
-        public bool ProcessLongMaces { get; set; } = true;
-
-        [SettingName("Process Battleaxes")]
-        [Tooltip("Enable processing of Battleaxe weapons")]
-        public bool ProcessBattleaxes { get; set; } = true;
-
-        [SettingName("Process Warhammers")]
-        [Tooltip("Enable processing of Warhammer weapons")]
-        public bool ProcessWarhammers { get; set; } = true;
+        [SettingName("Mysticism")]
+        [Tooltip("Honor Mysticism changes to bound weapons")]
+        public bool Mysticism { get; set; } = true;
 
         // Weapon settings
-        [SettingName("Dagger (iron) [WeapTypeDagger]")]
-        [Tooltip("Settings for the Dagger weapon")]
+        [SettingName("Dagger (iron)")]
         public WeaponSettings Dagger { get; set; }
 
-        [SettingName("Tanto (iron) [WeapTypeTanto]")]
-        [Tooltip("Settings for the Tanto weapon")]
+        [SettingName("Tanto (iron)")]
         public WeaponSettings Tanto { get; set; }
 
-        [SettingName("Claw (iron) [WeapTypeClaw]")]
-        [Tooltip("Settings for the Claw weapon")]
+        [SettingName("Claw (iron)")]
         public WeaponSettings Claw { get; set; }
 
-        [SettingName("Javelin (iron) [WeapTypeJavelin]")]
-        [Tooltip("Settings for the Javelin weapon")]
+        [SettingName("Javelin (iron)")]
         public WeaponSettings Javelin { get; set; }
 
-        [SettingName("Rapier (iron) [WeapTypeRapier]")]
-        [Tooltip("Settings for the Rapier weapon")]
+        [SettingName("Rapier (iron)")]
         public WeaponSettings Rapier { get; set; }
 
-        [SettingName("Wakizashi (iron) [WeapTypeWakizashi]")]
-        [Tooltip("Settings for the Wakizashi weapon")]
+        [SettingName("Wakizashi (iron)")]
         public WeaponSettings Wakizashi { get; set; }
 
-        [SettingName("Shortsword (iron) [ShWeapTypeShortsword]")]
-        [Tooltip("Settings for the Shortsword weapon")]
+        [SettingName("Shortsword (iron)")]
         public WeaponSettings Shortsword { get; set; }
 
-        [SettingName("Spear one handed (iron) [WeapTypeSpear]")]
-        [Tooltip("Settings for the Spear weapon from Skyrim Spear Mechanic")]
+        [SettingName("Spear one handed (iron)")]
         public WeaponSettings Spear1h { get; set; }
 
-        [SettingName("Sword (iron) [WeapTypeSword]")]
-        [Tooltip("Settings for the Sword weapon")]
+        [SettingName("Sword (iron)")]
         public WeaponSettings Sword { get; set; }
 
-        [SettingName("Katana (iron) [WeapTypeKatana]")]
-        [Tooltip("Settings for the Katana weapon")]
+        [SettingName("Scimitar (iron)")]
+        public WeaponSettings Scimitar { get; set; }
+
+        [SettingName("Katana (iron)")]
         public WeaponSettings Katana { get; set; }
 
-        [SettingName("Hatchet (iron) [ShWeapTypeHatchet]")]
-        [Tooltip("Settings for the Hatchet weapon")]
+        [SettingName("Hatchet (iron)")]
         public WeaponSettings Hatchet { get; set; }
 
-        [SettingName("Club (iron) [ShWeapTypeClub]")]
-        [Tooltip("Settings for the Club weapon")]
+        [SettingName("Club (iron)")]
         public WeaponSettings Club { get; set; }
 
-        [SettingName("Shortspear (iron) [ShWeapTypeShortspear]")]
-        [Tooltip("Settings for the Shortspear weapon")]
+        [SettingName("Shortspear (iron)")]
         public WeaponSettings Shortspear { get; set; }
 
-        [SettingName("Whip (iron) [WeapTypeWhip]")]
-        [Tooltip("Settings for the Whip weapon")]
+        [SettingName("Whip (iron)")]
         public WeaponSettings Whip { get; set; }
 
-        [SettingName("War Axe (iron) [WeapTypeWarAxe]")]
-        [Tooltip("Settings for the War Axe weapon")]
+        [SettingName("War Axe (iron)")]
         public WeaponSettings WarAxe { get; set; }
 
-        [SettingName("Mace (iron) [WeapTypeMace]")]
-        [Tooltip("Settings for the Mace weapon")]
+        [SettingName("Mace (iron)")]
         public WeaponSettings Mace { get; set; }
 
-        [SettingName("Heavy Armory Quarterstaff (iron) [ShWeapTypeQuarterStaff]")]
-        [Tooltip("Settings for the Quarterstaff weapon from Heavy Armory")]
-        public WeaponSettings HeavyArmoryQuarterstaff { get; set; }
+        [SettingName("Quarterstaff, shorter (iron)")]
+        public WeaponSettings Shortstaff { get; set; }
 
-        [SettingName("Animated Armoury Quarterstaff (iron) [WeapTypeQtrStaff]")]
-        [Tooltip("Settings for the Quarterstaff weapon from Animated Armoury")]
-        public WeaponSettings AnimatedArmouryQuarterstaff { get; set; }
+        [SettingName("Quarterstaff (iron)")]
+        public WeaponSettings Quarterstaff { get; set; }
 
-        [SettingName("Maul (iron) [ShWeapTypeMaul]")]
-        [Tooltip("Settings for the Maul weapon")]
+        [SettingName("Maul (iron)")]
         public WeaponSettings Maul { get; set; }
 
-        [SettingName("Spear two handed (iron) [ShWeapTypeSpear]")]
-        [Tooltip("Settings for the two-handed Spear weapon")]
+        [SettingName("Spear two handed (iron)")]
         public WeaponSettings Spear2h { get; set; }
 
-        [SettingName("Pike (iron) [WeapTypePike]")]
-        [Tooltip("Settings for the Pike weapon")]
+        [SettingName("Pike (iron)")]
         public WeaponSettings Pike { get; set; }
 
-        [SettingName("Glaive (iron) [ShWeapTypeGlaive]")]
-        [Tooltip("Settings for the Glaive weapon")]
+        [SettingName("Glaive (iron)")]
         public WeaponSettings Glaive { get; set; }
 
-        [SettingName("Trident (iron) [ShWeapTypeTrident]")]
-        [Tooltip("Settings for the Trident weapon")]
+        [SettingName("Trident (iron)")]
         public WeaponSettings Trident { get; set; }
 
-        [SettingName("Greatsword (iron) [WeapTypeGreatsword]")]
-        [Tooltip("Settings for the Greatsword weapon")]
+        [SettingName("Greatsword (iron)")]
         public WeaponSettings Greatsword { get; set; }
 
-        [SettingName("Dai-Katana (iron) [WeapTypeDaiKatana]")]
-        [Tooltip("Settings for the Dai-Katana weapon")]
+        [SettingName("Dai-Katana (iron)")]
         public WeaponSettings DaiKatana { get; set; }
 
-        [SettingName("Heavy Armory Halberd (iron) [ShWeapTypeHalberd]")]
-        [Tooltip("Settings for the Halberd weapon from Heavy Armory")]
-        public WeaponSettings HeavyArmoryHalberd { get; set; }
+        [SettingName("Halberd, shorter (iron)")]
+        public WeaponSettings ShortHalberd { get; set; }
 
-        [SettingName("Animated Armoury Halberd (iron) [WeapTypeHalberd]")]
-        [Tooltip("Settings for the Halberd weapon from Animated Armoury")]
-        public WeaponSettings AnimatedArmouryHalberd { get; set; }
+        [SettingName("Halberd (iron)")]
+        public WeaponSettings LongHalberd { get; set; }
 
         [SettingName("Long Mace (iron)")]
-        [Tooltip("Settings for iron Long Mace weapons")]
         public WeaponSettings LongMace { get; set; }
 
-        [SettingName("Battleaxe (iron) [WeapTypeBattleaxe]")]
-        [Tooltip("Settings for the Battleaxe weapon")]
+        [SettingName("Battleaxe (iron)")]
         public WeaponSettings Battleaxe { get; set; }
 
-        [SettingName("Warhammer (iron) [WeapTypeWarhammer]")]
-        [Tooltip("Settings for the Warhammer weapon")]
+        [SettingName("Warhammer (iron)")]
         public WeaponSettings Warhammer { get; set; }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
     public class WeaponSettings
     {
+        /// <summary>
+        /// Identify which weapons to patch by name.  
+        /// • Enter semicolon‑separated tokens.  
+        /// • Prefix "+" → **must** contain  
+        /// • Prefix "-" → **must not** contain  
+        /// • No prefix → "OR" match  
+        /// • Use "*" for simple wildcard (e.g. "dagg*")  
+        /// • Use regex for more complex patterns (e.g. "^dagger$"). Regex start with re:
+        /// • No other logic is allowed when using regex
+        /// </summary>
+        /// 
         [SettingName("Damage")]
         [Tooltip("Base damage of the weapon")]
         [JsonProperty]
@@ -390,14 +227,50 @@ namespace Weapon_Mod_Synergy
         [JsonProperty]
         public float CriticalDamageMultiplier { get; set; }
 
-        [SettingName("Use Floor Division")]
+        [SettingName("Use Floor Division for critical damage calculation")]
         [Tooltip("If enabled, damage values will be rounded down to the nearest 10")]
         [JsonProperty]
         public bool UseFloorDivision { get; set; }
+
+        [SettingName("Skill")]
+        [Tooltip("Skill required to use the weapon")]
+        [JsonProperty]
+        public WeaponSkill Skill { get; set; } = WeaponSkill.OneHanded;
+
+        [SettingName("Has in name")]
+        [Tooltip(
+        "Identify which weapons to patch by name. " +
+        "Enter semicolon‑separated tokens: " +
+        "prefix '+' for must contain; " +
+        "prefix '–' for must not contain; " +
+        "no prefix for OR match; " +
+        "use '*' for wildcard (e.g. 'dagg*'); " +
+        "use regex (prefix with 're:') for complex patterns (e.g. 're:^dagger$') — " +
+        "no other logic allowed when using regex."
+        )]
+        [JsonProperty]
+        public string NamedIDs { get; set; } = "";
+
+        [SettingName("AND/OR")]
+        [Tooltip("Use name and/or keywords, blank fields are ignored")]
+        [JsonProperty]
+        public LogicOperator SearchLogic { get; set; } = LogicOperator.OR;
+
+        [SettingName("Has keywords (semicolon separated)")]
+        [Tooltip("Identify which weapons to patch by keywords. " +
+        "Enter semicolon‑separated tokens: " +
+        "prefix '+' for must contain; " +
+        "prefix '–' for must not contain; " +
+        "no prefix for OR match; " +
+        "use '*' for wildcard (e.g. 'dagg*'); " +
+        "use regex (prefix with 're:') for complex patterns (e.g. 're:^weapTypeSword$') — " +
+        "no other logic allowed when using regex.")]
+        [JsonProperty]
+        public string KeywordIDs { get; set; } = "";
 
         public WeaponSettings()
         {
             CriticalDamageMultiplier = 1.0f;
         }
     }
-} 
+}

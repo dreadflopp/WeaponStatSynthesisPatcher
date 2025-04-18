@@ -9,418 +9,791 @@ using Mutagen.Bethesda.Plugins.Order;
 using System.IO;
 using System.Text;
 using Mutagen.Bethesda.Synthesis;
+using Mutagen.Bethesda;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using System.Text.Json;
+using Mutagen.Bethesda.Skyrim.Internals;
+using System.Text.Json.Serialization;
+using System.Diagnostics;
 
 namespace Weapon_Mod_Synergy
 {
     // Classes for JSON deserialization
     public class MaterialData
     {
-        public string keyword { get; set; } = "";
-        public int damage_offset_1h { get; set; }
-        public int damage_offset_2h { get; set; }
-        public int damage_offset_1h_waccf { get; set; }
-        public int damage_offset_2h_waccf { get; set; }
+        [JsonPropertyName("keyword")]
+        public string Keyword { get; set; } = "";
+
+        [JsonPropertyName("damage_offset_1h")]
+        public int DamageOffset1h { get; set; }
+
+        [JsonPropertyName("damage_offset_2h")]
+        public int DamageOffset2h { get; set; }
+
+        [JsonPropertyName("damage_offset_1h_waccf")]
+        public int DamageOffset1hWaccf { get; set; }
+
+        [JsonPropertyName("damage_offset_2h_waccf")]
+        public int DamageOffset2hWaccf { get; set; }
     }
 
-    public class WeaponTypeData
+    public class SpecialWeaponData
     {
-        public string keyword { get; set; } = "";
-        public string name { get; set; } = "";
-        public string grip { get; set; } = "";
+        [JsonPropertyName("editor_id")]  // Just for JSON readability
+        public string EditorID { get; set; } = "";
+
+        [JsonPropertyName("form_key")]   // This is what we actually use
+        public string FormKey { get; set; } = "";
+
+        [JsonPropertyName("damage_offset")]
+        public int? DamageOffset { get; set; }
+
+        [JsonPropertyName("damage_offset_waccf")]
+        public int? DamageOffsetWaccf { get; set; }
+
+        [JsonPropertyName("damage_offset_artificer")]
+        public int? DamageOffsetArtificer { get; set; }
+
+        [JsonPropertyName("damage_offset_mysticism")]
+        public int? DamageOffsetMysticism { get; set; }
+
+        [JsonPropertyName("speed_offset")]
+        public float? SpeedOffset { get; set; }
+
+        [JsonPropertyName("speed_offset_waccf")]
+        public float? SpeedOffsetWaccf { get; set; }
+
+        [JsonPropertyName("speed_offset_artificer")]
+        public float? SpeedOffsetArtificer { get; set; }
+
+        [JsonPropertyName("reach_offset")]
+        public float? ReachOffset { get; set; }
+
+        [JsonPropertyName("reach_offset_waccf")]
+        public float? ReachOffsetWaccf { get; set; }
+
+        [JsonPropertyName("reach_offset_artificer")]
+        public float? ReachOffsetArtificer { get; set; }
+
+        [JsonPropertyName("stagger_offset")]
+        public float? StaggerOffset { get; set; }
+
+        [JsonPropertyName("stagger_offset_waccf")]
+        public float? StaggerOffsetWaccf { get; set; }
+
+        [JsonPropertyName("stagger_offset_artificer")]
+        public float? StaggerOffsetArtificer { get; set; }
+
+        [JsonPropertyName("critical_damage_offset")]
+        public int? CriticalDamageOffset { get; set; }
+
+        [JsonPropertyName("critical_damage_offset_waccf")]
+        public int? CriticalDamageOffsetWaccf { get; set; }
+
+        [JsonPropertyName("critical_damage_offset_artificer")]
+        public int? CriticalDamageOffsetArtificer { get; set; }
+
+        [JsonPropertyName("critical_damage_multiplier_offset")]
+        public float? CriticalDamageMultiplierOffset { get; set; }
+
+        [JsonPropertyName("critical_damage_multiplier_offset_waccf")]
+        public float? CriticalDamageMultiplierOffsetWaccf { get; set; }
+
+        [JsonPropertyName("critical_damage_multiplier_offset_artificer")]
+        public float? CriticalDamageMultiplierOffsetArtificer { get; set; }        
     }
 
-    public static class WeaponHelper
+    public class WeaponHelper
     {
+        // Debug flag to enable/disable debug output
+        private const bool DEBUG_MODE = true;
+
+        private readonly Dictionary<string, WeaponSettings> _weaponSettings;
+        private static Action<string>? _logger;
+
         // Static lists to hold the JSON data
-        private static List<MaterialData> _materialData = new List<MaterialData>();
-        private static List<MaterialData> _materialDataOverride = new List<MaterialData>();
-        private static List<MaterialData> _materialDataEditorIdOverride = new List<MaterialData>();
-        private static List<WeaponTypeData> _weaponTypeData = new List<WeaponTypeData>();
-        private static List<WeaponTypeData> _weaponTypeDataOverride = new List<WeaponTypeData>();
-        private static bool _dataLoaded = false;
+        private static List<MaterialData> _materialData = new();
+        private static List<MaterialData> _materialDataName = new();
+        private static List<SpecialWeaponData> _specialWeapons = new();
 
-        // Load JSON data from files
-        private static void LoadJsonData()
+        // Dictionary to store file paths for each data type
+        private static readonly Dictionary<string, string> _jsonFilePaths = new Dictionary<string, string>
         {
-            if (_dataLoaded)
-            {
-                return;
-            }
+            { "materialData", "material_data_keyword.json" },
+            { "materialDataName", "material_data_name.json" },
+            { "specialWeapons", "special_weapons.json" }
+        };
 
+        public WeaponHelper(Dictionary<string, WeaponSettings> weaponSettings, Action<string> logger)
+        {
+            _weaponSettings = weaponSettings ?? throw new ArgumentNullException(nameof(weaponSettings));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            LoadMaterialData();
+        }
+
+        private void LoadMaterialData()
+        {
             try
             {
                 string patcherDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "";
-                
-                string materialJsonPath = Path.Combine(patcherDirectory, "material_data.json");
-                if (File.Exists(materialJsonPath))
-                {                    
-                    string materialJson = File.ReadAllText(materialJsonPath);
-                    
-                    _materialData = JsonSerializer.Deserialize<List<MaterialData>>(materialJson) ?? new List<MaterialData>();
+
+                // Load name-based material data first
+                var nameJson = File.ReadAllText(Path.Combine(patcherDirectory, _jsonFilePaths["materialDataName"]));
+                DebugLog($"Loading name-based material data from: {Path.Combine(patcherDirectory, _jsonFilePaths["materialDataName"])}");
+                DebugLog($"Name-based material data JSON content: {nameJson}");
+                _materialDataName = System.Text.Json.JsonSerializer.Deserialize<List<MaterialData>>(nameJson) ?? new List<MaterialData>();
+                DebugLog($"Loaded {_materialDataName.Count} name-based material data entries");
+                foreach (var material in _materialDataName)
+                {
+                    DebugLog($"Name-based material: Keyword='{material.Keyword}', 1h={material.DamageOffset1h}, 2h={material.DamageOffset2h}, 1hWaccf={material.DamageOffset1hWaccf}, 2hWaccf={material.DamageOffset2hWaccf}");
+                }
+
+                // Load vanilla material data (includes WACCF offsets)
+                var vanillaJson = File.ReadAllText(Path.Combine(patcherDirectory, _jsonFilePaths["materialData"]));
+                DebugLog($"Loading vanilla material data from: {Path.Combine(patcherDirectory, _jsonFilePaths["materialData"])}");
+                DebugLog($"Vanilla material data JSON content: {vanillaJson}");
+                _materialData = System.Text.Json.JsonSerializer.Deserialize<List<MaterialData>>(vanillaJson) ?? new List<MaterialData>();
+                DebugLog($"Loaded {_materialData.Count} vanilla material data entries");
+                foreach (var material in _materialData)
+                {
+                    DebugLog($"Vanilla material: Keyword='{material.Keyword}', 1h={material.DamageOffset1h}, 2h={material.DamageOffset2h}, 1hWaccf={material.DamageOffset1hWaccf}, 2hWaccf={material.DamageOffset2hWaccf}");
+                }
+
+                // Load special weapons list
+                string specialWeaponsPath = Path.Combine(patcherDirectory, _jsonFilePaths["specialWeapons"]);
+                if (File.Exists(specialWeaponsPath))
+                {
+                    var specialWeaponsJson = File.ReadAllText(specialWeaponsPath);
+                    DebugLog($"Loading special weapons from: {specialWeaponsPath}");
+                    DebugLog($"Special weapons JSON content: {specialWeaponsJson}");
+
+                    _specialWeapons = System.Text.Json.JsonSerializer.Deserialize<List<SpecialWeaponData>>(specialWeaponsJson) ?? new List<SpecialWeaponData>();
+                    DebugLog($"Loaded {_specialWeapons.Count} special weapons");
+
+                    foreach (var weapon in _specialWeapons)
+                    {
+                        var sb = new StringBuilder();
+                        sb.Append($"Special weapon: EditorID='{weapon.EditorID}', FormKey='{weapon.FormKey}'\n");
+                        sb.Append($"  Base offsets: Damage={weapon.DamageOffset}, Speed={weapon.SpeedOffset}, Reach={weapon.ReachOffset}, Stagger={weapon.StaggerOffset}\n");
+                        sb.Append($"  WACCF offsets: Damage={weapon.DamageOffsetWaccf}, Speed={weapon.SpeedOffsetWaccf}, Reach={weapon.ReachOffsetWaccf}, Stagger={weapon.StaggerOffsetWaccf}\n");
+                        sb.Append($"  Artificer offsets: Damage={weapon.DamageOffsetArtificer}, Speed={weapon.SpeedOffsetArtificer}, Reach={weapon.ReachOffsetArtificer}, Stagger={weapon.StaggerOffsetArtificer}\n");
+                        sb.Append($"  Critical offsets: Base={weapon.CriticalDamageOffset}, WACCF={weapon.CriticalDamageOffsetWaccf}, Artificer={weapon.CriticalDamageOffsetArtificer}\n");
+                        sb.Append($"  Critical Multiplier offsets: Base={weapon.CriticalDamageMultiplierOffset}, WACCF={weapon.CriticalDamageMultiplierOffsetWaccf}, Artificer={weapon.CriticalDamageMultiplierOffsetArtificer}");
+                        DebugLog(sb.ToString());
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"Error: material_data.json not found at {materialJsonPath}. The patcher requires this file to function.");
-                    Environment.Exit(1);
+                    DebugLog($"Special weapons file not found at: {specialWeaponsPath}");
                 }
-
-                string materialOverrideJsonPath = Path.Combine(patcherDirectory, "material_data_override_with_name.json");
-                if (File.Exists(materialOverrideJsonPath))
-                {
-                    string materialOverrideJson = File.ReadAllText(materialOverrideJsonPath);
-                    
-                    _materialDataOverride = JsonSerializer.Deserialize<List<MaterialData>>(materialOverrideJson) ?? new List<MaterialData>();
-                }
-                else
-                {
-                    Console.WriteLine($"Error: material_data_override_with_name.json not found at {materialOverrideJsonPath}. The patcher requires this file to function.");
-                    Environment.Exit(1);
-                }
-
-                string materialEditorIdOverrideJsonPath = Path.Combine(patcherDirectory, "material_data_override_with_edid.json");
-                if (File.Exists(materialEditorIdOverrideJsonPath))
-                {
-                    string materialEditorIdOverrideJson = File.ReadAllText(materialEditorIdOverrideJsonPath);
-                    
-                    _materialDataEditorIdOverride = JsonSerializer.Deserialize<List<MaterialData>>(materialEditorIdOverrideJson) ?? new List<MaterialData>();
-                }
-                else
-                {
-                    Console.WriteLine($"Error: material_data_override_with_edid.json not found at {materialEditorIdOverrideJsonPath}. The patcher requires this file to function.");
-                    Environment.Exit(1);
-                }
-
-                string weaponTypeJsonPath = Path.Combine(patcherDirectory, "weapon_type_data.json");
-                if (File.Exists(weaponTypeJsonPath))
-                {
-                    string weaponTypeJson = File.ReadAllText(weaponTypeJsonPath);
-                    
-                    _weaponTypeData = JsonSerializer.Deserialize<List<WeaponTypeData>>(weaponTypeJson) ?? new List<WeaponTypeData>();
-                }
-                else
-                {
-                    Console.WriteLine($"Error: weapon_type_data.json not found at {weaponTypeJsonPath}. The patcher requires this file to function.");
-                    Environment.Exit(1);
-                }
-
-                string weaponTypeOverrideJsonPath = Path.Combine(patcherDirectory, "weapon_type_data_override_with_name.json");
-                if (File.Exists(weaponTypeOverrideJsonPath))
-                {
-                    string weaponTypeOverrideJson = File.ReadAllText(weaponTypeOverrideJsonPath);
-                    
-                    _weaponTypeDataOverride = JsonSerializer.Deserialize<List<WeaponTypeData>>(weaponTypeOverrideJson) ?? new List<WeaponTypeData>();
-                }
-                else
-                {
-                    Console.WriteLine($"Error: weapon_type_data_override_with_name.json not found at {weaponTypeOverrideJsonPath}. The patcher requires this file to function.");
-                    Environment.Exit(1);
-                }
-
-                _dataLoaded = true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading JSON data: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                Environment.Exit(1);
+                _logger?.Invoke($"Error loading material data: {ex.Message}");
+                throw;
             }
         }
 
-        // Helper method to load weapon type data
-        private static List<WeaponTypeData> LoadWeaponTypeData()
+        // Debug logging function
+        public void DebugLog(string message)
         {
-            LoadJsonData();
-            return _weaponTypeData;
+            if (DEBUG_MODE)
+            {
+                _logger?.Invoke($"[DEBUG] {message}");
+            }
         }
 
-        // Helper method to load weapon type override data
-        private static List<WeaponTypeData> LoadWeaponTypeOverrideData()
+        // Generic method to get loaded data
+        private T GetLoadedData<T>(ref T dataField)
         {
-            LoadJsonData();
-            return _weaponTypeDataOverride;
-        }
-
-        // Helper method to load material data
-        private static List<MaterialData> LoadMaterialData()
-        {
-            LoadJsonData();
-            return _materialData;
-        }
-
-        // Helper method to load material override data
-        private static List<MaterialData> LoadMaterialOverrideData()
-        {
-            LoadJsonData();
-            return _materialDataOverride;
-        }
-
-        // Helper method to load material editor ID override data
-        private static List<MaterialData> LoadMaterialEditorIdOverrideData()
-        {
-            LoadJsonData();
-            return _materialDataEditorIdOverride;
+            if (_materialData.Count == 0 || _materialDataName.Count == 0 || _specialWeapons.Count == 0)
+            {
+                LoadMaterialData();
+            }
+            return dataField;
         }
 
         /// <summary>
-        /// Gets the weapon type based on keywords and name
+        /// Gets the weapon skill type (1h or 2h) based on the weapon's Skill property
+        /// If weapon Skill is Skill.OneHanded, return WeaponSkill.OneHanded
+        /// If weapon Skill is Skill.TwoHanded, return WeaponSkill.TwoHanded
+        /// Otherwise, return null
         /// </summary>
-        public static string? GetWeaponType(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF = false)
+        public WeaponSkill? GetWeaponSkillType(IWeaponGetter weapon)
         {
-            if (weapon == null) return null;
+            DebugLog($"------------------- GetWeaponSkillType start -------------------");
+            DebugLog($"     GetWeaponSkillType called for weapon: {weapon?.EditorID ?? "null"}");
 
-            // First check if the weapon name matches any override types
-            if (weapon.Name?.String != null)
+            if (weapon == null || weapon.Data == null)
             {
-                string weaponName = weapon.Name.String.ToLower();
-                var overrideTypes = LoadWeaponTypeOverrideData();
-                
-                foreach (var type in overrideTypes)
+                DebugLog("     Weapon or weapon.Data is null, returning null");
+                DebugLog($"------------------- GetWeaponSkillType end -------------------");
+                return null;
+            }
+
+            // Get the skill from the weapon's Data property
+            var skill = weapon.Data.Skill;
+            DebugLog($"     Weapon skill value: {skill}");
+
+            // Determine the weapon skill type based on the Skill property
+            if (skill.HasValue)
+            {
+                // Convert the skill to a string for comparison
+                string skillString = skill.Value.ToString();
+                DebugLog($"     Skill string: {skillString}");
+
+                if (skillString.Contains("OneHanded"))
                 {
-                    if (weaponName.Contains(type.name.ToLower()))
-                    {
-                        return type.keyword;
-                    }
+                    DebugLog("     Detected OneHanded skill, returning WeaponSkill.OneHanded");
+                    DebugLog($"------------------- GetWeaponSkillType end -------------------");
+                    return WeaponSkill.OneHanded;
+                }
+                else if (skillString.Contains("TwoHanded"))
+                {
+                    DebugLog("     Detected TwoHanded skill, returning WeaponSkill.TwoHanded");
+                    DebugLog($"------------------- GetWeaponSkillType end -------------------");
+                    return WeaponSkill.TwoHanded;
                 }
             }
 
-            // If no name match found, check keywords
+            DebugLog("     No matching skill type found, returning null");
+            DebugLog($"------------------- GetWeaponSkillType end -------------------");
+            return null;
+        }
+
+        /// <summary>
+        /// Gets all keywords from a weapon as a list of strings
+        /// </summary>
+        public List<string> GetWeaponKeywords(IWeaponGetter weapon, ILinkCache linkCache)
+        {
+            DebugLog($"------------------- GetWeaponKeywords start -------------------");
+            DebugLog($"     GetWeaponKeywords called for weapon: {weapon?.EditorID ?? "null"}");
+
+            var keywords = new List<string>();
+
+            if (weapon == null) return keywords;
+
             if (weapon.Keywords != null)
             {
-                // Get all keywords
-                var keywords = new List<string>();
+                DebugLog($"     Weapon has {weapon.Keywords.Count} keywords");
+
                 foreach (var keyword in weapon.Keywords)
                 {
-                    if (!linkCache.TryResolve(keyword, out var resolvedKeyword))
+                    if (keyword is IFormLinkGetter<IKeywordGetter> formLink &&
+                        formLink.TryResolve(linkCache, out var keywordRecord))
                     {
-                        continue;
-                    }
-                    var keywordName = resolvedKeyword.EditorID;
-                    if (keywordName != null)
-                    {
-                        keywords.Add(keywordName);
-                    }
-                }
-                               
-                // Load weapon type data
-                var weaponTypes = LoadWeaponTypeData();
-                
-                foreach (var weaponType in weaponTypes)
-                {
-                    if (keywords.Contains(weaponType.keyword))
-                    {
-                        return weaponType.keyword;
+                        if (keywordRecord.EditorID != null)
+                        {
+                            keywords.Add(keywordRecord.EditorID);
+                            DebugLog($"     Added keyword: {keywordRecord.EditorID}");
+                        }
                     }
                 }
-            }
-            
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the weapon grip type (1h or 2h) based on keywords and name
-        /// </summary>
-        public static string? GetWeaponGrip(IWeaponGetter weapon, ILinkCache linkCache)
-        {
-            if (weapon == null) return null;
-
-            // First check if the weapon name matches any override types
-            if (weapon.Name?.String != null)
-            {
-                string weaponName = weapon.Name.String.ToLower();
-                var overrideTypes = LoadWeaponTypeOverrideData();
-                
-                foreach (var type in overrideTypes)
-                {
-                    if (weaponName.Contains(type.keyword.ToLower()))
-                    {
-                        return type.grip;
-                    }
-                }
-            }
-
-            if (weapon.Keywords == null) return null;
-
-            // Get all keywords
-            var keywords = new List<string>();
-            foreach (var keyword in weapon.Keywords)
-            {
-                if (!linkCache.TryResolve(keyword, out var resolvedKeyword)) continue;
-                var keywordName = resolvedKeyword.EditorID;
-                if (keywordName != null)
-                    keywords.Add(keywordName);
-            }
-            
-            // Load weapon type data
-            var weaponTypes = LoadWeaponTypeData();
-            
-            // Find the first matching weapon type (prioritizing order in JSON)
-            foreach (var weaponType in weaponTypes)
-            {
-                if (keywords.Contains(weaponType.keyword))
-                {
-                    return weaponType.grip;
-                }
-            }
-            
-            return null;
-        }
-
-        /// <summary>
-        /// Gets the weapon material based on keywords and name
-        /// </summary>
-        public static string? GetWeaponMaterial(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF = false)
-        {
-            if (weapon == null) return null;
-
-            // Check for special cases based on weapon EditorID first
-            if (weapon.EditorID != null)
-            {
-                string editorId = weapon.EditorID;
-                
-                // Check for editor ID overrides
-                var editorIdOverrides = LoadMaterialEditorIdOverrideData();
-                var matchingOverride = editorIdOverrides.FirstOrDefault(m => m.keyword.Equals(editorId, StringComparison.OrdinalIgnoreCase));
-                if (matchingOverride != null)
-                {
-                    return matchingOverride.keyword;
-                }
-                
-                string editorIdLower = editorId.ToLower();
-                
-                // Check for mystic bound weapons
-                if (editorIdLower.Contains("bound") && editorIdLower.Contains("mystic"))
-                {
-                    return "WeapMaterialMysticBound";
-                }
-                
-                // Check for regular bound weapons
-                if (editorIdLower.Contains("bound"))
-                {
-                    return "WeapMaterialBound";
-                }
-            }
-
-            // Then check if the weapon name matches any override materials
-            if (weapon.Name?.String != null)
-            {
-                string weaponName = weapon.Name.String.ToLower();
-                var overrideMaterials = LoadMaterialOverrideData();
-                
-                foreach (var material in overrideMaterials)
-                {
-                    if (weaponName.Contains(material.keyword.ToLower()))
-                    {
-                        return material.keyword;
-                    }
-                }
-            }
-
-            if (weapon.Keywords == null) return null;
-
-            // Get all keywords
-            var keywords = new List<string>();
-            foreach (var keyword in weapon.Keywords)
-            {
-                if (!linkCache.TryResolve(keyword, out var resolvedKeyword)) continue;
-                var keywordName = resolvedKeyword.EditorID;
-                if (keywordName != null)
-                    keywords.Add(keywordName);
-            }
-            
-            // Load material data
-            var materials = LoadMaterialData();
-            
-            // Get weapon grip type
-            string? gripType = GetWeaponGrip(weapon, linkCache);
-            if (gripType == null) return null;
-            
-            // Find the material with the highest damage offset
-            MaterialData? bestMatch = null;
-            int highestOffset = int.MinValue;
-            
-            foreach (var material in materials)
-            {
-                if (keywords.Contains(material.keyword))
-                {
-                    int offset = gripType == "1h" 
-                        ? (includeWACCF ? material.damage_offset_1h_waccf : material.damage_offset_1h)
-                        : (includeWACCF ? material.damage_offset_2h_waccf : material.damage_offset_2h);
-                    
-                    if (offset > highestOffset)
-                    {
-                        highestOffset = offset;
-                        bestMatch = material;
-                    }
-                }
-            }
-            
-            return bestMatch?.keyword;
-        }
-
-        // New GetDamageOffset function using JSON data
-        public static int GetDamageOffset(IWeaponGetter weapon, ILinkCache linkCache, string material, bool waccfMaterialTiers, string grip)
-        {
-            // Load the material data
-            var materialData = LoadMaterialData();
-            var materialDataOverride = LoadMaterialOverrideData();
-            var materialDataEditorIdOverride = LoadMaterialEditorIdOverrideData();
-
-            // Get base damage offset
-            int baseOffset = 0;
-
-            // Check editor ID override first
-            if (weapon.EditorID != null)
-            {
-                var editorIdOverride = materialDataEditorIdOverride.FirstOrDefault(m => m.keyword.Equals(weapon.EditorID, StringComparison.OrdinalIgnoreCase));
-                if (editorIdOverride != null)
-                {
-                    baseOffset = grip == "1h"
-                        ? (waccfMaterialTiers ? editorIdOverride.damage_offset_1h_waccf : editorIdOverride.damage_offset_1h)
-                        : (waccfMaterialTiers ? editorIdOverride.damage_offset_2h_waccf : editorIdOverride.damage_offset_2h);
-                    return baseOffset;
-                }
-            }
-
-            // Then check name override
-            var overrideMaterial = materialDataOverride.FirstOrDefault(m => m.keyword.Equals(material, StringComparison.OrdinalIgnoreCase));
-            if (overrideMaterial != null)
-            {
-                baseOffset = grip == "1h"
-                    ? (waccfMaterialTiers ? overrideMaterial.damage_offset_1h_waccf : overrideMaterial.damage_offset_1h)
-                    : (waccfMaterialTiers ? overrideMaterial.damage_offset_2h_waccf : overrideMaterial.damage_offset_2h);
             }
             else
             {
-                // Finally check main data
-                var mainMaterial = materialData.FirstOrDefault(m => m.keyword.Equals(material, StringComparison.OrdinalIgnoreCase));
-                if (mainMaterial != null)
-                {
-                    baseOffset = grip == "1h"
-                        ? (waccfMaterialTiers ? mainMaterial.damage_offset_1h_waccf : mainMaterial.damage_offset_1h)
-                        : (waccfMaterialTiers ? mainMaterial.damage_offset_2h_waccf : mainMaterial.damage_offset_2h);
-                }
+                DebugLog("     Weapon has no keywords");
+                DebugLog($"------------------- GetWeaponKeywords end -------------------");
             }
 
-            // Check for Stalhrim war axes and maces bonus
-            if (material == "DLC2WeaponMaterialStalhrim" && weapon.Keywords != null)
+            DebugLog($"     Returning {keywords.Count} keywords");
+            DebugLog($"------------------- GetWeaponKeywords end -------------------");
+            return keywords;
+        }
+
+        /// <summary>
+        /// Gets the weapon setting key based on the weapon's name, keywords, and skill type
+        /// </summary>
+        public string GetWeaponSettingKey(IWeaponGetter weapon, ILinkCache linkCache)
+        {
+            DebugLog($"------------------- GetWeaponSettingKey start -------------------");
+            if (weapon == null || linkCache == null)
             {
-                var keywords = new List<string>();
-                foreach (var keyword in weapon.Keywords)
+                DebugLog("     Weapon or link cache is null");
+                DebugLog($"------------------- GetWeaponSettingKey end -------------------");
+                return string.Empty;
+            }
+
+            var weaponName = weapon.Name?.String ?? string.Empty;
+            if (string.IsNullOrEmpty(weaponName))
+            {
+                DebugLog("     Weapon name is empty");
+                DebugLog($"------------------- GetWeaponSettingKey end -------------------");
+                return string.Empty;
+            }
+
+            DebugLog($"     -----------------------------------------");
+            DebugLog($"     Looking up weapon setting for: {weaponName}");
+            DebugLog($"     -----------------------------------------");
+
+            var skillType = GetWeaponSkillType(weapon);
+            DebugLog($"     Skill Type: {skillType}");
+
+            var keywords = GetWeaponKeywords(weapon, linkCache);
+            DebugLog($"     Keywords: {string.Join(", ", keywords)}");
+
+            foreach (var setting in _weaponSettings)
+            {
+                var settingKey = setting.Key;
+                var settings = setting.Value;
+
+                DebugLog($"     -----------------------------------------");
+                DebugLog($"     Checking setting key: {settingKey}");
+                DebugLog($"     Skill: {settings.Skill}");
+                DebugLog($"     NamedIDs: {settings.NamedIDs}");
+                DebugLog($"     SearchLogic: {settings.SearchLogic}");
+                DebugLog($"     KeywordIDs: {settings.KeywordIDs}");
+                DebugLog($"     -----------------------------------------\n");
+
+                // Check skill type match
+                if (settings.Skill != skillType && settings.Skill != WeaponSkill.Either)
                 {
-                    if (!linkCache.TryResolve(keyword, out var resolvedKeyword)) continue;
-                    var keywordName = resolvedKeyword.EditorID;
-                    if (keywordName != null)
-                        keywords.Add(keywordName);
+                    DebugLog($"     Skill type mismatch: {settings.Skill} != {skillType}");
+                    continue;
                 }
 
-                if (keywords.Contains("WeapTypeWarAxe") || keywords.Contains("WeapTypeMace"))
+                // Check if both fields are empty
+                if (string.IsNullOrWhiteSpace(settings.NamedIDs) && string.IsNullOrWhiteSpace(settings.KeywordIDs))
                 {
-                    baseOffset += 1;
+                    DebugLog($"     Both NamedIDs and KeywordIDs are empty");
+                    continue;
+                }
+
+                var namePatterns = settings.NamedIDs.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                var keywordPatternList = settings.KeywordIDs.Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+                // Process name patterns
+                bool nameMatch = true;
+                if (!string.IsNullOrWhiteSpace(settings.NamedIDs))
+                {
+                    DebugLog($"     -----------------------------------------");
+                    DebugLog($"     NameIDs");
+                    DebugLog($"     -----------------------------------------");
+
+                    bool hasRequiredPatterns = namePatterns.Any(p => p.StartsWith("+"));
+                    bool hasForbiddenPatterns = namePatterns.Any(p => p.StartsWith("-"));
+                    bool hasOptionalPatterns = namePatterns.Any(p => !p.StartsWith("+") && !p.StartsWith("-"));
+
+                    // Check required patterns
+                    if (hasRequiredPatterns)
+                    {
+                        foreach (var pattern in namePatterns.Where(p => p.StartsWith("+")))
+                        {
+                            string processedPattern = pattern[1..];
+                            string regexPattern = processedPattern.StartsWith("re:")
+                                ? processedPattern[3..]
+                                : processedPattern.Contains("*")
+                                    ? processedPattern.Replace("*", ".*")
+                                    : $"\\b{Regex.Escape(processedPattern)}\\b";
+
+                            bool matchResult = Regex.IsMatch(weaponName, regexPattern, RegexOptions.IgnoreCase);
+                            if (!matchResult)
+                            {
+                                nameMatch = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Check forbidden patterns
+                    if (nameMatch && hasForbiddenPatterns)
+                    {
+                        foreach (var pattern in namePatterns.Where(p => p.StartsWith("-")))
+                        {
+                            string processedPattern = pattern[1..];
+                            string regexPattern = processedPattern.StartsWith("re:")
+                                ? processedPattern[3..]
+                                : processedPattern.Contains("*")
+                                    ? processedPattern.Replace("*", ".*")
+                                    : $"\\b{Regex.Escape(processedPattern)}\\b";
+
+                            bool matchResult = Regex.IsMatch(weaponName, regexPattern, RegexOptions.IgnoreCase);
+                            if (matchResult)
+                            {
+                                nameMatch = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Check optional patterns (OR logic)
+                    if (nameMatch && hasOptionalPatterns)
+                    {
+                        bool anyOptionalMatch = false;
+                        foreach (var pattern in namePatterns.Where(p => !p.StartsWith("+") && !p.StartsWith("-")))
+                        {
+                            string regexPattern = pattern.StartsWith("re:")
+                                ? pattern[3..]
+                                : pattern.Contains("*")
+                                    ? pattern.Replace("*", ".*")
+                                    : $"\\b{Regex.Escape(pattern)}\\b";
+
+                            if (Regex.IsMatch(weaponName, regexPattern, RegexOptions.IgnoreCase))
+                            {
+                                anyOptionalMatch = true;
+                                break;
+                            }
+                        }
+                        nameMatch = anyOptionalMatch;
+                    }
+                }
+
+                // Process keyword patterns
+                bool keywordMatch = true;
+                if (!string.IsNullOrWhiteSpace(settings.KeywordIDs))
+                {
+                    var hasRequiredPatterns = keywordPatternList.Any(p => p.StartsWith("+"));
+                    var hasForbiddenPatterns = keywordPatternList.Any(p => p.StartsWith("-"));
+                    var hasOptionalPatterns = keywordPatternList.Any(p => !p.StartsWith("+") && !p.StartsWith("-"));
+
+                    // Check required patterns (AND logic)
+                    if (hasRequiredPatterns)
+                    {
+                        foreach (var pattern in keywordPatternList.Where(p => p.StartsWith("+")))
+                        {
+                            string processedPattern = pattern[1..];
+                            string regexPattern = processedPattern.StartsWith("re:")
+                                ? processedPattern[3..]
+                                : processedPattern.Contains("*")
+                                    ? processedPattern.Replace("*", ".*")
+                                    : $"\\b{Regex.Escape(processedPattern)}\\b";
+
+                            if (!keywords.Any(k => Regex.IsMatch(k, regexPattern, RegexOptions.IgnoreCase)))
+                            {
+                                keywordMatch = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Check forbidden patterns (AND logic)
+                    if (keywordMatch && hasForbiddenPatterns)
+                    {
+                        foreach (var pattern in keywordPatternList.Where(p => p.StartsWith("-")))
+                        {
+                            string processedPattern = pattern[1..];
+                            string regexPattern = processedPattern.StartsWith("re:")
+                                ? processedPattern[3..]
+                                : processedPattern.Contains("*")
+                                    ? processedPattern.Replace("*", ".*")
+                                    : $"\\b{Regex.Escape(processedPattern)}\\b";
+
+                            if (keywords.Any(k => Regex.IsMatch(k, regexPattern, RegexOptions.IgnoreCase)))
+                            {
+                                keywordMatch = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Check optional patterns (OR logic)
+                    if (keywordMatch && hasOptionalPatterns)
+                    {
+                        bool anyOptionalMatch = false;
+                        foreach (var pattern in keywordPatternList.Where(p => !p.StartsWith("+") && !p.StartsWith("-")))
+                        {
+                            string regexPattern = pattern.StartsWith("re:")
+                                ? pattern[3..]
+                                : pattern.Contains("*")
+                                    ? pattern.Replace("*", ".*")
+                                    : $"\\b{Regex.Escape(pattern)}\\b";
+
+                            if (keywords.Any(k => Regex.IsMatch(k, regexPattern, RegexOptions.IgnoreCase)))
+                            {
+                                anyOptionalMatch = true;
+                                break;
+                            }
+                        }
+                        keywordMatch = anyOptionalMatch;
+                    }
+                }
+                else
+                {
+                    // If KeywordIDs is empty, we should ignore keyword matching
+                    keywordMatch = true;
+                }
+
+                // Determine final match based on SearchLogic
+                bool finalMatch;
+                if (string.IsNullOrWhiteSpace(settings.NamedIDs) && string.IsNullOrWhiteSpace(settings.KeywordIDs))
+                {
+                    // If both fields are empty, no match
+                    finalMatch = false;
+                }
+                else if (string.IsNullOrWhiteSpace(settings.NamedIDs))
+                {
+                    // If only NamedIDs is empty, use keyword match
+                    finalMatch = keywordMatch;
+                }
+                else if (string.IsNullOrWhiteSpace(settings.KeywordIDs))
+                {
+                    // If only KeywordIDs is empty, use name match
+                    finalMatch = nameMatch;
+                }
+                else
+                {
+                    // Both fields have patterns, use SearchLogic
+                    finalMatch = settings.SearchLogic == LogicOperator.AND
+                        ? nameMatch && keywordMatch
+                        : nameMatch || keywordMatch;
+                }
+
+                DebugLog($"     ----------------------------------------");
+                DebugLog($"     Match result for setting key {settingKey}: {finalMatch}");
+                DebugLog($"     ----------------------------------------\n");
+
+                if (finalMatch)
+                {
+                    DebugLog($"------------------- GetWeaponSettingKey end -------------------");
+                    return settingKey;
                 }
             }
 
-            return baseOffset;
+            DebugLog($"     No matching weapon setting found");
+            DebugLog($"------------------- GetWeaponSettingKey end -------------------");
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the damage offset for a weapon based on its material and settings
+        /// </summary>
+        public int? GetDamageOffset(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF)
+        {
+            DebugLog($"------------------- GetDamageOffset start -------------------");
+            DebugLog($"     Getting Damage Offset:");
+            DebugLog($"     Weapon: {weapon?.EditorID ?? "null"}");
+            DebugLog($"     Include WACCF: {includeWACCF}");
+
+            if (weapon == null || linkCache == null)
+            {
+                DebugLog("     Result: null (weapon or linkCache is null)");
+                DebugLog($"------------------- GetDamageOffset end -------------------");
+                return null;
+            }
+
+            // Get weapon name, not editor id
+            string weaponName = weapon.Name?.String ?? "";
+            DebugLog($"     Name: {weaponName}");
+
+            if (string.IsNullOrEmpty(weaponName))
+            {
+                DebugLog("     Result: null (weapon name is empty)");
+                DebugLog($"------------------- GetDamageOffset end -------------------");
+                return null;
+            }
+
+            // Get weapon keywords
+            List<string> weaponKeywords = GetWeaponKeywords(weapon, linkCache);
+            DebugLog($"     Keywords: {string.Join(", ", weaponKeywords)}");
+
+            // Get weapon skill type
+            WeaponSkill? weaponSkill = GetWeaponSkillType(weapon);
+            DebugLog($"     Skill: {weaponSkill}");
+
+            if (weaponSkill == null)
+            {
+                DebugLog("     Result: null (could not determine weapon skill)");
+                DebugLog($"------------------- GetDamageOffset end -------------------");
+                return null;
+            }
+
+            // Search in material_data_name.json
+            DebugLog($"     Checking name-based material data...");
+            int? nameBasedOffset = GetNameBasedDamageOffset(weaponName, weaponSkill.Value, includeWACCF);
+            if (nameBasedOffset.HasValue)
+            {
+                DebugLog($"     Found name-based offset: {nameBasedOffset.Value}");
+                DebugLog($"------------------- GetDamageOffset end -------------------");
+                return nameBasedOffset.Value;
+            }
+
+            // Search in material_data_keyword.json
+            DebugLog($"     Checking keyword-based material data...");
+            int? keywordBasedOffset = GetKeywordBasedDamageOffset(weaponKeywords, weaponSkill.Value, includeWACCF);
+            if (keywordBasedOffset.HasValue)
+            {
+                DebugLog($"     Found keyword-based offset: {keywordBasedOffset.Value}");
+                DebugLog($"------------------- GetDamageOffset end -------------------");
+                return keywordBasedOffset.Value;
+            }
+
+            // No match found
+            DebugLog($"     No damage offset found for {weaponName}");
+            DebugLog($"------------------- GetDamageOffset end -------------------");
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the damage offset based on the weapon name
+        /// </summary>
+        private int? GetNameBasedDamageOffset(string weaponName, WeaponSkill weaponSkill, bool includeWACCF)
+        {
+            DebugLog($"------------------- GetNameBasedDamageOffset start -------------------");
+            DebugLog($"     Getting Name-Based Damage Offset:");
+            DebugLog($"     Name: '{weaponName}'");
+            DebugLog($"     Skill: {weaponSkill}");
+            DebugLog($"     Include WACCF: {includeWACCF}");
+
+            var materialDataName = GetLoadedData(ref _materialDataName);
+            DebugLog($"     Loaded {materialDataName.Count} name-based material data entries");
+
+            int highestOffset = int.MinValue;
+            bool foundMatch = false;
+
+            foreach (var material in materialDataName)
+            {
+                // Convert the keyword to a regex pattern, properly handling wildcards
+                string pattern = material.Keyword;
+                if (!string.IsNullOrEmpty(pattern))
+                {
+                    // Add word boundaries around the pattern
+                    pattern = $"\\b{pattern.Replace("*", ".*")}\\b";
+                }
+                else
+                {
+                    pattern = "^$"; // Only match empty strings if keyword is empty
+                }
+                DebugLog($"     Checking material pattern: {pattern}");
+
+                if (Regex.IsMatch(weaponName, pattern, RegexOptions.IgnoreCase))
+                {
+                    foundMatch = true;
+                    int offset = 0;
+
+                    // Determine the appropriate offset based on weapon skill and WACCF setting
+                    if (weaponSkill == WeaponSkill.OneHanded)
+                    {
+                        offset = includeWACCF ? material.DamageOffset1hWaccf : material.DamageOffset1h;
+                        DebugLog($"     One-handed weapon, offset: {offset}");
+                    }
+                    else if (weaponSkill == WeaponSkill.TwoHanded)
+                    {
+                        offset = includeWACCF ? material.DamageOffset2hWaccf : material.DamageOffset2h;
+                        DebugLog($"     Two-handed weapon, offset: {offset}");
+                    }
+
+                    // Keep track of the highest offset
+                    if (offset > highestOffset)
+                    {
+                        highestOffset = offset;
+                        DebugLog($"     New highest offset: {highestOffset}");
+                    }
+                }
+            }
+
+            DebugLog($"     Result: {(foundMatch ? highestOffset : (int?)null)}");
+            DebugLog($"------------------- GetNameBasedDamageOffset end -------------------");
+            return foundMatch ? highestOffset : (int?)null;
+        }
+
+        /// <summary>
+        /// Gets the damage offset based on the weapon keywords
+        /// </summary>
+        private int? GetKeywordBasedDamageOffset(List<string> weaponKeywords, WeaponSkill weaponSkill, bool includeWACCF)
+        {
+            DebugLog($"------------------- GetKeywordBasedDamageOffset start -------------------");
+            DebugLog($"     Getting Keyword-Based Damage Offset:");
+            DebugLog($"     Keywords: {string.Join(", ", weaponKeywords)}");
+            DebugLog($"     Skill: {weaponSkill}");
+            DebugLog($"     Include WACCF: {includeWACCF}");
+
+            var materialData = GetLoadedData(ref _materialData);
+            DebugLog($"     Loaded {materialData.Count} keyword-based material data entries");
+
+            int highestOffset = int.MinValue;
+            bool foundMatch = false;
+
+            foreach (var material in materialData)
+            {
+                // Convert the keyword to a regex pattern, properly handling wildcards
+                string pattern = material.Keyword;
+                if (!string.IsNullOrEmpty(pattern))
+                {
+                    pattern = pattern.Replace("*", ".*");
+                }
+                else
+                {
+                    pattern = "^$"; // Only match empty strings if keyword is empty
+                }
+                DebugLog($"     Checking material pattern: {pattern}");
+
+                foreach (var keyword in weaponKeywords)
+                {
+                    if (Regex.IsMatch(keyword, pattern, RegexOptions.IgnoreCase))
+                    {
+                        foundMatch = true;
+                        int offset = 0;
+
+                        // Determine the appropriate offset based on weapon skill and WACCF setting
+                        if (weaponSkill == WeaponSkill.OneHanded)
+                        {
+                            offset = includeWACCF ? material.DamageOffset1hWaccf : material.DamageOffset1h;
+                            DebugLog($"     One-handed weapon, offset: {offset}");
+                        }
+                        else if (weaponSkill == WeaponSkill.TwoHanded)
+                        {
+                            offset = includeWACCF ? material.DamageOffset2hWaccf : material.DamageOffset2h;
+                            DebugLog($"     Two-handed weapon, offset: {offset}");
+                        }
+
+                        // Keep track of the highest offset
+                        if (offset > highestOffset)
+                        {
+                            highestOffset = offset;
+                            DebugLog($"     New highest offset: {highestOffset}");
+                        }
+                    }
+                }
+            }
+
+            DebugLog($"     Result: {(foundMatch ? highestOffset : (int?)null)}");
+            DebugLog($"------------------- GetKeywordBasedDamageOffset end -------------------");
+            return foundMatch ? highestOffset : (int?)null;
+        }
+
+        /// <summary>
+        /// Checks if a weapon is a special weapon by form key or editor ID
+        /// </summary>
+        public bool IsSpecialWeapon(IWeaponGetter weapon)
+        {
+            DebugLog($"------------------- IsSpecialWeapon start -------------------");
+            if (weapon == null)
+            {
+                DebugLog("     IsSpecialWeapon: Weapon is null");
+                DebugLog($"------------------- IsSpecialWeapon end -------------------");
+                return false;
+            }
+
+            var specialWeapons = GetLoadedData(ref _specialWeapons);
+            if (specialWeapons == null || specialWeapons.Count == 0)
+            {
+                DebugLog("     IsSpecialWeapon: No special weapons list loaded");
+                DebugLog($"------------------- IsSpecialWeapon end -------------------");
+                return false;
+            }
+
+            var isSpecial = specialWeapons.Any(sw =>
+                !string.IsNullOrEmpty(sw.FormKey) &&
+                FormKey.TryFactory(sw.FormKey, out var formKey) &&
+                weapon.FormKey == formKey);
+
+            DebugLog($"     IsSpecialWeapon: Weapon {weapon.EditorID} (FormKey: {weapon.FormKey}) is{(isSpecial ? "" : " not")} special");
+            DebugLog($"------------------- IsSpecialWeapon end -------------------");
+            return isSpecial;
+        }
+
+        /// <summary>
+        /// Gets the list of special weapons from the loaded data
+        /// </summary>
+        public List<SpecialWeaponData> GetLoadedSpecialWeapons()
+        {
+            DebugLog($"------------------- GetLoadedSpecialWeapons start -------------------");
+            DebugLog("     GetLoadedSpecialWeapons called");
+            var result = GetLoadedData(ref _specialWeapons);
+            DebugLog($"     Returning {result.Count} special weapons");
+            DebugLog($"------------------- GetLoadedSpecialWeapons end -------------------");
+            return result;
         }
     }
-} 
+}

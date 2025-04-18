@@ -1,0 +1,142 @@
+[
+  {
+    "Keyword": "WeapTypeSword",
+    "Damage": 7,
+    "Damage_WACCF": 7
+  },
+  {
+    "Keyword": "WeapTypeGreatsword",
+    "Damage": 15,
+    "Damage_WACCF": 16
+  },
+  {
+    "Keyword": "WeapTypeWarAxe",
+    "Damage": 8,
+    "Damage_WACCF": 8
+  },
+  {
+    "Keyword": "WeapTypeBattleAxe",
+    "Damage": 16,
+    "Damage_WACCF": 17
+  },
+  {
+    "Keyword": "WeapTypeDagger",
+    "Damage": 4,
+    "Damage_WACCF": 4
+  },
+  {
+    "Keyword": "WeapTypeMace",
+    "Damage": 9,
+    "Damage_WACCF": 9
+  },
+  {
+    "Keyword": "WeapTypeWarhammer",
+    "Damage": 17,
+    "Damage_WACCF": 18
+  },
+  {
+    "Keyword": "WeapTypeBow",
+    "Damage": 7,
+    "Damage_WACCF": 7
+  },
+  {
+    "Keyword": "WeapTypeRapier",
+    "Damage": 5,
+    "Damage_WACCF": 5
+  },
+  {
+    "Keyword": "WeapTypePike",
+    "Damage": 11,
+    "Damage_WACCF": 12
+  },
+  {
+    "Keyword": "WeapTypeSpear",
+    "Damage": 6,
+    "Damage_WACCF": 6
+  },
+  {
+    "Keyword": "WeapTypeHalberd",
+    "Damage": 14,
+    "Damage_WACCF": 15
+  },
+  {
+    "Keyword": "WeapTypeQtrStaff",
+    "Damage": 10,
+    "Damage_WACCF": 11
+  },
+  {
+    "Keyword": "WeapTypeClaw",
+    "Damage": 5,
+    "Damage_WACCF": 5
+  },
+  {
+    "Keyword": "WeapTypeWhip",
+    "Damage": 7,
+    "Damage_WACCF": 7
+  },
+  {
+    "Keyword": "WeapTypeKatana",
+    "Damage": 8,
+    "Damage_WACCF": 8
+  },
+  {
+    "Keyword": "ShWeapTypeMaul",
+    "Damage": 12,
+    "Damage_WACCF": 12
+  },
+  {
+    "Keyword": "ShWeapTypeClub",
+    "Damage": 7,
+    "Damage_WACCF": 7
+  },
+  {
+    "Keyword": "ShWeapTypeHatchet",
+    "Damage": 7,
+    "Damage_WACCF": 7
+  },
+  {
+    "Keyword": "ShWeapTypeShortsword",
+    "Damage": 6,
+    "Damage_WACCF": 6
+  },
+  {
+    "Keyword": "ShWeapTypeLongMace",
+    "Damage": 17,
+    "Damage_WACCF": 18
+  },
+  {
+    "Keyword": "ShWeapTypeWeapTypeSpear",
+    "Damage": 12,
+    "Damage_WACCF": 13
+  },
+  {
+    "Keyword": "ShWeapTypeGlaive",
+    "Damage": 14,
+    "Damage_WACCF": 15
+  },
+  {
+    "Keyword": "ShWeapTypeHalberd",
+    "Damage": 15,
+    "Damage_WACCF": 16
+  },
+  {
+    "Keyword": "ShWeapTypeTrident",
+    "Damage": 14,
+    "Damage_WACCF": 15
+  },
+  {
+    "Keyword": "ShWeapTypeShortspear",
+    "Damage": 7,
+    "Damage_WACCF": 7
+  },
+  {
+    "Keyword": "ShWeapTypeQuarterstaff",
+    "Damage": 10,
+    "Damage_WACCF": 11
+  },
+  {
+    "Keyword": "WeapTypeJavelin",
+    "Damage": 4,
+    "Damage_WACCF": 4
+  }
+] 

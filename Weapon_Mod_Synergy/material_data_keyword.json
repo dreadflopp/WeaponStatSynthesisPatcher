@@ -56,13 +56,6 @@
     "damage_offset_2h_waccf": 5
   },
   {
-    "keyword": "WeapMaterialBound",
-    "damage_offset_1h": 2,
-    "damage_offset_2h": 3,
-    "damage_offset_1h_waccf": 2,
-    "damage_offset_2h_waccf": 3
-  },
-  {
     "keyword": "WeapMaterialDwarven",
     "damage_offset_1h": 3,
     "damage_offset_2h": 4,
@@ -158,13 +151,6 @@
     "damage_offset_1h": 7,
     "damage_offset_2h": 9,
     "damage_offset_1h_waccf": 8,
-    "damage_offset_2h_waccf": 9
-  },
-  {
-    "keyword": "WeapMaterialMysticBound",
-    "damage_offset_1h": 7,
-    "damage_offset_2h": 9,
-    "damage_offset_1h_waccf": 7,
     "damage_offset_2h_waccf": 9
   },
   {
