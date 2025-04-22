@@ -73,7 +73,7 @@ namespace Weapon_Mod_Synergy
         public string PluginList { get; set; } = "Skyrim.esm;Dawnguard.esm;Dragonborn.esm;ccasvsse001-almsivi.esm;ccbgssse001-fish.esm;ccbgssse003-zombies.esl;ccbgssse005-goldbrand.esl;" +
         "ccbgssse006-stendarshammer.esl;ccbgssse007-chrysamere.esl;ccmtysse001-knightsofthenine.esl;ccbgssse018-shadowrend.esl;ccbgssse008-wraithguard.esl;ccffbsse001-imperialdragon.esl;" +
         "ccbgssse016-umbra.esm;ccbgssse031-advcyrus.esm;ccbgssse059-ba_dragonplate.esl;ccbgssse067-daedinv.esm;ccbgssse068-bloodfall.esl;ccbgssse069-contest.esl;ccvsvsse003-necroarts.esl;" +
-        "ccbgssse025-advdsgs.esm;ccedhsse003-redguard.esl;cckrtsse001_altar.esl;004D62:ccbgssse006-stendarshammer.esl;" +
+        "ccbgssse025-advdsgs.esm;ccedhsse003-redguard.esl;cckrtsse001_altar.esl;ccbgssse006-stendarshammer.esl;" +
         "PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
 
         [SettingName("Ignored Weapons Form Keys (semicolon separated)")]
