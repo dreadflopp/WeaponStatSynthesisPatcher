@@ -148,13 +148,13 @@
     "damage_offset_mysticism": 3
   },
   {
-    "editor_id": "BoundWhipMysticDWW",
+    "editor_id": "BoundWhipMysticDW",
     "form_key": "31BE1E:NewArmoury.esp",
     "damage_offset": 7,
     "damage_offset_waccf": 7
   },
   {
-    "editor_id": "BoundKatanaWeapon",
+    "editor_id": "BoundKatanaWeap",
     "form_key": "34473F:NewArmoury.esp",
     "damage_offset": 2,
     "damage_offset_waccf": 2,
@@ -166,7 +166,6 @@
     "damage_offset": 7,
     "damage_offset_waccf": 7
   },
-  
   {
     "editor_id": "DragonPriestDagger",
     "form_key": "01C1FE:Skyrim.esm",
@@ -211,32 +210,116 @@
     "damage_offset_waccf": 4
   },
   {
-    "editor_id": "DBClawsUnEnch*",
-    "form_key": "",
+    "editor_id": "DBClawsUnEnch",
+    "form_key": "1A4CFF:NewArmoury.esp",
     "damage_offset": 5,
     "damage_offset_waccf": 5
   },
   {
-    "editor_id": "DBClaws*",
-    "form_key": "",
+    "editor_id": "DBClawsUnEnchLeft",
+    "form_key": "1A4D00:NewArmoury.esp",
+    "damage_offset": 5,
+    "damage_offset_waccf": 5
+  },
+  {
+    "editor_id": "DBClaws",
+    "form_key": "19AAB2:NewArmoury.esp",
     "damage_offset": 8,
     "damage_offset_waccf": 8
   },
   {
-    "editor_id": "StormWhip*",
-    "form_key": "",
+    "editor_id": "DBClawsLeft",
+    "form_key": "19AAEE:NewArmoury.esp",
+    "damage_offset": 8,
+    "damage_offset_waccf": 8
+  },
+  {
+    "editor_id": "StormWhip01",
+    "form_key": "31BDEC:NewArmoury.esp",
     "damage_offset": 6,
     "damage_offset_waccf": 6
   },
   {
-    "editor_id": "VampireSlayerWhip*",
-    "form_key": "",
+    "editor_id": "StormWhip02",
+    "form_key": "31BDF3:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "StormWhip03",
+    "form_key": "31BDF4:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "StormWhip04",
+    "form_key": "31BDF5:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "StormWhip05",
+    "form_key": "31BDF6:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "StormWhip06",
+    "form_key": "31BDF7:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "VampireSlayerWhip01",
+    "form_key": "31BDEB:NewArmoury.esp",
     "damage_offset": 3,
     "damage_offset_waccf": 3
   },
   {
-    "editor_id": "FlameWhip*",
-    "form_key": "",
+    "editor_id": "VampireSlayerWhipDW",
+    "form_key": "31BE0E:NewArmoury.esp",
+    "damage_offset": 3,
+    "damage_offset_waccf": 3
+  },
+  {
+    "editor_id": "FlameWhip01",
+    "form_key": "31BDED:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "FlameWhip02",
+    "form_key": "31BDF8:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "FlameWhip03",
+    "form_key": "31BDF9:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "FlameWhip04",
+    "form_key": "31BDFA:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "FlameWhip05",
+    "form_key": "31BDFB:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "FlameWhip06",
+    "form_key": "31BDFC:NewArmoury.esp",
+    "damage_offset": 6,
+    "damage_offset_waccf": 6
+  },
+  {
+    "editor_id": "FlameWhip06DW",
+    "form_key": "31BE0D:NewArmoury.esp",
     "damage_offset": 6,
     "damage_offset_waccf": 6
   },
@@ -327,10 +410,10 @@
     "editor_id": "dunKatariahScimitar",
     "form_key": "06EA8B:Skyrim.esm",
     "damage_offset": 4,
-    "damage_offset_waccf": 4,                                                         
+    "damage_offset_waccf": 4,
     "damage_offset_artificer": 6,
     "critical_damage_offset_artificer": -1,
-    "speed_offset_artificer": 0.2                                                                                   
+    "speed_offset_artificer": 0.2
   },
   {
     "editor_id": "dunAnsilvundGhostblade",
@@ -557,7 +640,7 @@
     "damage_offset": 9,
     "damage_offset_waccf": 9,
     "damage_offset_artificer": 8
-  }
+  },
   {
     "editor_id": "DLC2AncientNordPickaxe",
     "form_key": "0398E6:Dragonborn.esm",
@@ -566,5 +649,208 @@
     "speed_offset": 0.4,
     "reach_offset": -0.3,
     "stagger_offset": -100
+  },
+  {
+    "editor_id": "ccASVSSE001_Trueflame",
+    "form_key": "00083A:ccasvsse001-almsivi.esm",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "ccASVSSE001_Hopesfire",
+    "form_key": "000C28:ccasvsse001-almsivi.esm",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "ccASVSSE001_CleaverStFelms",
+    "form_key": "057384:ccasvsse001-almsivi.esm",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "ccASVSSE001_Skullcrusher",
+    "form_key": "11CBF0:ccasvsse001-almsivi.esm",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "ccASVSSE001_Magebane",
+    "form_key": "13101B:ccasvsse001-almsivi.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "ccASVSSE001_LightOfDay",
+    "form_key": "13101E:ccasvsse001-almsivi.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "ccBGSSSE001_SpecialDwarvenAxe01",
+    "form_key": "0009D9:ccbgssse001-fish.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccBGSSSE001_ArtifactArgonianDagger",
+    "form_key": "000ED3:ccbgssse001-fish.esm",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "ccBGSSSE001_SpecialDwarvenAxe02",
+    "form_key": "04D05E:ccbgssse001-fish.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccBGSSSE001_SpecialDwarvenAxeUnenchanted",
+    "form_key": "07AED6:ccbgssse001-fish.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccBGSSSE005_Goldbrand",
+    "form_key": "000D61:ccBGSSSE005-Goldbrand.esl",
+    "damage_offset": 8,
+    "critical_damage_offset": -2
+  },
+  {
+    "editor_id": "ccBGSSSE006StendarsHammer",
+    "form_key": "000D62:ccbgssse006-stendarshammer.esl",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "ccBGSSSE007Chrysamere",
+    "form_key": "000D63:ccbgssse007-chrysamere.esl",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "ccMTYSSE001_KOTNSword",
+    "form_key": "00080C:ccmtysse001-knightsofthenine.esl",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "ccMTYSSE001_KOTNMace",
+    "form_key": "00080D:ccMTYSSE001-KnightsoftheNine.esl",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "BGSSSE018ShadowrendBattleaxe",
+    "form_key": "000D62:ccBGSSSE018-Shadowrend.esl",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "BGSSSE018ShadowrendClaymore",
+    "form_key": "000D63:ccbgssse018-shadowrend.esl",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "BGSSSE008Sunder",
+    "form_key": "000801:ccbgssse008-wraithguard.esl",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "ccFFBSSE001DragonsOath",
+    "form_key": "00084F:ccFFBSSE001-ImperialDragon.esl",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "ccFFBSSE001_StormBearAxe",
+    "form_key": "000850:ccffbsse001-imperialdragon.esl",
+    "damage_offset": 11,
+    "speed_offset": -0.1
+  },
+  {
+    "editor_id": "ccFFBSSE001_StormBearSword",
+    "form_key": "000D61:ccFFBSSE001-ImperialDragon.esl",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "ccFFBSSE001AkatoshTalon",
+    "form_key": "000D62:ccFFBSSE001-ImperialDragon.esl",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "ccBGSSSE031_BlackwaterBlade",
+    "form_key": "000A4B:ccbgssse031-advcyrus.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccBGSSSE031_CyrusSabre",
+    "form_key": "000D63:ccbgssse031-advcyrus.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "ccBGSSSE059_TyrantsBaneAxe",
+    "form_key": "000869:ccBGSSSE059-BA_Dragonplate.esl",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "ccBGSSSE059_CrowsToothWeapon",
+    "form_key": "00086A:ccbgssse059-ba_dragonplate.esl",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccBGSSSE059_FalmerWarAxe",
+    "form_key": "00086B:ccbgssse059-ba_dragonplate.esl",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "ccBGSSSE067_DaedricMaceScourge",
+    "form_key": "000B5E:ccbgssse067-daedinv.esm",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "ccBGSSSE067_DaedricLongswordTorment",
+    "form_key": "000B5F:ccbgssse067-daedinv.esm",
+    "damage_offset": 11
+  },
+  {
+    "editor_id": "ccBGSSSE068_BloodfallBlade",
+    "form_key": "000803:ccbgssse068-bloodfall.esl",
+    "damage_offset": 9,
+    "speed_offset": -0.1,
+    "reach_offset": 0.05,
+    "stagger_offset": 0.05
+  },
+  {
+    "editor_id": "ccBGSSSE069_IceBladeMonarch",
+    "form_key": "000815:ccBGSSSE069-Contest.esl",
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "ccVSVSSE003_WPN_SkeleWarAxe",
+    "form_key": "0008F9:ccVSVSSE003-NecroArts.esl",
+    "damage_offset": 4,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "ccVSVSSE003_WPN_SkeleGreatsword",
+    "form_key": "000916:ccVSVSSE003-NecroArts.esl",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccBGSSSE025_Jyggalag",
+    "form_key": "00083B:ccbgssse025-advdsgs.esm",
+    "damage_offset": 10
+  },
+  {
+    "editor_id": "ccBGSSSE025_Nerveshatter",
+    "form_key": "000BE3:ccbgssse025-advdsgs.esm",
+    "damage_offset": 11,
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "ccSBJSSE001_Zulfiqar",
+    "form_key": "000805:ccEDHSSE003-Redguard.esl",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccEDHSSE003_Boneshaver",
+    "form_key": "0008D6:ccEDHSSE003-Redguard.esl",
+    "damage_offset": 4,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "ccSBJSSE001_ZulfiqarFire04",
+    "form_key": "000E44:ccEDHSSE003-Redguard.esl",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "ccKRTSSE001_RedDiamondGladius",
+    "form_key": "000807:cckrtsse001_altar.esl",
+    "damage_offset": 7
   }
 ]

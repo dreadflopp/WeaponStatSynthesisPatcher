@@ -40,7 +40,7 @@ namespace Weapon_Mod_Synergy
             Shortsword = new WeaponSettings { Damage = 6, Reach = 0.9f, Speed = 1.15f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "shortsword", KeywordIDs = "ShWeapTypeShortsword" };
             Spear1h = new WeaponSettings { Damage = 6, Reach = 1.3f, Speed = 1.1f, Stagger = 0.75f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.OneHanded, NamedIDs = "spear", KeywordIDs = "WeapTypeSpear" };
             Sword = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.75f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-katana;-spear;-shortspear;-javelin;-scimitar", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword;-ShWeapTypeShortspear;-WeapTypeWhip;-WeapTypeKatana;-WeapTypeScimitar" };
-            Scimitar = new WeaponSettings { Damage = 6, Reach = 0.95f, Speed = 1.15f, Stagger = 0.7f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar", KeywordIDs = "WeapTypeScimitar" };
+            Scimitar = new WeaponSettings { Damage = 6, Reach = 0.95f, Speed = 1.15f, Stagger = 0.7f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" };
             Katana = new WeaponSettings { Damage = 6, Reach = 1.0f, Speed = 1.125f, Stagger = 0.75f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "katana", KeywordIDs = "WeapTypeKatana" };
             Hatchet = new WeaponSettings { Damage = 7, Reach = 0.85f, Speed = 1.1f, Stagger = 0.6f, CriticalDamage = 3, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "hatchet", KeywordIDs = "ShWeapTypeHatchet" };
             Club = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.9f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "club", KeywordIDs = "ShWeapTypeClub" };
@@ -48,18 +48,18 @@ namespace Weapon_Mod_Synergy
             Whip = new WeaponSettings { Damage = 6, Reach = 2.0f, Speed = 0.9f, Stagger = 0.4f, CriticalDamage = 1, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "whip", KeywordIDs = "WeapTypeWhip" };
             WarAxe = new WeaponSettings { Damage = 8, Reach = 1.0f, Speed = 0.9f, Stagger = 0.85f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-hatchet", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarAxe;-ShWeapTypeHatchet" };
             Mace = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.OneHanded, NamedIDs = "-club;-mallet;-hammer;-war pick", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeMace;-ShWeapTypeMaul" };
+            Maul = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 5, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.OneHanded, NamedIDs = "maul", KeywordIDs = "ShWeapTypeMaul" };
             Shortstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "short*staff", KeywordIDs = "ShWeapTypeQuarterStaff" };
             Quarterstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, CriticalDamage = 4, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "battle*staff;quarterstaff;-short*staff", KeywordIDs = "WeapTypeQtrStaff" };
-            Maul = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 5, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.TwoHanded, NamedIDs = "maul", KeywordIDs = "ShWeapTypeMaul" };
             Spear2h = new WeaponSettings { Damage = 12, Reach = 1.6f, Speed = 0.8f, Stagger = 1.0f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "spear;half*pike", KeywordIDs = "ShWeapTypeSpear" };
             Pike = new WeaponSettings { Damage = 12, Reach = 1.7f, Speed = 0.7f, Stagger = 1.0f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "pike", KeywordIDs = "WeapTypePike" };
-            Glaive = new WeaponSettings { Damage = 13, Reach = 1.6f, Speed = 0.8f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = false, Skill = WeaponSkill.TwoHanded, NamedIDs = "glaive", KeywordIDs = "ShWeapTypeGlaive" };
-            Trident = new WeaponSettings { Damage = 14, Reach = 1.5f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 9, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "trident", KeywordIDs = "ShWeapTypeTrident" };
+            Glaive = new WeaponSettings { Damage = 13, Reach = 1.6f, Speed = 0.8f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "glaive", KeywordIDs = "ShWeapTypeGlaive" };
+            Trident = new WeaponSettings { Damage = 14, Reach = 1.5f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "trident", KeywordIDs = "ShWeapTypeTrident" };
             Greatsword = new WeaponSettings { Damage = 15, Reach = 1.3f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "-dai*katana;-nodachi;-glaive;-pike;-trident;-*spear", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeGreatsword;-WeapTypePike;-ShWeapTypeGlaive;-ShWeapTypeTrident;-ShWeapTypeSpear" };
             DaiKatana = new WeaponSettings { Damage = 14, Reach = 1.3f, Speed = 0.85f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "dai*katana;nodachi", KeywordIDs = "" };
             ShortHalberd = new WeaponSettings { Damage = 15, Reach = 1.45f, Speed = 0.75f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "", KeywordIDs = "ShWeapTypeHalberd;" };
             LongHalberd = new WeaponSettings { Damage = 15, Reach = 1.55f, Speed = 0.65f, Stagger = 1.1f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "halberd", KeywordIDs = "WeapTypeHalberd;-ShWeapTypeHalberd" };
-            LongMace = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "long*mace", KeywordIDs = "ShWeapTypeLongMace" };
+            LongMace = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, CriticalDamage = 7, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "long*mace", KeywordIDs = "ShWeapTypeLongMace" };
             Battleaxe = new WeaponSettings { Damage = 16, Reach = 1.3f, Speed = 0.7f, Stagger = 1.15f, CriticalDamage = 8, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "-halberd", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeBattleaxe" };
             Warhammer = new WeaponSettings { Damage = 18, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, CriticalDamage = 9, CriticalDamageMultiplier = 1.0f, UseFloorDivision = true, Skill = WeaponSkill.TwoHanded, NamedIDs = "-maul;-*mace;-*staff", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarhammer" };
         }
@@ -70,11 +70,16 @@ namespace Weapon_Mod_Synergy
 
         [SettingName("Plugin List (semicolon separated)")]
         [Tooltip("List of plugins to include or exclude (semicolon separated)")]
-        public string PluginList { get; set; } = "Skyrim.esm;Dawnguard.esm;Dragonborn.esm;PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
+        public string PluginList { get; set; } = "Skyrim.esm;Dawnguard.esm;Dragonborn.esm;ccasvsse001-almsivi.esm;ccbgssse001-fish.esm;ccbgssse003-zombies.esl;ccbgssse005-goldbrand.esl;" +
+        "ccbgssse006-stendarshammer.esl;ccbgssse007-chrysamere.esl;ccmtysse001-knightsofthenine.esl;ccbgssse018-shadowrend.esl;ccbgssse008-wraithguard.esl;ccffbsse001-imperialdragon.esl;" +
+        "ccbgssse016-umbra.esm;ccbgssse031-advcyrus.esm;ccbgssse059-ba_dragonplate.esl;ccbgssse067-daedinv.esm;ccbgssse068-bloodfall.esl;ccbgssse069-contest.esl;ccvsvsse003-necroarts.esl;" +
+        "ccbgssse025-advdsgs.esm;ccedhsse003-redguard.esl;cckrtsse001_altar.esl;004D62:ccbgssse006-stendarshammer.esl;" +
+        "PrvtI_HeavyArmory.esp;KatanaCrafting.esp;NewArmoury.esp;SkyrimSpearMechanic.esp";
 
         [SettingName("Ignored Weapons Form Keys (semicolon separated)")]
         [Tooltip("List of weapon form keys to ignore (semicolon separated)")]
-        public string IgnoredWeaponFormKeys { get; set; } = "02F2F4:Skyrim.esm;0E3C16:Skyrim.esm;0E7A31:Skyrim.esm;004D91:Hearthfires.esm";
+        public string IgnoredWeaponFormKeys { get; set; } = "02F2F4:Skyrim.esm;0E3C16:Skyrim.esm;0E7A31:Skyrim.esm;004D91:Hearthfires.esm;008801:ccbgssse019-staffofsheogorath.esl;009850;" +
+        "ccbgssse020-graycowl.esl;02D854:ccvsvsse004-beafarmer.esl";
 
         [SettingName("WACCF material tiers")]
         [Tooltip("Enable support for WACCF material tiers")]
@@ -140,14 +145,14 @@ namespace Weapon_Mod_Synergy
         [SettingName("Mace (iron)")]
         public WeaponSettings Mace { get; set; }
 
+        [SettingName("Maul (iron)")]
+        public WeaponSettings Maul { get; set; }
+
         [SettingName("Quarterstaff, shorter (iron)")]
         public WeaponSettings Shortstaff { get; set; }
 
         [SettingName("Quarterstaff (iron)")]
         public WeaponSettings Quarterstaff { get; set; }
-
-        [SettingName("Maul (iron)")]
-        public WeaponSettings Maul { get; set; }
 
         [SettingName("Spear two handed (iron)")]
         public WeaponSettings Spear2h { get; set; }
@@ -241,12 +246,9 @@ namespace Weapon_Mod_Synergy
         [Tooltip(
         "Identify which weapons to patch by name. " +
         "Enter semicolon‑separated tokens: " +
-        "prefix '+' for must contain; " +
         "prefix '–' for must not contain; " +
         "no prefix for OR match; " +
-        "use '*' for wildcard (e.g. 'dagg*'); " +
-        "use regex (prefix with 're:') for complex patterns (e.g. 're:^dagger$') — " +
-        "no other logic allowed when using regex."
+        "use '*' for wildcard (e.g. 'dagg*'); "
         )]
         [JsonProperty]
         public string NamedIDs { get; set; } = "";
@@ -267,10 +269,5 @@ namespace Weapon_Mod_Synergy
         "no other logic allowed when using regex.")]
         [JsonProperty]
         public string KeywordIDs { get; set; } = "";
-
-        public WeaponSettings()
-        {
-            CriticalDamageMultiplier = 1.0f;
-        }
     }
 }

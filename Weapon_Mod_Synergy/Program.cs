@@ -17,13 +17,6 @@ using Mutagen.Bethesda.Plugins.Binary.Headers;
 
 namespace Weapon_Mod_Synergy
 {
-    public class DefaultDamageData
-    {
-        public string Keyword { get; set; } = "";
-        public float Damage { get; set; }
-        public float Damage_WACCF { get; set; }
-    }
-
     public class Program
     {
         static Lazy<Settings> Settings = null!;
@@ -43,6 +36,7 @@ namespace Weapon_Mod_Synergy
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
+
             // Initialize enabled weapon types from settings
             var enabledWeaponTypes = new Dictionary<string, WeaponSettings>();
 
@@ -57,11 +51,16 @@ namespace Weapon_Mod_Synergy
                 {
                     // Use the property name as the weapon type
                     enabledWeaponTypes.Add(prop.Name, settings);
+                    _weaponHelper?.DebugLog($"Enabled weapon type: {prop.Name}");
+                }
+                else
+                {
+                    _weaponHelper?.DebugLog($"Warning: Could not get weapon settings for {prop.Name}");
                 }
             }
 
             // Create WeaponHelper instance
-            _weaponHelper = new WeaponHelper(enabledWeaponTypes, Console.WriteLine);
+            _weaponHelper = new WeaponHelper(enabledWeaponTypes, Console.WriteLine, state);
 
             // Get the list of plugins to include or exclude
             var pluginList = Settings.Value.PluginList
@@ -73,15 +72,7 @@ namespace Weapon_Mod_Synergy
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            _weaponHelper?.DebugLog("--------------------------------");
-            _weaponHelper?.DebugLog("Ignored Weapons Configuration");
             _weaponHelper?.DebugLog($"Raw ignored weapons string: '{Settings.Value.IgnoredWeaponFormKeys}'");
-            _weaponHelper?.DebugLog($"Number of ignored weapons: {ignoredWeaponFormKeys.Count}");
-            foreach (var formKey in ignoredWeaponFormKeys)
-            {
-                _weaponHelper?.DebugLog($"     {formKey}");
-            }
-            _weaponHelper?.DebugLog("--------------------------------");
 
             Console.WriteLine("Plugin Processing Settings:");
             Console.WriteLine($"Filter Mode: {Settings.Value.PluginFilter}");
@@ -130,6 +121,10 @@ namespace Weapon_Mod_Synergy
             }
             Console.WriteLine();
 
+            // Verify form keys in special_weapons.json
+            if (WeaponHelper.DebugMode)
+                VerifyFormKeys(state);
+
             // Process weapons from plugins
             foreach (var modGetter in state.LoadOrder.PriorityOrder)
             {
@@ -143,20 +138,25 @@ namespace Weapon_Mod_Synergy
 
                 if (!shouldProcess) continue;
 
+                _weaponHelper?.DebugLog($"========================================");
                 Console.WriteLine($"Processing mod: {modGetter.ModKey.FileName}");
+                _weaponHelper?.DebugLog($"========================================");
 
                 // Process each weapon from the current mod
                 foreach (var weapon in state.LoadOrder.PriorityOrder.Weapon().WinningOverrides()
                     .Where(w => w.FormKey.ModKey == modGetter.ModKey))
                 {
+                    _weaponHelper?.DebugLog($"------------------------------------------");
+                    _weaponHelper?.DebugLog($"Processing weapon: {weapon.EditorID}");
+                    _weaponHelper?.DebugLog($"------------------------------------------");
                     bool isSpecialWeapon = _weaponHelper?.IsSpecialWeapon(weapon) ?? false;
-
-                    // Skip if weapon is not playable
-                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon)
+                    _weaponHelper?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
+                    bool isProcessNonPlayable = weapon.FormKey.ModKey.FileName.ToString().Equals("ccbgssse025-advdsgs.esm", StringComparison.OrdinalIgnoreCase);
+                    _weaponHelper?.DebugLog($"Is EDID {weapon.EditorID} from mod with non playable weapons that should be processed: {isProcessNonPlayable}");
+                    // Skip if weapon is not playable and it is not from mod ccbgssse025-advdsgs.esm
+                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isProcessNonPlayable)
                     {
-                        _weaponHelper?.DebugLog($"--------------------------------");
                         _weaponHelper?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
-                        _weaponHelper?.DebugLog($"--------------------------------");
                         continue;
                     }
 
@@ -166,9 +166,7 @@ namespace Weapon_Mod_Synergy
                         weapon.Template.FormKey.ToString() != "Null" &&
                         !isSpecialWeapon)
                     {
-                        _weaponHelper?.DebugLog($"--------------------------------");
                         _weaponHelper?.DebugLog($"Skipping template weapon: {weapon.EditorID}");
-                        _weaponHelper?.DebugLog($"--------------------------------");
                         continue;
                     }
 
@@ -176,14 +174,7 @@ namespace Weapon_Mod_Synergy
                     var formKeyString = weapon.FormKey.ToString();
                     if (formKeyString != null && ignoredWeaponFormKeys.Contains(formKeyString) && !isSpecialWeapon)
                     {
-                        _weaponHelper?.DebugLog($"--------------------------------");
-                        _weaponHelper?.DebugLog($"Ignored Weapon Found");
-                        _weaponHelper?.DebugLog($"Weapon EditorID: {weapon.EditorID}");
-                        _weaponHelper?.DebugLog($"Weapon FormKey: {formKeyString}");
-                        _weaponHelper?.DebugLog($"Weapon Name: {weapon.Name?.String ?? "Unknown"}");
-                        _weaponHelper?.DebugLog($"Weapon Mod: {weapon.FormKey.ModKey.FileName}");
-                        _weaponHelper?.DebugLog($"Skipping ignored weapon: {formKeyString}");
-                        _weaponHelper?.DebugLog($"--------------------------------");
+                        _weaponHelper?.DebugLog($"Weapon {weapon.EditorID} is in ignoredWeaponFormKeys list");
                         continue;
                     }
 
@@ -191,23 +182,17 @@ namespace Weapon_Mod_Synergy
                     var weaponSettingKey = _weaponHelper?.GetWeaponSettingKey(weapon, state.LinkCache);
                     if (weaponSettingKey == null)
                     {
-                        _weaponHelper?.DebugLog($"--------------------------------");
                         _weaponHelper?.DebugLog($"Warning: Could not determine weapon setting key for {weapon.EditorID}");
-                        _weaponHelper?.DebugLog($"--------------------------------");
                         continue;
                     }
 
                     // Get weapon settings
                     if (!enabledWeaponTypes.TryGetValue(weaponSettingKey, out var settings))
                     {
-                        _weaponHelper?.DebugLog($"--------------------------------");
-                        _weaponHelper?.DebugLog($"No settings found for weapon type: {weaponSettingKey}");
-                        _weaponHelper?.DebugLog($"--------------------------------");
+                        _weaponHelper?.DebugLog($"{weaponSettingKey} is not enabled in settings");
                         continue;
                     }
-
-                    _weaponHelper?.DebugLog($"--------------------------------");
-                    _weaponHelper?.DebugLog($"Processing weapon {weapon.EditorID} with type {weaponSettingKey}");
+                    _weaponHelper?.DebugLog($"Match found for weapon {weapon.EditorID} with type {weaponSettingKey}");
                     _weaponHelper?.DebugLog($"Weapon settings for {weaponSettingKey}:");
                     _weaponHelper?.DebugLog($"- Base Damage: {settings.Damage}");
                     _weaponHelper?.DebugLog($"- Reach: {settings.Reach}");
@@ -220,10 +205,12 @@ namespace Weapon_Mod_Synergy
                     // Process weapon based on if it is a special weapon or not
                     if (isSpecialWeapon)
                     {
+                        _weaponHelper?.DebugLog($"Processing special weapon: {weapon.EditorID}");
                         ProcessSpecialWeapon(weapon, state, settings);
                     }
                     else
                     {
+                        _weaponHelper?.DebugLog($"Processing weapon: {weapon.EditorID}");
                         ProcessWeapon(weapon, state, settings);
                     }
                 }
@@ -233,28 +220,22 @@ namespace Weapon_Mod_Synergy
         private static void ProcessSpecialWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, WeaponSettings settings)
         {
             var specialWeapons = _weaponHelper?.GetLoadedSpecialWeapons();
-            if (specialWeapons == null) { _weaponHelper?.DebugLog($"No special weapons data loaded. Skipping special weapon checks."); }
+            if (specialWeapons == null) { _weaponHelper?.DebugLog($"ERROR: No special weapons data loaded. Skipping special weapon checks."); }
             else
             {
                 foreach (var specialWeapon in specialWeapons)
                 {
-                    if (string.IsNullOrEmpty(specialWeapon.FormKey)) continue;
+                    if (string.IsNullOrEmpty(specialWeapon.FormKey)) { _weaponHelper?.DebugLog($"ERROR: Special weapon {specialWeapon.EditorID} has no form key. Skipping."); continue; }
 
                     if (FormKey.TryFactory(specialWeapon.FormKey, out var formKey) && weapon.FormKey == formKey)
                     {
-                        _weaponHelper?.DebugLog($"Found special weapon match by form key: {weapon.FormKey}");
-                        _weaponHelper?.DebugLog($"=== Processing Special Weapon: {weapon.EditorID} ===");
-                        _weaponHelper?.DebugLog($"Base stats from settings:");
-                        _weaponHelper?.DebugLog($"  - Damage: {settings.Damage}");
-                        _weaponHelper?.DebugLog($"  - Speed: {settings.Speed}");
-                        _weaponHelper?.DebugLog($"  - Reach: {settings.Reach}");
-                        _weaponHelper?.DebugLog($"  - Stagger: {settings.Stagger}");
+                        _weaponHelper?.DebugLog($"Found by form key: {weapon.FormKey}");
 
                         // Create a copy of the weapon for modification
                         var weaponOverride = state.PatchMod.Weapons.GetOrAddAsOverride(weapon);
                         if (weaponOverride?.Data == null || weaponOverride.BasicStats == null || weaponOverride.Critical == null)
                         {
-                            _weaponHelper?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
+                            _weaponHelper?.DebugLog($"ERROR: Could not create override for {weapon.EditorID}. Skipping.");
                             continue;
                         }
 
@@ -265,6 +246,14 @@ namespace Weapon_Mod_Synergy
                         float staggerOffset = specialWeapon.StaggerOffset ?? 0;
                         int criticalDamageOffsett = specialWeapon.CriticalDamageOffset ?? 0;
                         float criticalDamageMultiplierOffset = specialWeapon.CriticalDamageMultiplierOffset ?? 0;
+
+                        _weaponHelper?.DebugLog($"Applying special weapon offsets for {weapon.EditorID}:");
+                        _weaponHelper?.DebugLog($"  - Damage Offset: {specialDamageOffset}");
+                        _weaponHelper?.DebugLog($"  - Speed Offset: {speedOffset}");
+                        _weaponHelper?.DebugLog($"  - Reach Offset: {reachOffset}");
+                        _weaponHelper?.DebugLog($"  - Stagger Offset: {staggerOffset}");
+                        _weaponHelper?.DebugLog($"  - Critical Damage Offset: {criticalDamageOffsett}");
+                        _weaponHelper?.DebugLog($"  - Critical Damage Multiplier Offset: {criticalDamageMultiplierOffset}");
 
                         if (Settings.Value.WACCFMaterialTiers)
                         {
@@ -357,8 +346,6 @@ namespace Weapon_Mod_Synergy
                         _weaponHelper?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
                         _weaponHelper?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
                         _weaponHelper?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
-                        _weaponHelper?.DebugLog($"\n\n========================================\n========================================\n\n");
-
 
                         break;
                     }
@@ -372,7 +359,7 @@ namespace Weapon_Mod_Synergy
             var damageOffset = _weaponHelper?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
             if (damageOffset == null)
             {
-                _weaponHelper?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}");
+                _weaponHelper?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}. Skipping.");
                 return;
             }
 
@@ -394,21 +381,31 @@ namespace Weapon_Mod_Synergy
             weaponOverride.Data.Reach = Math.Max(0f, settings.Reach);
             weaponOverride.Data.Stagger = Math.Max(0f, settings.Stagger);
 
-            // Check for Stalhrim stagger bonus and damage bonus
-            if (!Settings.Value.WACCFMaterialTiers &&
-                weaponOverride.Data.Stagger > 0 &&
-                weapon.Keywords?.Select(k => k.FormKey.ToString()).Contains("DLC2WeaponMaterialStalhrim") == true)
+            // Check for Stalhrim weapons and apply stagger bonus if WACCF material tiers are disabled
+            if (!Settings.Value.WACCFMaterialTiers && weaponOverride.Data.Stagger > 0)
             {
-                weaponOverride.Data.Stagger += 0.1f;
-                _weaponHelper?.DebugLog($"Applied Stalhrim stagger bonus to {weapon.EditorID}");
+                bool isStalhrim = weapon.Keywords?.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("DLC2WeaponMaterialStalhrim") ?? false) ?? false;
+                _weaponHelper?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Stagger: {weaponOverride.Data.Stagger}");
+                if (isStalhrim)
+                {
+                    weaponOverride.Data.Stagger += 0.1f;
+                    _weaponHelper?.DebugLog($"Applied Stalhrim stagger bonus to {weapon.EditorID}. Stagger: {weaponOverride.Data.Stagger}");
+                }
             }
 
-            // if weapon keywords contains DLC2WeaponMaterialStalhrim and either WeapTypeWarAxe or WeapTypeMace, add 1 damage
-            if (weapon.Keywords?.Select(k => k.FormKey.ToString()).Contains("DLC2WeaponMaterialStalhrim") == true &&
-                (weapon.Keywords?.Select(k => k.FormKey.ToString()).Contains("WeapTypeWarAxe") == true ||
-                weapon.Keywords?.Select(k => k.FormKey.ToString()).Contains("WeapTypeMace") == true))
+            // Check for Stalhrim weapons that are either war axes or maces and add damage bonus
+            if (weapon.Keywords != null)
             {
-                weaponOverride.BasicStats.Damage += 1;
+                bool isStalhrim = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("DLC2WeaponMaterialStalhrim") ?? false);
+                bool isWarAxe = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapTypeWarAxe") ?? false);
+                bool isMace = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapTypeMace") ?? false);
+
+                if (isStalhrim && (isWarAxe || isMace))
+                {
+                    _weaponHelper?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Is War Axe: {isWarAxe}. Is Mace: {isMace}. Damage: {weaponOverride.BasicStats.Damage}");
+                    weaponOverride.BasicStats.Damage += 1;
+                    _weaponHelper?.DebugLog($"Applied Stalhrim damage bonus to {weapon.EditorID}. Damage: {weaponOverride.BasicStats.Damage}");
+                }
             }
 
             // Calculate critical damage
@@ -454,8 +451,198 @@ namespace Weapon_Mod_Synergy
             _weaponHelper?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
             _weaponHelper?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
             _weaponHelper?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
-            _weaponHelper?.DebugLog($"\n\n========================================\n========================================\n\n");
+        }
 
+        /// <summary>
+        /// Verifies that all form keys in the special_weapons.json file are correct by looking up each editor ID.
+        /// </summary>
+        private static void VerifyFormKeys(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
+        {
+            Console.WriteLine("Verifying form keys in special_weapons.json...");
+
+            // Get the path to the special_weapons.json file
+            string patcherDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? "";
+            string specialWeaponsPath = Path.Combine(patcherDirectory, "special_weapons.json");
+
+            if (!File.Exists(specialWeaponsPath))
+            {
+                Console.WriteLine($"Error: special_weapons.json not found at {specialWeaponsPath}");
+                return;
+            }
+
+            // Load the special weapons data
+            var specialWeaponsJson = File.ReadAllText(specialWeaponsPath);
+            var specialWeapons = System.Text.Json.JsonSerializer.Deserialize<List<SpecialWeaponData>>(specialWeaponsJson) ?? new List<SpecialWeaponData>();
+
+            Console.WriteLine($"Loaded {specialWeapons.Count} special weapons from JSON file.");
+
+            // Lists to store valid and invalid entries
+            var validEntries = new List<(string EditorID, string FormKey)>();
+            var invalidEntries = new List<(string EditorID, string FormKey, string Error)>();
+            var suggestedFormKeys = new List<(string EditorID, string CurrentFormKey, string SuggestedFormKey)>();
+
+            // Check each special weapon
+            foreach (var specialWeapon in specialWeapons)
+            {
+                if (string.IsNullOrEmpty(specialWeapon.EditorID))
+                {
+                    invalidEntries.Add((specialWeapon.EditorID ?? "null", specialWeapon.FormKey ?? "null", "EditorID is null or empty"));
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(specialWeapon.FormKey))
+                {
+                    invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey ?? "null", "FormKey is null or empty"));
+                    continue;
+                }
+
+                // Try to parse the form key
+                if (!FormKey.TryFactory(specialWeapon.FormKey, out var formKey))
+                {
+                    invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Invalid form key format"));
+                    continue;
+                }
+
+                try
+                {
+                    // Look up the weapon by form key
+                    var weapon = state.LinkCache.Resolve<IWeaponGetter>(formKey);
+
+                    if (weapon == null)
+                    {
+                        // Try to look up the weapon by editor ID, looking at earliest version in load order
+                        var weaponsByEditorID = state.LoadOrder.PriorityOrder.Weapon()
+                            .WinningOverrides()
+                            .Where(w => w.EditorID == specialWeapon.EditorID)
+                            .OrderBy(w => w.FormKey.ModKey.ToString())  // Order by mod name to get earliest version
+                            .ToList();
+
+                        if (weaponsByEditorID.Any())
+                        {
+                            // Found the weapon by editor ID, but with a different form key
+                            var foundWeapon = weaponsByEditorID.First();
+                            var suggestedFormKey = $"{foundWeapon.FormKey.ID:X6}:{foundWeapon.FormKey.ModKey.FileName}";
+                            suggestedFormKeys.Add((specialWeapon.EditorID, specialWeapon.FormKey, suggestedFormKey));
+                            invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, $"Record not found in load order. Suggested form key: {suggestedFormKey}"));
+                        }
+                        else
+                        {
+                            invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Record not found in load order"));
+                        }
+                        continue;
+                    }
+
+                    // Check if the editor ID matches
+                    if (weapon.EditorID != specialWeapon.EditorID)
+                    {
+                        // Get all versions of this weapon from all mods
+                        var allVersions = new List<IWeaponGetter>();
+
+                        // Get all mods that contain this form
+                        foreach (var mod in state.LoadOrder.ListedOrder)
+                        {
+                            // Try to get the weapon from this specific mod
+                            if (mod.Mod?.Weapons.TryGetValue(weapon.FormKey, out var weaponInMod) == true)
+                            {
+                                allVersions.Add(weaponInMod);
+                            }
+                        }
+
+                        // Sort by load order to get earliest version
+                        allVersions = allVersions
+                            .OrderBy(w => state.LoadOrder.ListedOrder.ToList().IndexOf(state.LoadOrder.ListedOrder.First(m => m.ModKey == w.FormKey.ModKey)))
+                            .ToList();
+
+                        if (allVersions.Any())
+                        {
+                            var earliestVersion = allVersions.First();
+                            if (earliestVersion.EditorID == specialWeapon.EditorID)
+                            {
+                                // The earliest version matches our editor ID, so this is valid
+                                validEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey));
+                            }
+                            else
+                            {
+                                var earliestMod = earliestVersion.FormKey.ModKey.ToString();
+                                invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey,
+                                    $"EditorID mismatch: expected '{specialWeapon.EditorID}', found '{weapon.EditorID}' in current version. " +
+                                    $"Earliest version in mod '{earliestMod}' has EditorID '{earliestVersion.EditorID}'"));
+                            }
+                        }
+                        else
+                        {
+                            invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey,
+                                $"EditorID mismatch: expected '{specialWeapon.EditorID}', found '{weapon.EditorID}'"));
+                        }
+                        continue;
+                    }
+
+                    // If we get here, the form key is valid
+                    validEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey));
+                }
+                catch (Mutagen.Bethesda.Plugins.Exceptions.MissingRecordException)
+                {
+                    // Try to look up the weapon by editor ID, looking at earliest version in load order
+                    var weaponsByEditorID = state.LoadOrder.PriorityOrder.Weapon()
+                        .WinningOverrides()
+                        .Where(w => w.EditorID == specialWeapon.EditorID)
+                        .OrderBy(w => w.FormKey.ModKey.ToString())  // Order by mod name to get earliest version
+                        .ToList();
+
+                    if (weaponsByEditorID.Any())
+                    {
+                        // Found the weapon by editor ID, but with a different form key
+                        var foundWeapon = weaponsByEditorID.First();
+                        var suggestedFormKey = $"{foundWeapon.FormKey.ID:X6}:{foundWeapon.FormKey.ModKey.FileName}";
+                        suggestedFormKeys.Add((specialWeapon.EditorID, specialWeapon.FormKey, suggestedFormKey));
+                        invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, $"Record not found in load order. Suggested form key: {suggestedFormKey}"));
+                    }
+                    else
+                    {
+                        invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Record not found in load order"));
+                    }
+                }
+            }
+
+            // Print results
+            Console.WriteLine("\n=== VALID FORM KEYS ===");
+            if (validEntries.Count == 0)
+            {
+                Console.WriteLine("No valid form keys found.");
+            }
+            else
+            {
+                foreach (var entry in validEntries)
+                {
+                    Console.WriteLine($"✓ {entry.EditorID}: {entry.FormKey}");
+                }
+            }
+
+            Console.WriteLine("\n=== INVALID FORM KEYS ===");
+            if (invalidEntries.Count == 0)
+            {
+                Console.WriteLine("No invalid form keys found.");
+            }
+            else
+            {
+                foreach (var entry in invalidEntries)
+                {
+                    Console.WriteLine($"✗ {entry.EditorID}: {entry.FormKey} - {entry.Error}");
+                }
+            }
+
+            Console.WriteLine($"\nSummary: {validEntries.Count} valid, {invalidEntries.Count} invalid form keys.");
+
+            // Print suggested form keys
+            if (suggestedFormKeys.Count > 0)
+            {
+                Console.WriteLine("\n=== SUGGESTED FORM KEY CORRECTIONS ===");
+                Console.WriteLine("The following entries have incorrect form keys. Here are the suggested corrections:");
+                foreach (var suggestion in suggestedFormKeys)
+                {
+                    Console.WriteLine($"  {suggestion.EditorID}: {suggestion.CurrentFormKey} -> {suggestion.SuggestedFormKey}");
+                }
+            }
         }
     }
 }
