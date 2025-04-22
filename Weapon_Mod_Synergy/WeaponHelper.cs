@@ -91,14 +91,14 @@ namespace Weapon_Mod_Synergy
         [JsonPropertyName("critical_damage_offset_artificer")]
         public int? CriticalDamageOffsetArtificer { get; set; }
 
-        [JsonPropertyName("critical_damage_multiplier_offset")]
-        public float? CriticalDamageMultiplierOffset { get; set; }
+        [JsonPropertyName("critical_damage_chance_multiplier_offset")]
+        public float? CriticalDamageChanceMultiplierOffset { get; set; }
 
-        [JsonPropertyName("critical_damage_multiplier_offset_waccf")]
-        public float? CriticalDamageMultiplierOffsetWaccf { get; set; }
+        [JsonPropertyName("critical_damage_chance_multiplier_offset_waccf")]
+        public float? CriticalDamageChanceMultiplierOffsetWaccf { get; set; }
 
-        [JsonPropertyName("critical_damage_multiplier_offset_artificer")]
-        public float? CriticalDamageMultiplierOffsetArtificer { get; set; }
+        [JsonPropertyName("critical_damage_chance_multiplier_offset_artificer")]
+        public float? CriticalDamageChanceMultiplierOffsetArtificer { get; set; }
     }
 
     public class WeaponHelper
