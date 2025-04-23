@@ -531,7 +531,7 @@ namespace Weapon_Mod_Synergy
                 }
 
                 // Print results
-                _weaponHelper?.DebugLog("\n=== VALID FORM KEYS ===");
+                _weaponHelper?.DebugLog("=== VALID FORM KEYS ===");
                 if (validEntries.Count == 0)
                 {
                     _weaponHelper?.DebugLog("No valid form keys found.");
@@ -544,7 +544,7 @@ namespace Weapon_Mod_Synergy
                     }
                 }
 
-                Console.WriteLine("\n=== INVALID FORM KEYS ===");
+                Console.WriteLine("=== INVALID FORM KEYS ===");
                 if (invalidEntries.Count == 0)
                 {
                     Console.WriteLine("No invalid form keys found.");
