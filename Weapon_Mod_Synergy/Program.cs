@@ -39,6 +39,15 @@ namespace Weapon_Mod_Synergy
             // Create WeaponHelper instance with the new Settings structure
             _weaponHelper = new WeaponHelper(Settings.Value, Console.WriteLine, state);
 
+            // Print settings
+            _weaponHelper?.DebugLog($"Settings:");
+            _weaponHelper?.DebugLog($"  - PluginFilter: {Settings.Value.PluginFilter}");
+            _weaponHelper?.DebugLog($"  - WACCFMaterialTiers: {Settings.Value.WACCFMaterialTiers}");
+            _weaponHelper?.DebugLog($"  - StalhrimStaggerBonus: {Settings.Value.StalhrimStaggerBonus}");
+            _weaponHelper?.DebugLog($"  - StalhrimDamageBonus: {Settings.Value.StalhrimDamageBonus}");
+            _weaponHelper?.DebugLog($"  - SpecialWeaponsMod: {Settings.Value.SpecialWeaponsMod}");
+            _weaponHelper?.DebugLog($"  - BoundWeaponParsing: {Settings.Value.BoundWeaponParsing}");
+
             // Get the list of plugins to include or exclude
             var pluginList = Settings.Value.PluginList
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
@@ -128,9 +137,15 @@ namespace Weapon_Mod_Synergy
                     bool isSpecialWeapon = _weaponHelper?.IsSpecialWeapon(weapon) ?? false;
                     _weaponHelper?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
                     bool isProcessNonPlayable = weapon.FormKey.ModKey.FileName.ToString().Equals("ccbgssse025-advdsgs.esm", StringComparison.OrdinalIgnoreCase);
+
+                    // Check if weapon is bound
+                    bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                  (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
+
                     _weaponHelper?.DebugLog($"Is EDID {weapon.EditorID} from mod with non playable weapons that should be processed: {isProcessNonPlayable}");
-                    // Skip if weapon is not playable and it is not from mod ccbgssse025-advdsgs.esm
-                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isProcessNonPlayable)
+
+                    // Skip if weapon is not playable and it is not from mod ccbgssse025-advdsgs.esm and is not bound
+                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isProcessNonPlayable && !isBound)
                     {
                         _weaponHelper?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
                         continue;
@@ -176,7 +191,6 @@ namespace Weapon_Mod_Synergy
                 }
             }
         }
-
         private static void ProcessSpecialWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey)
         {
             if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
@@ -219,7 +233,6 @@ namespace Weapon_Mod_Synergy
             // Get special weapon data
             var specialWeapons = _weaponHelper?.GetLoadedSpecialWeapons();
             var specialWeaponsWaccf = _weaponHelper?.GetLoadedSpecialWeaponsWaccf();
-            var specialWeaponsMysticism = _weaponHelper?.GetLoadedSpecialWeaponsMysticism();
             var specialWeaponsArtificer = _weaponHelper?.GetLoadedSpecialWeaponsArtificer();
 
             if (specialWeapons == null)
@@ -230,10 +243,6 @@ namespace Weapon_Mod_Synergy
             if (specialWeaponsWaccf == null)
             {
                 _weaponHelper?.DebugLog($"Warning: No special weapons WACCF data loaded.");
-            }
-            if (specialWeaponsMysticism == null)
-            {
-                _weaponHelper?.DebugLog($"Warning: No special weapons mysticism data loaded.");
             }
             if (specialWeaponsArtificer == null)
             {
@@ -332,53 +341,6 @@ namespace Weapon_Mod_Synergy
                         }
                     }
                 }
-            }
-
-            // id special weapon mod setting SpecialWeaponsMod equals SpecialWeaponsMod.Mysticism, check if form key is in specialWeaponsMysticism and apply the offsets from it
-            if (Settings.Value.SpecialWeaponsMod == SpecialWeaponsMod.Mysticism || Settings.Value.SpecialWeaponsMod == SpecialWeaponsMod.Artificer)
-            {
-                if (specialWeaponsMysticism == null)
-                {
-                    _weaponHelper?.DebugLog($"Warning: No special weapons mysticism data loaded.");
-                }
-                else if (specialWeaponsMysticism.Any(sw => sw.FormKey == specialWeapon.FormKey))
-                {
-                    var mysticismWeapon = specialWeaponsMysticism.FirstOrDefault(sw => sw.FormKey == specialWeapon.FormKey);
-                    if (mysticismWeapon != null)
-                    {
-                        if (mysticismWeapon.DamageOffset != null)
-                        {
-                            damageOffset = mysticismWeapon.DamageOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Mysticism damage offset: {damageOffset}");
-                        }
-                        if (mysticismWeapon.SpeedOffset != null)
-                        {
-                            speedOffset = mysticismWeapon.SpeedOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Mysticism speed offset: {speedOffset}");
-                        }
-                        if (mysticismWeapon.ReachOffset != null)
-                        {
-                            reachOffset = mysticismWeapon.ReachOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Mysticism reach offset: {reachOffset}");
-                        }
-                        if (mysticismWeapon.StaggerOffset != null)
-                        {
-                            staggerOffset = mysticismWeapon.StaggerOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Mysticism stagger offset: {staggerOffset}");
-                        }
-                        if (mysticismWeapon.CriticalDamageOffset != null)
-                        {
-                            criticalDamageOffset = mysticismWeapon.CriticalDamageOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Mysticism critical damage offset: {criticalDamageOffset}");
-                        }
-                        if (mysticismWeapon.CriticalDamageChanceMultiplierOffset != null)
-                        {
-                            criticalDamageChanceMultiplierOffset = mysticismWeapon.CriticalDamageChanceMultiplierOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Mysticism critical damage chance multiplier offset: {criticalDamageChanceMultiplierOffset}");
-                        }
-                    }
-                }
-
             }
 
             if (Settings.Value.SpecialWeaponsMod == SpecialWeaponsMod.Artificer)
@@ -486,8 +448,51 @@ namespace Weapon_Mod_Synergy
                 return;
             }
 
-            // Get damage offset and check if weapon is special
-            int? damageOffset = _weaponHelper?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
+            // Handle bound weapons based on parsing mode
+            int? damageOffset = null;
+            bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                          (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
+            if (isBound)
+            {
+                switch (Settings.Value.BoundWeaponParsing)
+                {
+                    case BoundWeaponParsing.IgnoreWeapon:
+                        _weaponHelper?.DebugLog($"Skipping bound weapon: {weapon.EditorID}");
+                        return;
+
+                    case BoundWeaponParsing.FromSettings:
+                        bool isMysticBound = weapon.EditorID?.Contains("mystic", StringComparison.OrdinalIgnoreCase) ?? false;
+                        damageOffset = isMysticBound
+                            ? settings.BoundMysticWeaponAdditionalDamage
+                            : settings.BoundWeaponAdditionalDamage;
+                        break;
+
+                    case BoundWeaponParsing.CalculateFromMods:
+                        // Get current damage and keywords
+                        var currentDamage = weapon.BasicStats?.Damage ?? 0;
+                        var keywords = weapon.Keywords?.Select(k => k.FormKey.ToString()) ?? Enumerable.Empty<string>();
+
+                        // Find matching default damage
+                        var defaultDamage = _weaponHelper?.GetLoadedDefaultDamageData()
+                            .FirstOrDefault(d => keywords.Contains(d.Keyword));
+
+                        if (defaultDamage == null)
+                        {
+                            _weaponHelper?.DebugLog($"No matching default damage found for bound weapon {weapon.EditorID}");
+                            return;
+                        }
+
+                        // Calculate damage offset
+                        damageOffset = currentDamage - defaultDamage.Damage;
+                        _weaponHelper?.DebugLog($"Calculated damage offset for bound weapon {weapon.EditorID}: {damageOffset}");
+                        break;
+                }
+            }
+            else
+            {
+                damageOffset = _weaponHelper?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
+            }
+
             if (damageOffset == null)
             {
                 _weaponHelper?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}. Skipping.");

@@ -62,6 +62,18 @@ namespace Weapon_Mod_Synergy
         public float? CriticalDamageChanceMultiplierOffset { get; set; }
     }
 
+    public class DefaultDamageData
+    {
+        [JsonPropertyName("keyword")]
+        public string Keyword { get; set; } = string.Empty;
+
+        [JsonPropertyName("damage")]
+        public int Damage { get; set; }
+
+        [JsonPropertyName("damage_waccf")]
+        public int DamageWaccf { get; set; }
+    }
+
     public class WeaponHelper
     {
         // Debug flag to enable/disable debug output
@@ -79,7 +91,7 @@ namespace Weapon_Mod_Synergy
         private static List<SpecialWeaponData> _specialWeapons = new();
         private static List<SpecialWeaponData> _specialWeaponsWaccf = new();
         private static List<SpecialWeaponData> _specialWeaponsArtificer = new();
-        private static List<SpecialWeaponData> _specialWeaponsMysticism = new();
+        private static List<DefaultDamageData> _defaultDamageData = new();
         private readonly IPatcherState<ISkyrimMod, ISkyrimModGetter> _state;
 
         public WeaponHelper(Settings settings, Action<string> logger, IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
@@ -87,10 +99,10 @@ namespace Weapon_Mod_Synergy
             _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _state = state ?? throw new ArgumentNullException(nameof(state));
-            LoadMaterialData();
+            LoadWeaponAndMaterialData();
         }
 
-        private void LoadMaterialData()
+        private void LoadWeaponAndMaterialData()
         {
             try
             {
@@ -99,14 +111,14 @@ namespace Weapon_Mod_Synergy
                 var specialWeaponsPath = _state.RetrieveInternalFile("special_weapons.json");
                 var specialWeaponsWaccfPath = _state.RetrieveInternalFile("special_weapons_waccf.json");
                 var specialWeaponsArtificerPath = _state.RetrieveInternalFile("special_weapons_artificer.json");
-                var specialWeaponsMysticismPath = _state.RetrieveInternalFile("special_weapons_mysticism.json");
+                var defaultDamagePath = _state.RetrieveInternalFile("default_damage.json");
 
                 _materialDataName = LoadJsonData<List<MaterialData>>(materialNamePath) ?? new List<MaterialData>();
                 _materialDataKeyword = LoadJsonData<List<MaterialData>>(materialKeywordPath) ?? new List<MaterialData>();
                 _specialWeapons = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsPath) ?? new List<SpecialWeaponData>();
                 _specialWeaponsWaccf = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsWaccfPath) ?? new List<SpecialWeaponData>();
                 _specialWeaponsArtificer = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsArtificerPath) ?? new List<SpecialWeaponData>();
-                _specialWeaponsMysticism = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsMysticismPath) ?? new List<SpecialWeaponData>();
+                _defaultDamageData = LoadJsonData<List<DefaultDamageData>>(defaultDamagePath) ?? new List<DefaultDamageData>();
 
                 DebugLog("Material data loaded successfully");
             }
@@ -149,7 +161,7 @@ namespace Weapon_Mod_Synergy
             {
                 if (_materialDataKeyword.Count == 0 || _materialDataName.Count == 0 || _specialWeapons.Count == 0)
                 {
-                    LoadMaterialData();
+                    LoadWeaponAndMaterialData();
                 }
                 return dataField;
             }
@@ -162,7 +174,6 @@ namespace Weapon_Mod_Synergy
         public List<SpecialWeaponData> GetLoadedSpecialWeapons() { return GetLoadedData(ref _specialWeapons); }
         public List<SpecialWeaponData> GetLoadedSpecialWeaponsArtificer() { return GetLoadedData(ref _specialWeaponsArtificer); }
         public List<SpecialWeaponData> GetLoadedSpecialWeaponsWaccf() { return GetLoadedData(ref _specialWeaponsWaccf); }
-        public List<SpecialWeaponData> GetLoadedSpecialWeaponsMysticism() { return GetLoadedData(ref _specialWeaponsMysticism); }
 
         /// <summary>
         /// Gets the weapon skill type (1h or 2h) based on the weapon's Skill property
@@ -358,7 +369,6 @@ namespace Weapon_Mod_Synergy
         /// </summary>
         public int? GetDamageOffset(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF)
         {
-
             if (weapon == null || linkCache == null)
             {
                 DebugLog("   ERROR: weapon or linkCache is null");
@@ -620,6 +630,11 @@ namespace Weapon_Mod_Synergy
             string escaped = Regex.Escape(pattern);
             string withWildcards = escaped.Replace(@"\*", ".*");
             return $@"\b{withWildcards}\b";
+        }
+
+        public List<DefaultDamageData> GetLoadedDefaultDamageData()
+        {
+            return _defaultDamageData;
         }
     }
 }
