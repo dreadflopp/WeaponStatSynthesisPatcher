@@ -122,8 +122,7 @@ namespace Weapon_Mod_Synergy
             Console.WriteLine();
 
             // Verify form keys in special_weapons.json
-            if (WeaponHelper.DebugMode)
-                VerifyFormKeys(state);
+            VerifyFormKeys(state);
 
             // Process weapons from plugins
             foreach (var modGetter in state.LoadOrder.PriorityOrder)
@@ -432,7 +431,7 @@ namespace Weapon_Mod_Synergy
                 string jsonContent = File.ReadAllText(specialWeaponsPath);
                 var specialWeapons = System.Text.Json.JsonSerializer.Deserialize<List<SpecialWeaponData>>(jsonContent) ?? new List<SpecialWeaponData>();
 
-                Console.WriteLine($"Loaded {specialWeapons.Count} special weapons from JSON file.");
+                _weaponHelper?.DebugLog($"Loaded {specialWeapons.Count} special weapons from JSON file.");
 
                 // Lists to store valid and invalid entries
                 var validEntries = new List<(string EditorID, string FormKey)>();
@@ -532,16 +531,16 @@ namespace Weapon_Mod_Synergy
                 }
 
                 // Print results
-                Console.WriteLine("\n=== VALID FORM KEYS ===");
+                _weaponHelper?.DebugLog("\n=== VALID FORM KEYS ===");
                 if (validEntries.Count == 0)
                 {
-                    Console.WriteLine("No valid form keys found.");
+                    _weaponHelper?.DebugLog("No valid form keys found.");
                 }
                 else
                 {
                     foreach (var entry in validEntries)
                     {
-                        Console.WriteLine($"Valid: {entry.EditorID}: {entry.FormKey}");
+                        _weaponHelper?.DebugLog($"Valid: {entry.EditorID}: {entry.FormKey}");
                     }
                 }
 
