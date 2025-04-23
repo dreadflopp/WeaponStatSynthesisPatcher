@@ -1,0 +1,87 @@
+[
+  {
+    "editor_id": "MQ203AkaviriKatana5",
+    "form_key": "0F71D0:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "DA03RuefulAxe",
+    "form_key": "01C4E6:Skyrim.esm",
+    "damage_offset": 9,
+    "critical_damage_offset": -1
+  },
+  {
+    "editor_id": "DA06Volendrung",
+    "form_key": "02ACD2:Skyrim.esm",
+    "damage_offset": 9,
+    "speed_offset": 0
+  },
+  {
+    "editor_id": "DA08EbonyBlade",
+    "form_key": "04A38F:Skyrim.esm",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "DA09Dawnbreaker",
+    "form_key": "04E4EE:Skyrim.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "dunPOITrollsbane",
+    "form_key": "06AF63:Skyrim.esm",
+    "damage_offset": 0
+  },
+  {
+    "editor_id": "dunKatariahScimitar",
+    "form_key": "06EA8B:Skyrim.esm",
+    "damage_offset": 6,
+    "critical_damage_offset": -1,
+    "speed_offset": 0.2
+  },
+  {
+    "editor_id": "dunLiarsRetreatLonghammer",
+    "form_key": "0AE085:Skyrim.esm",
+    "speed_offset": 0.15
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade05",
+    "form_key": "0F5D2D:Skyrim.esm",
+    "damage_offset": 5,
+    "critical_damage_offset": -2
+  },
+  {
+    "editor_id": "TG07Chillrend006",
+    "form_key": "0F8318:Skyrim.esm",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "DLC1PrelateMace",
+    "form_key": "01681E:Dawnguard.esm",
+    "damage_offset": 7,
+    "critical_damage_offset": -2
+  },
+  {
+    "editor_id": "DLC2dunKolbjornRalisPickaxe",
+    "form_key": "0179C9:Dragonborn.esm",
+    "damage_offset": 7,
+    "speed_offset": 0,
+    "reach_offset": 0,
+    "stagger_offset": 0.1,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "DLC2dunHaknirScimitar01",
+    "form_key": "018DDD:Dragonborn.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "DLC2dunHaknirScimitar02",
+    "form_key": "036689:Dragonborn.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "DLC2MKMiraakSword3",
+    "form_key": "039FB4:Dragonborn.esm",
+    "damage_offset": 8
+  }
+]

@@ -46,59 +46,20 @@ namespace Weapon_Mod_Synergy
         [JsonPropertyName("damage_offset")]
         public int? DamageOffset { get; set; }
 
-        [JsonPropertyName("damage_offset_waccf")]
-        public int? DamageOffsetWaccf { get; set; }
-
-        [JsonPropertyName("damage_offset_artificer")]
-        public int? DamageOffsetArtificer { get; set; }
-
-        [JsonPropertyName("damage_offset_mysticism")]
-        public int? DamageOffsetMysticism { get; set; }
-
         [JsonPropertyName("speed_offset")]
         public float? SpeedOffset { get; set; }
-
-        [JsonPropertyName("speed_offset_waccf")]
-        public float? SpeedOffsetWaccf { get; set; }
-
-        [JsonPropertyName("speed_offset_artificer")]
-        public float? SpeedOffsetArtificer { get; set; }
 
         [JsonPropertyName("reach_offset")]
         public float? ReachOffset { get; set; }
 
-        [JsonPropertyName("reach_offset_waccf")]
-        public float? ReachOffsetWaccf { get; set; }
-
-        [JsonPropertyName("reach_offset_artificer")]
-        public float? ReachOffsetArtificer { get; set; }
-
         [JsonPropertyName("stagger_offset")]
         public float? StaggerOffset { get; set; }
-
-        [JsonPropertyName("stagger_offset_waccf")]
-        public float? StaggerOffsetWaccf { get; set; }
-
-        [JsonPropertyName("stagger_offset_artificer")]
-        public float? StaggerOffsetArtificer { get; set; }
 
         [JsonPropertyName("critical_damage_offset")]
         public int? CriticalDamageOffset { get; set; }
 
-        [JsonPropertyName("critical_damage_offset_waccf")]
-        public int? CriticalDamageOffsetWaccf { get; set; }
-
-        [JsonPropertyName("critical_damage_offset_artificer")]
-        public int? CriticalDamageOffsetArtificer { get; set; }
-
         [JsonPropertyName("critical_damage_chance_multiplier_offset")]
         public float? CriticalDamageChanceMultiplierOffset { get; set; }
-
-        [JsonPropertyName("critical_damage_chance_multiplier_offset_waccf")]
-        public float? CriticalDamageChanceMultiplierOffsetWaccf { get; set; }
-
-        [JsonPropertyName("critical_damage_chance_multiplier_offset_artificer")]
-        public float? CriticalDamageChanceMultiplierOffsetArtificer { get; set; }
     }
 
     public class WeaponHelper
@@ -116,6 +77,9 @@ namespace Weapon_Mod_Synergy
         private static List<MaterialData> _materialDataKeyword = new();
         private static List<MaterialData> _materialDataName = new();
         private static List<SpecialWeaponData> _specialWeapons = new();
+        private static List<SpecialWeaponData> _specialWeaponsWaccf = new();
+        private static List<SpecialWeaponData> _specialWeaponsArtificer = new();
+        private static List<SpecialWeaponData> _specialWeaponsMysticism = new();
         private readonly IPatcherState<ISkyrimMod, ISkyrimModGetter> _state;
 
         public WeaponHelper(Settings settings, Action<string> logger, IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
@@ -133,10 +97,16 @@ namespace Weapon_Mod_Synergy
                 var materialNamePath = _state.RetrieveInternalFile("material_data_name.json");
                 var materialKeywordPath = _state.RetrieveInternalFile("material_data_keyword.json");
                 var specialWeaponsPath = _state.RetrieveInternalFile("special_weapons.json");
+                var specialWeaponsWaccfPath = _state.RetrieveInternalFile("special_weapons_waccf.json");
+                var specialWeaponsArtificerPath = _state.RetrieveInternalFile("special_weapons_artificer.json");
+                var specialWeaponsMysticismPath = _state.RetrieveInternalFile("special_weapons_mysticism.json");
 
                 _materialDataName = LoadJsonData<List<MaterialData>>(materialNamePath) ?? new List<MaterialData>();
                 _materialDataKeyword = LoadJsonData<List<MaterialData>>(materialKeywordPath) ?? new List<MaterialData>();
                 _specialWeapons = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsPath) ?? new List<SpecialWeaponData>();
+                _specialWeaponsWaccf = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsWaccfPath) ?? new List<SpecialWeaponData>();
+                _specialWeaponsArtificer = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsArtificerPath) ?? new List<SpecialWeaponData>();
+                _specialWeaponsMysticism = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsMysticismPath) ?? new List<SpecialWeaponData>();
 
                 DebugLog("Material data loaded successfully");
             }
@@ -189,6 +159,10 @@ namespace Weapon_Mod_Synergy
                 return dataField; // Return the existing data even if it's empty
             }
         }
+        public List<SpecialWeaponData> GetLoadedSpecialWeapons() { return GetLoadedData(ref _specialWeapons); }
+        public List<SpecialWeaponData> GetLoadedSpecialWeaponsArtificer() { return GetLoadedData(ref _specialWeaponsArtificer); }
+        public List<SpecialWeaponData> GetLoadedSpecialWeaponsWaccf() { return GetLoadedData(ref _specialWeaponsWaccf); }
+        public List<SpecialWeaponData> GetLoadedSpecialWeaponsMysticism() { return GetLoadedData(ref _specialWeaponsMysticism); }
 
         /// <summary>
         /// Gets the weapon skill type (1h or 2h) based on the weapon's Skill property
@@ -585,15 +559,6 @@ namespace Weapon_Mod_Synergy
                 weapon.FormKey == formKey);
             return isSpecial;
         }
-
-        /// <summary>
-        /// Gets the list of special weapons from the loaded data
-        /// </summary>
-        public List<SpecialWeaponData> GetLoadedSpecialWeapons()
-        {
-            return GetLoadedData(ref _specialWeapons);
-        }
-
         /// <summary>
         /// Checks if input matches any of the semicolons separated patterns
         /// </summary>

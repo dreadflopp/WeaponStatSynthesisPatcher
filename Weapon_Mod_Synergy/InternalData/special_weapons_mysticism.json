@@ -1,0 +1,87 @@
+[
+  {
+    "editor_id": "BoundWeaponBattleaxe",
+    "form_key": "058F5E:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "BoundWeaponBattleaxeMystic",
+    "form_key": "0424F7:Skyrim.esm",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "BoundWeaponSword",
+    "form_key": "058F5F:Skyrim.esm",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "BoundWeaponSwordRightHand",
+    "form_key": "0BA30E:Skyrim.esm",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "DLC2BoundWeaponDaggerMystic",
+    "form_key": "01CE03:Dragonborn.esm",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "BoundRapierW",
+    "form_key": "2BB6C3:NewArmoury.esp",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "BoundClawMysticLeft",
+    "form_key": "2BB6DB:NewArmoury.esp",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "BoundWeaponPike",
+    "form_key": "2BB6F1:NewArmoury.esp",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "BoundWeaponPikeMystic",
+    "form_key": "2BB6F2:NewArmoury.esp",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "BoundWeaponHalberd",
+    "form_key": "2BB6F9:NewArmoury.esp",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "BoundWeaponHalberdMystic",
+    "form_key": "2BB6FA:NewArmoury.esp",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "BoundWeaponQStaff",
+    "form_key": "2BB6FB:NewArmoury.esp",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "BoundWeaponQStaffMystic",
+    "form_key": "2BB6FC:NewArmoury.esp",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "BoundClawRightMystic",
+    "form_key": "2BB71C:NewArmoury.esp",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "BoundWhipW",
+    "form_key": "31BE13:NewArmoury.esp",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "BoundWhipDWW",
+    "form_key": "31BE1D:NewArmoury.esp",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "BoundKatanaWeap",
+    "form_key": "34473F:NewArmoury.esp",
+    "damage_offset": 3
+  }
+]

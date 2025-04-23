@@ -27,6 +27,12 @@ namespace Weapon_Mod_Synergy
         OR
     }
 
+    public enum SpecialWeaponsMod {
+        None,
+        Mysticism,
+        Artificer
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     public class WeaponCategory
     {
@@ -45,6 +51,15 @@ namespace Weapon_Mod_Synergy
 
             // Set default WACCF material tiers setting
             WACCFMaterialTiers = false;
+
+            // set the default stalhrim stagger bonus setting
+            StalhrimStaggerBonus = 0.1f;
+
+            // Set the default stalhrim damage bonus setting
+            StalhrimDamageBonus = 1;
+
+            // set default special wewapons mod
+            SpecialWeaponsMod = SpecialWeaponsMod.None;
 
             // Initialize weapon categories
             Daggers = new WeaponCategory();
@@ -163,6 +178,18 @@ namespace Weapon_Mod_Synergy
         [Tooltip("Enable support for WACCF material tiers")]
         public bool WACCFMaterialTiers { get; set; }
 
+        [SettingName("Stalhrim stagger bonus (default vanilla value is 0.1, WACCF value is 0)")]
+        [Tooltip("Enable support for Stalhrim stagger bonus, if current stagger is greater than 0")]
+        public float StalhrimStaggerBonus { get; set; }
+
+        [SettingName("Stalhrim War Axe and Mace damage bonus (default vanilla value is 1)")]
+        [Tooltip("Enable support for Stalhrim War Axe and Mace damage bonus")]
+        public int StalhrimDamageBonus { get; set; }
+
+        [SettingName("Special Weapons Mod")]
+        [Tooltip("Choose which special weapons mod to use")]
+        public SpecialWeaponsMod SpecialWeaponsMod { get; set; }
+/*
         [SettingName("Artificer")]
         [Tooltip("Honor Artificer changes")]
         public bool Artificer { get; set; } = true;
@@ -170,7 +197,7 @@ namespace Weapon_Mod_Synergy
         [SettingName("Mysticism")]
         [Tooltip("Honor Mysticism changes to bound weapons")]
         public bool Mysticism { get; set; } = true;
-
+*/
         // Weapon categories
         [JsonProperty]
         public WeaponCategory Daggers { get; set; }
