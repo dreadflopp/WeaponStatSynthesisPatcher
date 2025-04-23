@@ -112,7 +112,7 @@ namespace Weapon_Mod_Synergy
 
         private void InitializeOnehandedBluntWeapons()
         {
-            OnehandedBluntWeapons.Weapons["Mace"] = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "-club;-mallet;-hammer;-war pick", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeMace;-ShWeapTypeMaul" } };
+            OnehandedBluntWeapons.Weapons["Mace"] = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "-club;-mallet;-hammer;-war pick;-maul", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeMace;-ShWeapTypeMaul;-ShWeapTypeClub" } };
             OnehandedBluntWeapons.Weapons["Club"] = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.9f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "club", KeywordIDs = "ShWeapTypeClub" } };
             OnehandedBluntWeapons.Weapons["Maul"] = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "maul", KeywordIDs = "ShWeapTypeMaul" } };
         }
@@ -141,7 +141,7 @@ namespace Weapon_Mod_Synergy
         {
             TwohandedBluntWeapons.Weapons["Warhammer"] = new WeaponSettings { Damage = 18, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "-maul;-*mace;-*staff", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarhammer" } };
             TwohandedBluntWeapons.Weapons["Quarterstaff, shorter"] = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "short*staff", KeywordIDs = "ShWeapTypeQuarterStaff" } };
-            TwohandedBluntWeapons.Weapons["Quarterstaff"] = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "battle*staff;quarterstaff;-short*staff", KeywordIDs = "WeapTypeQtrStaff" } };
+            TwohandedBluntWeapons.Weapons["Quarterstaff"] = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "battle*staff;quarterstaff;-short*staff", KeywordIDs = "WeapTypeQtrStaff;-ShWeapTypeQuarterStaff" } };
             TwohandedBluntWeapons.Weapons["LongMace"] = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "long*mace", KeywordIDs = "ShWeapTypeLongMace" } };
         }
 
