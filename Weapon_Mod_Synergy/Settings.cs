@@ -1,7 +1,14 @@
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using System.ComponentModel;
 using Mutagen.Bethesda.Synthesis.Settings;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Weapon_Mod_Synergy
 {
@@ -20,6 +27,15 @@ namespace Weapon_Mod_Synergy
         OR
     }
 
+    [JsonObject(MemberSerialization.OptIn)]
+    public class WeaponCategory
+    {
+        [JsonProperty]
+        [SettingName("Variants (add more by adding panes)")]
+        public Dictionary<string, WeaponSettings> Weapons { get; set; } = new();
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
     public class Settings
     {
         public Settings()
@@ -30,43 +46,105 @@ namespace Weapon_Mod_Synergy
             // Set default WACCF material tiers setting
             WACCFMaterialTiers = false;
 
-            // Set default weapon settings
-            Dagger = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, Skill = WeaponSkill.OneHanded, NamedIDs = "-tanto;-claw", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeDagger" };
-            Tanto = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, Skill = WeaponSkill.OneHanded, NamedIDs = "tanto", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeDagger;-WeapTypeClaw" };
-            Claw = new WeaponSettings { Damage = 5, Reach = 0.7f, Speed = 1.2f, Stagger = 0.0f, Skill = WeaponSkill.OneHanded, NamedIDs = "claw", KeywordIDs = "WeapTypeClaw" };
-            Javelin = new WeaponSettings { Damage = 5, Reach = 1.0f, Speed = 1.2f, Stagger = 0.5f, Skill = WeaponSkill.OneHanded, NamedIDs = "javelin", KeywordIDs = "WeapTypeJavelin" };
-            Rapier = new WeaponSettings { Damage = 5, Reach = 1.1f, Speed = 1.15f, Stagger = 0.6f, Skill = WeaponSkill.OneHanded, NamedIDs = "rapier", KeywordIDs = "WeapTypeRapier" };
-            Wakizashi = new WeaponSettings { Damage = 5, Reach = 0.9f, Speed = 1.215f, Stagger = 0.6f, Skill = WeaponSkill.OneHanded, NamedIDs = "wakizashi;ninjato", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" };
-            Shortsword = new WeaponSettings { Damage = 6, Reach = 0.9f, Speed = 1.15f, Stagger = 0.6f, Skill = WeaponSkill.OneHanded, NamedIDs = "shortsword", KeywordIDs = "ShWeapTypeShortsword" };
-            Spear1h = new WeaponSettings { Damage = 6, Reach = 1.3f, Speed = 1.1f, Stagger = 0.75f, Skill = WeaponSkill.OneHanded, NamedIDs = "spear", KeywordIDs = "WeapTypeSpear" };
-            Sword = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.75f, Skill = WeaponSkill.OneHanded, NamedIDs = "-katana;-spear;-shortspear;-javelin;-scimitar;-akaviri sword;-blades sword", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword;-ShWeapTypeShortspear;-WeapTypeWhip;-WeapTypeKatana;-WeapTypeScimitar" };
-            Scimitar = new WeaponSettings { Damage = 6, Reach = 0.95f, Speed = 1.15f, Stagger = 0.7f, Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" };
-            Katana = new WeaponSettings { Damage = 6, Reach = 1.0f, Speed = 1.125f, Stagger = 0.75f, Skill = WeaponSkill.OneHanded, NamedIDs = "katana;akaviri sword;blades sword", KeywordIDs = "WeapTypeKatana" };
-            Hatchet = new WeaponSettings { Damage = 7, Reach = 0.85f, Speed = 1.1f, Stagger = 0.6f, Skill = WeaponSkill.OneHanded, NamedIDs = "hatchet", KeywordIDs = "ShWeapTypeHatchet" };
-            Club = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.9f, Skill = WeaponSkill.OneHanded, NamedIDs = "club", KeywordIDs = "ShWeapTypeClub" };
-            Shortspear = new WeaponSettings { Damage = 7, Reach = 1.2f, Speed = 0.9f, Stagger = 0.75f, Skill = WeaponSkill.OneHanded, NamedIDs = "shortspear", KeywordIDs = "ShWeapTypeShortspear" };
-            Whip = new WeaponSettings { Damage = 6, Reach = 2.0f, Speed = 0.9f, Stagger = 0.4f, Skill = WeaponSkill.OneHanded, NamedIDs = "whip", KeywordIDs = "WeapTypeWhip" };
-            WarAxe = new WeaponSettings { Damage = 8, Reach = 1.0f, Speed = 0.9f, Stagger = 0.85f, Skill = WeaponSkill.OneHanded, NamedIDs = "-hatchet", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarAxe;-ShWeapTypeHatchet" };
-            Mace = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, Skill = WeaponSkill.OneHanded, NamedIDs = "-club;-mallet;-hammer;-war pick", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeMace;-ShWeapTypeMaul" };
-            Maul = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, Skill = WeaponSkill.OneHanded, NamedIDs = "maul", KeywordIDs = "ShWeapTypeMaul" };
-            Shortstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, Skill = WeaponSkill.TwoHanded, NamedIDs = "short*staff", KeywordIDs = "ShWeapTypeQuarterStaff" };
-            Quarterstaff = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, Skill = WeaponSkill.TwoHanded, NamedIDs = "battle*staff;quarterstaff;-short*staff", KeywordIDs = "WeapTypeQtrStaff" };
-            Spear2h = new WeaponSettings { Damage = 12, Reach = 1.6f, Speed = 0.8f, Stagger = 1.0f, Skill = WeaponSkill.TwoHanded, NamedIDs = "spear;half*pike", KeywordIDs = "ShWeapTypeSpear" };
-            Pike = new WeaponSettings { Damage = 12, Reach = 1.7f, Speed = 0.7f, Stagger = 1.0f, Skill = WeaponSkill.TwoHanded, NamedIDs = "pike", KeywordIDs = "WeapTypePike" };
-            Glaive = new WeaponSettings { Damage = 13, Reach = 1.6f, Speed = 0.8f, Stagger = 1.1f, Skill = WeaponSkill.TwoHanded, NamedIDs = "glaive", KeywordIDs = "ShWeapTypeGlaive" };
-            Trident = new WeaponSettings { Damage = 14, Reach = 1.5f, Speed = 0.7f, Stagger = 1.15f, Skill = WeaponSkill.TwoHanded, NamedIDs = "trident", KeywordIDs = "ShWeapTypeTrident" };
-            Greatsword = new WeaponSettings { Damage = 15, Reach = 1.3f, Speed = 0.75f, Stagger = 1.1f, Skill = WeaponSkill.TwoHanded, NamedIDs = "-dai*katana;-nodachi;-glaive;-pike;-trident;-*spear", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeGreatsword;-WeapTypePike;-ShWeapTypeGlaive;-ShWeapTypeTrident;-ShWeapTypeSpear" };
-            DaiKatana = new WeaponSettings { Damage = 14, Reach = 1.3f, Speed = 0.85f, Stagger = 1.1f, Skill = WeaponSkill.TwoHanded, NamedIDs = "dai*katana;nodachi", KeywordIDs = "" };
-            ShortHalberd = new WeaponSettings { Damage = 15, Reach = 1.45f, Speed = 0.75f, Stagger = 1.1f, Skill = WeaponSkill.TwoHanded, NamedIDs = "", KeywordIDs = "ShWeapTypeHalberd;" };
-            LongHalberd = new WeaponSettings { Damage = 15, Reach = 1.55f, Speed = 0.65f, Stagger = 1.1f, Skill = WeaponSkill.TwoHanded, NamedIDs = "halberd", KeywordIDs = "WeapTypeHalberd;-ShWeapTypeHalberd" };
-            LongMace = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, Skill = WeaponSkill.TwoHanded, NamedIDs = "long*mace", KeywordIDs = "ShWeapTypeLongMace" };
-            Battleaxe = new WeaponSettings { Damage = 16, Reach = 1.3f, Speed = 0.7f, Stagger = 1.15f, Skill = WeaponSkill.TwoHanded, NamedIDs = "-halberd", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeBattleaxe" };
-            Warhammer = new WeaponSettings { Damage = 18, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, Skill = WeaponSkill.TwoHanded, NamedIDs = "-maul;-*mace;-*staff", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarhammer" };
+            // Initialize weapon categories
+            Daggers = new WeaponCategory();
+            OnehandedSwords = new WeaponCategory();
+            OnehandedSpears = new WeaponCategory();
+            OnehandedBluntWeapons = new WeaponCategory();
+            OnehandedAxes = new WeaponCategory();
+            TwohandedSwords = new WeaponCategory();
+            TwohandedSpears = new WeaponCategory();
+            TwohandedBluntWeapons = new WeaponCategory();
+            TwohandedAxes = new WeaponCategory();
+            Others = new WeaponCategory();
+
+            // Initialize weapons in each category
+            InitializeDaggers();
+            InitializeOnehandedSwords();
+            InitializeOnehandedSpears();
+            InitializeOnehandedBluntWeapons();
+            InitializeOnehandedAxes();
+            InitializeTwohandedSwords();
+            InitializeTwohandedSpears();
+            InitializeTwohandedBluntWeapons();
+            InitializeTwohandedAxes();
+            InitializeOthers();
+        }
+
+        private void InitializeDaggers()
+        {
+            Daggers.Weapons["Dagger"] = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "-tanto;-claw", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeDagger" } };
+            Daggers.Weapons["Tanto"] = new WeaponSettings { Damage = 4, Reach = 0.7f, Speed = 1.3f, Stagger = 0.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "tanto", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeDagger;-WeapTypeClaw" } };
+            Daggers.Weapons["Claw"] = new WeaponSettings { Damage = 5, Reach = 0.7f, Speed = 1.2f, Stagger = 0.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "claw", KeywordIDs = "WeapTypeClaw" } };
+        }
+
+        private void InitializeOnehandedSwords()
+        {
+            OnehandedSwords.Weapons["Sword"] = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.75f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "-katana;-spear;-shortspear;-javelin;-scimitar;-akaviri sword;-blades sword", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword;-ShWeapTypeShortspear;-WeapTypeWhip;-WeapTypeKatana;-WeapTypeScimitar" } };
+            OnehandedSwords.Weapons["Rapier"] = new WeaponSettings { Damage = 5, Reach = 1.1f, Speed = 1.15f, Stagger = 0.6f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "rapier", KeywordIDs = "WeapTypeRapier" } };
+            OnehandedSwords.Weapons["Wakizashi"] = new WeaponSettings { Damage = 5, Reach = 0.9f, Speed = 1.215f, Stagger = 0.6f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "wakizashi;ninjato", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" } };
+            OnehandedSwords.Weapons["Shortsword"] = new WeaponSettings { Damage = 6, Reach = 0.9f, Speed = 1.15f, Stagger = 0.6f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "shortsword", KeywordIDs = "ShWeapTypeShortsword" } };
+            OnehandedSwords.Weapons["Katana"] = new WeaponSettings { Damage = 6, Reach = 1.0f, Speed = 1.125f, Stagger = 0.75f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "katana;akaviri sword;blades sword", KeywordIDs = "WeapTypeKatana" } };
+            OnehandedSwords.Weapons["Scimitar"] = new WeaponSettings { Damage = 6, Reach = 0.95f, Speed = 1.15f, Stagger = 0.7f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" } };
+        }
+
+        private void InitializeOnehandedSpears()
+        {
+            OnehandedSpears.Weapons["Javelin"] = new WeaponSettings { Damage = 5, Reach = 1.0f, Speed = 1.2f, Stagger = 0.5f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "javelin", KeywordIDs = "WeapTypeJavelin" } };
+            OnehandedSpears.Weapons["Spear, onehanded"] = new WeaponSettings { Damage = 6, Reach = 1.3f, Speed = 1.1f, Stagger = 0.75f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "spear", KeywordIDs = "WeapTypeSpear" } };
+            OnehandedSpears.Weapons["Shortspear"] = new WeaponSettings { Damage = 7, Reach = 1.2f, Speed = 0.9f, Stagger = 0.75f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "shortspear", KeywordIDs = "ShWeapTypeShortspear" } };
+        }
+
+        private void InitializeOnehandedBluntWeapons()
+        {
+            OnehandedBluntWeapons.Weapons["Mace"] = new WeaponSettings { Damage = 9, Reach = 1.0f, Speed = 0.8f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "-club;-mallet;-hammer;-war pick", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeMace;-ShWeapTypeMaul" } };
+            OnehandedBluntWeapons.Weapons["Club"] = new WeaponSettings { Damage = 7, Reach = 1.0f, Speed = 1.0f, Stagger = 0.9f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "club", KeywordIDs = "ShWeapTypeClub" } };
+            OnehandedBluntWeapons.Weapons["Maul"] = new WeaponSettings { Damage = 12, Reach = 1.0f, Speed = 0.75f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "maul", KeywordIDs = "ShWeapTypeMaul" } };
+        }
+
+        private void InitializeOnehandedAxes()
+        {
+            OnehandedAxes.Weapons["War Axe"] = new WeaponSettings { Damage = 8, Reach = 1.0f, Speed = 0.9f, Stagger = 0.85f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "-hatchet", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarAxe;-ShWeapTypeHatchet" } };
+            OnehandedAxes.Weapons["Hatchet"] = new WeaponSettings { Damage = 7, Reach = 0.85f, Speed = 1.1f, Stagger = 0.6f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "hatchet", KeywordIDs = "ShWeapTypeHatchet" } };
+        }
+
+        private void InitializeTwohandedSwords()
+        {
+            TwohandedSwords.Weapons["Greatsword"] = new WeaponSettings { Damage = 15, Reach = 1.3f, Speed = 0.75f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "-dai*katana;-nodachi;-glaive;-pike;-trident;-*spear", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeGreatsword;-WeapTypePike;-ShWeapTypeGlaive;-ShWeapTypeTrident;-ShWeapTypeSpear" } };
+            TwohandedSwords.Weapons["Glaive"] = new WeaponSettings { Damage = 13, Reach = 1.6f, Speed = 0.8f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "glaive", KeywordIDs = "ShWeapTypeGlaive" } };
+            TwohandedSwords.Weapons["DaiKatana"] = new WeaponSettings { Damage = 14, Reach = 1.3f, Speed = 0.85f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "dai*katana;nodachi", KeywordIDs = "" } };
+        }
+
+        private void InitializeTwohandedSpears()
+        {
+            TwohandedSpears.Weapons["Pike"] = new WeaponSettings { Damage = 12, Reach = 1.7f, Speed = 0.7f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "pike", KeywordIDs = "WeapTypePike" } };
+            TwohandedSpears.Weapons["Spear, twohanded"] = new WeaponSettings { Damage = 12, Reach = 1.6f, Speed = 0.8f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "spear;half*pike", KeywordIDs = "ShWeapTypeSpear" } };
+            TwohandedSpears.Weapons["Trident"] = new WeaponSettings { Damage = 14, Reach = 1.5f, Speed = 0.7f, Stagger = 1.15f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "trident", KeywordIDs = "ShWeapTypeTrident" } };
+        }
+
+        private void InitializeTwohandedBluntWeapons()
+        {
+            TwohandedBluntWeapons.Weapons["Warhammer"] = new WeaponSettings { Damage = 18, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "-maul;-*mace;-*staff", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarhammer" } };
+            TwohandedBluntWeapons.Weapons["Quarterstaff, shorter"] = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "short*staff", KeywordIDs = "ShWeapTypeQuarterStaff" } };
+            TwohandedBluntWeapons.Weapons["Quarterstaff"] = new WeaponSettings { Damage = 10, Reach = 1.2f, Speed = 1.1f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "battle*staff;quarterstaff;-short*staff", KeywordIDs = "WeapTypeQtrStaff" } };
+            TwohandedBluntWeapons.Weapons["LongMace"] = new WeaponSettings { Damage = 17, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "long*mace", KeywordIDs = "ShWeapTypeLongMace" } };
+        }
+
+        private void InitializeTwohandedAxes()
+        {
+            TwohandedAxes.Weapons["Battleaxe"] = new WeaponSettings { Damage = 16, Reach = 1.3f, Speed = 0.7f, Stagger = 1.15f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "-halberd", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeBattleaxe" } };
+            TwohandedAxes.Weapons["Halberd, shorter"] = new WeaponSettings { Damage = 15, Reach = 1.45f, Speed = 0.75f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "", KeywordIDs = "ShWeapTypeHalberd;" } };
+            TwohandedAxes.Weapons["Halberd"] = new WeaponSettings { Damage = 15, Reach = 1.55f, Speed = 0.65f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "halberd", KeywordIDs = "WeapTypeHalberd;-ShWeapTypeHalberd" } };
+        }
+
+        private void InitializeOthers()
+        {
+            Others.Weapons["Whip"] = new WeaponSettings { Damage = 6, Reach = 2.0f, Speed = 0.9f, Stagger = 0.4f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "whip", KeywordIDs = "WeapTypeWhip" } };
         }
 
         [SettingName("Plugin Processing")]
         [Tooltip("Choose which plugins to process")]
-        public PluginFilter PluginFilter { get; set; } = PluginFilter.IncludePlugins;
+        public PluginFilter PluginFilter { get; set; }
 
         [SettingName("Plugin List (semicolon separated)")]
         [Tooltip("List of plugins to include or exclude (semicolon separated)")]
@@ -83,7 +161,7 @@ namespace Weapon_Mod_Synergy
 
         [SettingName("WACCF material tiers")]
         [Tooltip("Enable support for WACCF material tiers")]
-        public bool WACCFMaterialTiers { get; set; } = false;
+        public bool WACCFMaterialTiers { get; set; }
 
         [SettingName("Artificer")]
         [Tooltip("Honor Artificer changes")]
@@ -93,104 +171,52 @@ namespace Weapon_Mod_Synergy
         [Tooltip("Honor Mysticism changes to bound weapons")]
         public bool Mysticism { get; set; } = true;
 
-        // Weapon settings
-        [SettingName("Dagger (iron)")]
-        public WeaponSettings Dagger { get; set; }
+        // Weapon categories
+        [JsonProperty]
+        public WeaponCategory Daggers { get; set; }
 
-        [SettingName("Tanto (iron)")]
-        public WeaponSettings Tanto { get; set; }
+        [JsonProperty]
+        public WeaponCategory OnehandedSwords { get; set; }
 
-        [SettingName("Claw (iron)")]
-        public WeaponSettings Claw { get; set; }
+        [JsonProperty]
+        public WeaponCategory OnehandedSpears { get; set; }
 
-        [SettingName("Javelin (iron)")]
-        public WeaponSettings Javelin { get; set; }
+        [JsonProperty]
+        public WeaponCategory OnehandedBluntWeapons { get; set; }
 
-        [SettingName("Rapier (iron)")]
-        public WeaponSettings Rapier { get; set; }
+        [JsonProperty]
+        public WeaponCategory OnehandedAxes { get; set; }
 
-        [SettingName("Wakizashi (iron)")]
-        public WeaponSettings Wakizashi { get; set; }
+        [JsonProperty]
+        public WeaponCategory TwohandedSwords { get; set; }
 
-        [SettingName("Shortsword (iron)")]
-        public WeaponSettings Shortsword { get; set; }
+        [JsonProperty]
+        public WeaponCategory TwohandedSpears { get; set; }
 
-        [SettingName("Spear one handed (iron)")]
-        public WeaponSettings Spear1h { get; set; }
+        [JsonProperty]
+        public WeaponCategory TwohandedBluntWeapons { get; set; }
 
-        [SettingName("Sword (iron)")]
-        public WeaponSettings Sword { get; set; }
+        [JsonProperty]
+        public WeaponCategory TwohandedAxes { get; set; }
 
-        [SettingName("Scimitar (iron)")]
-        public WeaponSettings Scimitar { get; set; }
-
-        [SettingName("Katana (iron)")]
-        public WeaponSettings Katana { get; set; }
-
-        [SettingName("Hatchet (iron)")]
-        public WeaponSettings Hatchet { get; set; }
-
-        [SettingName("Club (iron)")]
-        public WeaponSettings Club { get; set; }
-
-        [SettingName("Shortspear (iron)")]
-        public WeaponSettings Shortspear { get; set; }
-
-        [SettingName("Whip (iron)")]
-        public WeaponSettings Whip { get; set; }
-
-        [SettingName("War Axe (iron)")]
-        public WeaponSettings WarAxe { get; set; }
-
-        [SettingName("Mace (iron)")]
-        public WeaponSettings Mace { get; set; }
-
-        [SettingName("Maul (iron)")]
-        public WeaponSettings Maul { get; set; }
-
-        [SettingName("Quarterstaff, shorter (iron)")]
-        public WeaponSettings Shortstaff { get; set; }
-
-        [SettingName("Quarterstaff (iron)")]
-        public WeaponSettings Quarterstaff { get; set; }
-
-        [SettingName("Spear two handed (iron)")]
-        public WeaponSettings Spear2h { get; set; }
-
-        [SettingName("Pike (iron)")]
-        public WeaponSettings Pike { get; set; }
-
-        [SettingName("Glaive (iron)")]
-        public WeaponSettings Glaive { get; set; }
-
-        [SettingName("Trident (iron)")]
-        public WeaponSettings Trident { get; set; }
-
-        [SettingName("Greatsword (iron)")]
-        public WeaponSettings Greatsword { get; set; }
-
-        [SettingName("Dai-Katana (iron)")]
-        public WeaponSettings DaiKatana { get; set; }
-
-        [SettingName("Halberd, shorter (iron)")]
-        public WeaponSettings ShortHalberd { get; set; }
-
-        [SettingName("Halberd (iron)")]
-        public WeaponSettings LongHalberd { get; set; }
-
-        [SettingName("Long Mace (iron)")]
-        public WeaponSettings LongMace { get; set; }
-
-        [SettingName("Battleaxe (iron)")]
-        public WeaponSettings Battleaxe { get; set; }
-
-        [SettingName("Warhammer (iron)")]
-        public WeaponSettings Warhammer { get; set; }
+        [JsonProperty]
+        public WeaponCategory Others { get; set; }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
     public class WeaponSettings
     {
+        public WeaponSettings()
+        {
+            MatchLogicSettings = new MatchLogicSettings();
+            Enabled = true; // Default to enabled
+        }
+
+        [SettingName("Enabled")]
+        [Tooltip("Whether this weapon type is enabled")]
+        [JsonProperty]
+        public bool Enabled { get; set; }
+
         [SettingName("Damage")]
         [Tooltip("Base damage of the weapon")]
         [JsonProperty]
@@ -226,6 +252,15 @@ namespace Weapon_Mod_Synergy
         [JsonProperty]
         public float CriticalDamageMultiplier { get; set; } = 1.0f;
 
+        [SettingName("Match Logic")]
+        [Tooltip("Weapon match logic")]
+        [JsonProperty]
+        public MatchLogicSettings MatchLogicSettings { get; set; }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public class MatchLogicSettings
+    {
         [SettingName("Skill")]
         [Tooltip("Skill required to use the weapon")]
         [JsonProperty]

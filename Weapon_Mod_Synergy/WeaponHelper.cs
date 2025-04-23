@@ -111,16 +111,16 @@ namespace Weapon_Mod_Synergy
             set => _debugMode = value;
         }
 
-        private readonly Dictionary<string, WeaponSettings> _weaponSettings;
+        private readonly Settings _settings;
         private static Action<string>? _logger;
         private static List<MaterialData> _materialDataKeyword = new();
         private static List<MaterialData> _materialDataName = new();
         private static List<SpecialWeaponData> _specialWeapons = new();
         private readonly IPatcherState<ISkyrimMod, ISkyrimModGetter> _state;
 
-        public WeaponHelper(Dictionary<string, WeaponSettings> weaponSettings, Action<string> logger, IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
+        public WeaponHelper(Settings settings, Action<string> logger, IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            _weaponSettings = weaponSettings ?? throw new ArgumentNullException(nameof(weaponSettings));
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _state = state ?? throw new ArgumentNullException(nameof(state));
             LoadMaterialData();
@@ -279,74 +279,99 @@ namespace Weapon_Mod_Synergy
             DebugLog($"      Skill Type: {skillType}");
             DebugLog($"      Keywords: {string.Join(", ", keywords)}");
 
-            foreach (var setting in _weaponSettings)
+            // Check each category
+            var categories = new[]
             {
-                var settingKey = setting.Key;
-                var settings = setting.Value;
+                _settings.Daggers,
+                _settings.OnehandedSwords,
+                _settings.OnehandedSpears,
+                _settings.OnehandedBluntWeapons,
+                _settings.OnehandedAxes,
+                _settings.TwohandedSwords,
+                _settings.TwohandedSpears,
+                _settings.TwohandedBluntWeapons,
+                _settings.TwohandedAxes,
+                _settings.Others
+            };
 
-                DebugLog($"   Checking setting key: {settingKey}");
-                DebugLog($"      Skill: {settings.Skill}");
-                DebugLog($"      NamedIDs: {settings.NamedIDs}");
-                DebugLog($"      KeywordIDs: {settings.KeywordIDs}");
-                DebugLog($"      SearchLogic: {settings.SearchLogic}");
+            foreach (var category in categories)
+            {
+                foreach (var setting in category.Weapons)
+                {
+                    var settingKey = setting.Key;
+                    var settings = setting.Value;
 
-                // Check if both fields are empty
-                if (string.IsNullOrWhiteSpace(settings.NamedIDs) && string.IsNullOrWhiteSpace(settings.KeywordIDs))
-                {
-                    DebugLog($"   Both NamedIDs and KeywordIDs are empty, skipping");
-                    continue;
-                }
+                    // Skip disabled weapons
+                    if (!settings.Enabled)
+                    {
+                        DebugLog($"   Setting key {settingKey} is disabled, skipping");
+                        continue;
+                    }
 
-                // Check skill type match
-                if (settings.Skill != skillType && settings.Skill != WeaponSkill.Either)
-                {
-                    DebugLog($"   Skill type mismatch: {settings.Skill} != {skillType}");
-                    continue;
-                }
+                    DebugLog($"   Checking setting key: {settingKey}");
+                    DebugLog($"      Skill: {settings.MatchLogicSettings.Skill}");
+                    DebugLog($"      NamedIDs: {settings.MatchLogicSettings.NamedIDs}");
+                    DebugLog($"      KeywordIDs: {settings.MatchLogicSettings.KeywordIDs}");
+                    DebugLog($"      SearchLogic: {settings.MatchLogicSettings.SearchLogic}");
 
-                // Process name patterns
-                bool nameMatch = true;
-                if (!string.IsNullOrWhiteSpace(settings.NamedIDs))
-                {
-                    DebugLog($"   Matching name patterns");
-                    nameMatch = IsMatch(weaponName, settings.NamedIDs);
-                    DebugLog($"   Name match: {nameMatch}");
-                }
+                    // Check if both fields are empty
+                    if (string.IsNullOrWhiteSpace(settings.MatchLogicSettings.NamedIDs) && string.IsNullOrWhiteSpace(settings.MatchLogicSettings.KeywordIDs))
+                    {
+                        DebugLog($"   Both NamedIDs and KeywordIDs are empty, skipping");
+                        continue;
+                    }
 
-                // Process keyword patterns
-                bool keywordMatch = true;
-                if (!string.IsNullOrWhiteSpace(settings.KeywordIDs))
-                {
-                    DebugLog($"   Matching keyword patterns");
-                    keywordMatch = IsMatch(string.Join(", ", keywords), settings.KeywordIDs);
-                    DebugLog($"   Keyword match: {keywordMatch}");
-                }
+                    // Check skill type match
+                    if (settings.MatchLogicSettings.Skill != skillType && settings.MatchLogicSettings.Skill != WeaponSkill.Either)
+                    {
+                        DebugLog($"   Skill type mismatch: {settings.MatchLogicSettings.Skill} != {skillType}");
+                        continue;
+                    }
 
-                // Determine final match based on SearchLogic
-                bool finalMatch;
-                if (string.IsNullOrWhiteSpace(settings.NamedIDs))
-                {
-                    // If only NamedIDs is empty, use keyword match
-                    finalMatch = keywordMatch;
-                }
-                else if (string.IsNullOrWhiteSpace(settings.KeywordIDs))
-                {
-                    // If only KeywordIDs is empty, use name match
-                    finalMatch = nameMatch;
-                }
-                else
-                {
-                    // Both fields have patterns, use SearchLogic
-                    finalMatch = settings.SearchLogic == LogicOperator.AND
-                        ? nameMatch && keywordMatch
-                        : nameMatch || keywordMatch;
-                }
-                DebugLog($"   Match result for setting key {settingKey}: {finalMatch}");
+                    // Process name patterns
+                    bool nameMatch = true;
+                    if (!string.IsNullOrWhiteSpace(settings.MatchLogicSettings.NamedIDs))
+                    {
+                        DebugLog($"   Matching name patterns");
+                        nameMatch = IsMatch(weaponName, settings.MatchLogicSettings.NamedIDs);
+                        DebugLog($"   Name match: {nameMatch}");
+                    }
 
-                if (finalMatch)
-                {
-                    DebugLog($"   Returning setting key: {settingKey}");
-                    return settingKey;
+                    // Process keyword patterns
+                    bool keywordMatch = true;
+                    if (!string.IsNullOrWhiteSpace(settings.MatchLogicSettings.KeywordIDs))
+                    {
+                        DebugLog($"   Matching keyword patterns");
+                        keywordMatch = IsMatch(string.Join(", ", keywords), settings.MatchLogicSettings.KeywordIDs);
+                        DebugLog($"   Keyword match: {keywordMatch}");
+                    }
+
+                    // Determine final match based on SearchLogic
+                    bool finalMatch;
+                    if (string.IsNullOrWhiteSpace(settings.MatchLogicSettings.NamedIDs))
+                    {
+                        // If only NamedIDs is empty, use keyword match
+                        finalMatch = keywordMatch;
+                    }
+                    else if (string.IsNullOrWhiteSpace(settings.MatchLogicSettings.KeywordIDs))
+                    {
+                        // If only KeywordIDs is empty, use name match
+                        finalMatch = nameMatch;
+                    }
+                    else
+                    {
+                        // Both fields have patterns, use SearchLogic
+                        finalMatch = settings.MatchLogicSettings.SearchLogic == LogicOperator.AND
+                            ? nameMatch && keywordMatch
+                            : nameMatch || keywordMatch;
+                    }
+                    DebugLog($"   Match result for setting key {settingKey}: {finalMatch}");
+
+                    if (finalMatch)
+                    {
+                        DebugLog($"   Returning setting key: {settingKey}");
+                        return settingKey;
+                    }
                 }
             }
 
