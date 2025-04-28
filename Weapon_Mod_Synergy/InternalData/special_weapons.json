@@ -1,8 +1,63 @@
-[  
+[
+  {
+    "editor_id": "dunFolgunthurMikrulSword02",
+    "form_key": "0F5D1B:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword03",
+    "form_key": "0F5D1A:Skyrim.esm",
+    "damage_offset": 1
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword04",
+    "form_key": "0F5D1B:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword05",
+    "form_key": "0F5D1C:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword06",
+    "form_key": "0F5D1D:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade01",
+    "form_key": "0D37CE:Skyrim.esm",
+    "damage_offset": 1
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade02",
+    "form_key": "0F5D2A:Skyrim.esm",
+    "damage_offset": 1
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade03",
+    "form_key": "0F5D2B:Skyrim.esm",
+    "damage_offset": 1
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade04",
+    "form_key": "0F5D2C:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade05",
+    "form_key": "0F5D2D:Skyrim.esm",
+    "damage_offset": 4
+  },
   {
     "editor_id": "DragonPriestDagger",
     "form_key": "01C1FE:Skyrim.esm",
     "damage_offset": 2
+  },
+  {
+    "editor_id": "DA07MehrunesRazor",
+    "form_key": "01C4E7:Skyrim.esm",
+    "damage_offset": 7
   },
   {
     "editor_id": "MQ203AkaviriKatana1",
@@ -130,6 +185,41 @@
     "damage_offset": 6
   },
   {
+    "editor_id": "IcicleWhip01",
+    "form_key": "31BDE9:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "IcicleWhip02",
+    "form_key": "31BDEE:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "IcicleWhip03",
+    "form_key": "31BDEF:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "IcicleWhip04",
+    "form_key": "31BDF0:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "IcicleWhip05",
+    "form_key": "31BDF1:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "IcicleWhip06",
+    "form_key": "31BDF2:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
+    "editor_id": "IcicleWhip06DW",
+    "form_key": "31BE0B:NewArmoury.esp",
+    "damage_offset": 6
+  },
+  {
     "editor_id": "SSM_Javelin_Riekling",
     "form_key": "010393:SkyrimSpearMechanic.esp",
     "damage_offset": -1
@@ -142,7 +232,8 @@
   {
     "editor_id": "DA03RuefulAxe",
     "form_key": "01C4E6:Skyrim.esm",
-    "damage_offset": 6
+    "damage_offset": 6,
+    "speed_offset": -0.2
   },
   {
     "editor_id": "dunPinewoodGroveWoodsmansFriend",
@@ -174,6 +265,16 @@
     "damage_offset": 1
   },
   {
+    "editor_id": "MG07DraugrMagicAxe",
+    "form_key": "0F82FA:Skyrim.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "MG07DraugrMagicSword",
+    "form_key": "0F71DD:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
     "editor_id": "DA08EbonyBlade",
     "form_key": "04A38F:Skyrim.esm",
     "damage_offset": 7
@@ -194,11 +295,14 @@
     "damage_offset": 2
   },
   {
+    "editor_id": "Scimitar",
+    "form_key": "07A91A:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
     "editor_id": "dunKatariahScimitar",
     "form_key": "06EA8B:Skyrim.esm",
-    "damage_offset": 4,
-    "critical_damage_offset": -1,
-    "speed_offset": 0.2
+    "damage_offset": 4
   },
   {
     "editor_id": "dunAnsilvundGhostblade",
@@ -230,12 +334,15 @@
     "speed_offset": 0.2
   },
   {
-    "editor_id": "dunHaltedStreamPoachersAxe",
-    "form_key": "0AE086:Skyrim.esm",
-    "damage_offset": -3,
-    "speed_offset": 0.4,
-    "reach_offset": -0.3,
-    "stagger_offset": -100
+    "editor_id": "dunRedEagleSwordUpgraded",
+    "form_key": "0AE087:Skyrim.esm",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "ExecutionerAxe",
+    "form_key": "0BE25E:Skyrim.esm",
+    "damage_offset": 1,
+    "reach_offset": 0.2
   },
   {
     "editor_id": "dunLostValleyRedoubtAxe",
@@ -329,14 +436,6 @@
     "damage_offset": 4
   },
   {
-    "editor_id": "DLC2dunKolbjornRalisPickaxe",
-    "form_key": "0179C9:Dragonborn.esm",
-    "damage_offset": -3,
-    "speed_offset": 0.4,
-    "reach_offset": -0.3,
-    "stagger_offset": -100
-  },
-  {
     "editor_id": "DLC2dunHaknirScimitar01",
     "form_key": "018DDD:Dragonborn.esm",
     "damage_offset": 6,
@@ -380,14 +479,6 @@
     "editor_id": "DLC2MKMiraakSword3",
     "form_key": "039FB4:Dragonborn.esm",
     "damage_offset": 9
-  },
-  {
-    "editor_id": "DLC2AncientNordPickaxe",
-    "form_key": "0398E6:Dragonborn.esm",
-    "damage_offset": -3,
-    "speed_offset": 0.4,
-    "reach_offset": -0.3,
-    "stagger_offset": -100
   },
   {
     "editor_id": "ccASVSSE001_Trueflame",
@@ -671,12 +762,12 @@
     "stagger_offset": 0.3
   },
   {
-    "editor_id": "DaelarSwordMidwoodIsleUnenchanted",
+    "editor_id": "DaelarSwordMidwoodIsleUnenchant",
     "form_key": "04184E:Midwood Isle.esp",
     "damage_offset": 5
   },
   {
-    "editor_id": "DaelarSwordMidwoodIsleEnchanted",
+    "editor_id": "DaelarSwordMidwoodIsleEnchant",
     "form_key": "041850:Midwood Isle.esp",
     "damage_offset": 5
   },
@@ -733,7 +824,7 @@
     "damage_offset": 4
   },
   {
-    "editor_id": "manny_GF_Weapon_ShadowScimitar",
+    "editor_id": "manny_GF_Weapon_BladeOfYokuda",
     "form_key": "05F05D:Gray Fox Cowl.esm",
     "damage_offset": 4
   },
@@ -761,5 +852,286 @@
     "stagger_offset": 0.2,
     "critical_damage_offset": -1,
     "critical_chance_offset": 0.2
+  },
+  {
+    "editor_id": "SariqsDagger01",
+    "form_key": "06BB89:KhajiitWillFollow.esp",
+    "damage_offset": 6,
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "SariqsDagger02",
+    "form_key": "06BB8A:KhajiitWillFollow.esp",
+    "damage_offset": 6,
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "KWF_DasamaHammer",
+    "form_key": "82CD26:KhajiitWillFollow.esp",
+    "damage_offset": -3
+  },
+  {
+    "editor_id": "SOS_BOBRollingPin",
+    "form_key": "0799DD:Skyrim On Skooma.esp",
+    "damage_offset": 1,
+    "reach_offset": -0.05
+  },
+  {
+    "editor_id": "InigoThunderSword",
+    "form_key": "0D955D:Inigo.esp",
+    "damage_offset": 8
+  },
+  {
+    "editor_id": "000RedwaveSword",
+    "form_key": "000D6B:WZOblivionArtifacts.esp",
+    "damage_offset": 8
+  },
+  {
+    "editor_id": "000WitsplinterElvenDagger",
+    "form_key": "001DB6:WZOblivionArtifacts.esp",
+    "damage_offset": 5,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "000AmelionSwordWeapon",
+    "form_key": "002333:WZOblivionArtifacts.esp",
+    "damage_offset": 3,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "000AntiqueSword",
+    "form_key": "003486:WZOblivionArtifacts.esp",
+    "damage_offset": 4,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "000BattleaxeofHate",
+    "form_key": "003487:WZOblivionArtifacts.esp",
+    "damage_offset": 0,
+    "critical_damage_offset": -1
+  },
+  {
+    "editor_id": "000Kordonsword",
+    "form_key": "003FCF:WZOblivionArtifacts.esp",
+    "damage_offset": 8
+  },
+  {
+    "editor_id": "000AkaviriSunderblade",
+    "form_key": "00453A:WZOblivionArtifacts.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": -2
+  },
+  {
+    "editor_id": "000HonorbladeofChorrol",
+    "form_key": "020439:WZOblivionArtifacts.esp",
+    "damage_offset": 7,
+    "critical_damage_offset": -1
+  },
+  {
+    "editor_id": "000HonorbladeofChorrolCursed",
+    "form_key": "02043D:WZOblivionArtifacts.esp",
+    "damage_offset": 0,
+    "critical_damage_offset": -1
+  },
+  {
+    "editor_id": "000SufferthornDagger",
+    "form_key": "02043E:WZOblivionArtifacts.esp",
+    "damage_offset": 5,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "000HatredsHeart",
+    "form_key": "022C19:WZOblivionArtifacts.esp",
+    "damage_offset": 8
+  },
+  {
+    "editor_id": "000Rockshatter",
+    "form_key": "027B65:WZOblivionArtifacts.esp",
+    "damage_offset": 5,
+    "critical_damage_offset": -1
+  },
+  {
+    "editor_id": "000RedwaveSword2",
+    "form_key": "03BAEE:WZOblivionArtifacts.esp",
+    "damage_offset": 8
+  },
+  {
+    "editor_id": "000RedwaveSword3",
+    "form_key": "040A2D:WZOblivionArtifacts.esp",
+    "damage_offset": 8
+  },
+  {
+    "editor_id": "000BlackwaterSteelSword",
+    "form_key": "07F8B4:WZOblivionArtifacts.esp",
+    "damage_offset": 2,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "000BlackwaterSteelSwordUpgraded",
+    "form_key": "08A088:WZOblivionArtifacts.esp",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "000FirstMateScimitarBlackwater",
+    "form_key": "09457D:WZOblivionArtifacts.esp",
+    "damage_offset": 4,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "DBDestroyNazirScimitar02",
+    "form_key": "0A5854:Destroy the Dark Brotherhood - Quest Expansion.esp",
+    "damage_offset": 4
+  },
+  {
+    "editor_id": "BSMAyleidWarAxe",
+    "form_key": "001865:BeyondSkyrimMerchant.esp",
+    "damage_offset": 5,
+    "speed_offset": 0.02,
+    "stagger_offset": -0.02,
+    "critical_damage_offset": 3
+  },
+  {
+    "editor_id": "BSMRimmenMace",
+    "form_key": "001875:BeyondSkyrimMerchant.esp",
+    "damage_offset": 1
+  },
+  {
+    "editor_id": "BSMRoscreanIronGreatsword",
+    "form_key": "001876:BeyondSkyrimMerchant.esp",
+    "damage_offset": 0,
+    "stagger_offset": -0.1
+  },
+  {
+    "editor_id": "BSMMithrilBattleaxe",
+    "form_key": "001877:BeyondSkyrimMerchant.esp",
+    "damage_offset": 7,
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "BSMCommonKnife01",
+    "form_key": "0131ED:BeyondSkyrimMerchant.esp",
+    "damage_offset": -1
+  },
+  {
+    "editor_id": "BSMCommonKnife02",
+    "form_key": "0131EE:BeyondSkyrimMerchant.esp",
+    "damage_offset": -2,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "BSMFishbat",
+    "form_key": "013207:BeyondSkyrimMerchant.esp",
+    "damage_offset": -5,
+    "critical_damage_offset": 10,
+    "speed_offset": 0.14,
+    "reach_offset": -0.2,
+    "stagger_offset": -0.1
+  },
+  {
+    "editor_id": "BSMBonemoldWarAxe",
+    "form_key": "013208:BeyondSkyrimMerchant.esp",
+    "damage_offset": 4,
+    "speed_offset": 0.02,
+    "stagger_offset": -0.1,
+    "critical_damage_offset": -2
+  },
+  {
+    "editor_id": "aaIS3EVvarDaedricCrescent",
+    "form_key": "000D63:Lore Weapon Expansion - Daedric Crescent.esp",
+    "damage_offset": 11,
+    "speed_offset": 0.05,
+    "reach_offset": -0.2
+  },
+  {
+    "editor_id": "aaIS3ECyrodGoldbrand",
+    "form_key": "000D63:Lore Weapon Expansion - Goldbrand.esp",
+    "damage_offset": 9
+  },
+  {
+    "editor_id": "aaIS3ECyrodEltonbrand",
+    "form_key": "00230C:Lore Weapon Expansion - Goldbrand.esp",
+    "damage_offset": 11
+  },
+  {
+    "editor_id": "aaIS3EKOTNCrusaderMace",
+    "form_key": "000D63:Lore Weapon Expansion - Relics of the Crusader.esp",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "aaIS3EKOTNCrusaderSword",
+    "form_key": "00182D:Lore Weapon Expansion - Relics of the Crusader.esp",
+    "damage_offset": 7
+  },
+  {
+    "editor_id": "PI_DraugrLordWarAxeUnique",
+    "form_key": "34480B:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_DraugrLordMaceUnique",
+    "form_key": "344811:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_DraugrLordAxeUnique",
+    "form_key": "344812:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 1,
+    "reach_offset": 0.2
+  },
+  {
+    "editor_id": "PI_DraugrLordWarhammerUnique",
+    "form_key": "344813:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_DragonPriestDaggerUnique",
+    "form_key": "344814:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_DraugrLordClubUnique",
+    "form_key": "344826:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 6,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "PI_DraugrLordGreatswordUnique",
+    "form_key": "344830:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_DraugrLordGlaiveUnique",
+    "form_key": "344833:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "PI_DraugrLordTridentUnique",
+    "form_key": "344834:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 4
+  },
+  {
+    "editor_id": "PI_DraugrLordSwordUnique",
+    "form_key": "34483F:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_DraugrLordLongMaceUnique",
+    "form_key": "344840:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 1
+  },
+  {
+    "editor_id": "PI_lunarBlade",
+    "form_key": "06B408:PrvtI_LunarArmory.esp",
+    "damage_offset": 8
   }
 ]

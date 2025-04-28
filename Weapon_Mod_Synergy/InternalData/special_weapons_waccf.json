@@ -1,7 +1,163 @@
 [
   {
-    "editor_id": "BoundWeaponBattleaxe",
-    "form_key": "058F5E:Skyrim.esm",
-    "damage_offset": 1
+    "editor_id": "T03Nettlebane",
+    "form_key": "01C492:Skyrim.esm",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "DA03RuefulAxe",
+    "form_key": "01C4E6:Skyrim.esm",
+    "damage_offset": 6,
+    "speed_offset": 0.0
+  },
+  {
+    "editor_id": "DA06Volendrung",
+    "form_key": "02ACD2:Skyrim.esm",
+    "damage_offset": 9,
+    "stagger_offset": 0.0,
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "DA07MehrunesRazor",
+    "form_key": "01C4E7:Skyrim.esm",
+    "damage_offset": 7,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "DA08EbonyBlade",
+    "form_key": "04A38F:Skyrim.esm",
+    "damage_offset": 7,
+    "speed_offset": 0.1
+  },
+  {
+    "editor_id": "DA08RealEbonyBlade",
+    "form_key": "0EA29C:Skyrim.esm",
+    "damage_offset": 7,
+    "speed_offset": 0.1,
+    "stagger_offset": 0.0
+  },
+  {
+    "editor_id": "DLC2dunHaknirScimitar01",
+    "form_key": "018DDD:Dragonborn.esm",
+    "damage_offset": 6,
+    "stagger_offset": 0.1
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword03",
+    "form_key": "0F5D1A:Skyrim.esm",
+    "damage_offset": 2
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword04",
+    "form_key": "0F5D1B:Skyrim.esm",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword06",
+    "form_key": "0F5D1D:Skyrim.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade02",
+    "form_key": "0F5D2A:Skyrim.esm",
+    "damage_offset": 2
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade03",
+    "form_key": "0F5D2B:Skyrim.esm",
+    "damage_offset": 3
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade05",
+    "form_key": "0F5D2D:Skyrim.esm",
+    "damage_offset": 5
+  },
+  {
+    "editor_id": "dunLiarsRetreatLonghammer",
+    "form_key": "0AE085:Skyrim.esm",
+    "damage_offset": 5,
+    "speed_offset": 0.2
+  },
+  {
+    "editor_id": "FFRiften13ArkayDagger",
+    "form_key": "043E1E:Skyrim.esm",
+    "damage_offset": 0
+  },
+  {
+    "editor_id": "MS02Shiv",
+    "form_key": "0426C8:Skyrim.esm",
+    "damage_offset": -1
+  },
+  {
+    "editor_id": "PI_DraugrLordWarAxeUnique",
+    "form_key": "34480B:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 9,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordMaceUnique",
+    "form_key": "344811:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 9,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordAxeUnique",
+    "form_key": "344812:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordWarhammerUnique",
+    "form_key": "344813:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DragonPriestDaggerUnique",
+    "form_key": "344814:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 9,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordClubUnique",
+    "form_key": "344826:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 6,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordGreatswordUnique",
+    "form_key": "344830:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordGlaiveUnique",
+    "form_key": "344833:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 8,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordTridentUnique",
+    "form_key": "344834:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 2
+  },
+  {
+    "editor_id": "PI_DraugrLordSwordUnique",
+    "form_key": "34483F:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 9,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordLongMaceUnique",
+    "form_key": "344840:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 0
+  },
+  {
+    "editor_id": "PI_DraugrLordLongMaceUnique",
+    "form_key": "344840:Prvti_DragonCultWeapons.esp",
+    "damage_offset": 10,
+    "critical_damage_offset": 0
   }
 ]

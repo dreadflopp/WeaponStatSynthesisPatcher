@@ -1,4 +1,19 @@
 [
+
+  {
+    "keyword": "bonemold",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 2
+  },
+  {
+    "keyword": "elven steel",
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2,
+    "damage_offset_1h_waccf": 1,
+    "damage_offset_2h_waccf": 2
+  },
   {
     "keyword": "skyforge",
     "damage_offset_1h": 4,
@@ -26,6 +41,13 @@
     "damage_offset_2h": 5,
     "damage_offset_1h_waccf": 4,
     "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "imperial silver",
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6,
+    "damage_offset_1h_waccf": 5,
+    "damage_offset_2h_waccf": 6
   },
   {
     "keyword": "dawnguard elite",
@@ -73,7 +95,28 @@
     "keyword": "nord hero",
     "damage_offset_1h": 4,
     "damage_offset_2h": 5,
-    "damage_offset_1h_waccf": 3,
-    "damage_offset_2h_waccf": 4
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "dragon cult",
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10,
+    "damage_offset_1h_waccf": 8,
+    "damage_offset_2h_waccf": 10
+  },
+  {
+    "keyword": "honed lunar steel",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "lunar steel",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 3
   }
 ]

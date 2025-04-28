@@ -20,7 +20,7 @@ namespace Weapon_Mod_Synergy
     public class Program
     {
         static Lazy<Settings> Settings = null!;
-        private static WeaponHelper? _weaponHelper;
+        private static WeaponDataManager? _weaponDataManager;
 
         public static async Task<int> Main(string[] args)
         {
@@ -36,20 +36,37 @@ namespace Weapon_Mod_Synergy
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            // Create WeaponHelper instance with the new Settings structure
-            _weaponHelper = new WeaponHelper(Settings.Value, Console.WriteLine, state);
+            // Create WeaponDataManager instance with the new Settings structure
+            _weaponDataManager = new WeaponDataManager(Settings.Value, Console.WriteLine, state);
 
             // Print settings
-            _weaponHelper?.DebugLog($"Settings:");
-            _weaponHelper?.DebugLog($"  - PluginFilter: {Settings.Value.PluginFilter}");
-            _weaponHelper?.DebugLog($"  - WACCFMaterialTiers: {Settings.Value.WACCFMaterialTiers}");
-            _weaponHelper?.DebugLog($"  - StalhrimStaggerBonus: {Settings.Value.StalhrimStaggerBonus}");
-            _weaponHelper?.DebugLog($"  - StalhrimDamageBonus: {Settings.Value.StalhrimDamageBonus}");
-            _weaponHelper?.DebugLog($"  - SpecialWeaponsMod: {Settings.Value.SpecialWeaponsMod}");
-            _weaponHelper?.DebugLog($"  - BoundWeaponParsing: {Settings.Value.BoundWeaponParsing}");
+            _weaponDataManager?.DebugLog($"Settings:");
+            _weaponDataManager?.DebugLog($"  - PluginFilter: {Settings.Value.PluginFilter}");
+            _weaponDataManager?.DebugLog($"  - WACCFMaterialTiers: {Settings.Value.WACCFMaterialTiers}");
+            _weaponDataManager?.DebugLog($"  - StalhrimStaggerBonus: {Settings.Value.StalhrimStaggerBonus}");
+            _weaponDataManager?.DebugLog($"  - StalhrimDamageBonus: {Settings.Value.StalhrimDamageBonus}");
+            _weaponDataManager?.DebugLog($"  - SpecialWeaponsMod: {Settings.Value.SpecialWeaponsMod}");
+            _weaponDataManager?.DebugLog($"  - BoundWeaponParsing: {Settings.Value.BoundWeaponParsing}");
 
-            // Get the list of plugins to include or exclude
-            var pluginList = Settings.Value.PluginList
+            // Resolve weapon setting overlaps
+            Action<string> logger = _weaponDataManager != null
+                ? (message) => _weaponDataManager.DebugLog(message)
+                : Console.WriteLine;
+            var overlapResolver = new WeaponSettingOverlapResolver(Settings.Value, logger);
+            Console.WriteLine("Checking settings integrity...");
+            overlapResolver.ResolveOverlaps();
+            Console.WriteLine("Settings integrity check complete.");
+
+            // Set the resolved settings in WeaponDataManager
+            _weaponDataManager?.SetSortedSettings(overlapResolver.GetSortedSettings());
+
+            // Get the list of plugins to include
+            var pluginIncludeList = Settings.Value.PluginIncludeList
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            // Get the list of plugins to exclude
+            var pluginExcludeList = Settings.Value.PluginExcludeList
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -58,16 +75,23 @@ namespace Weapon_Mod_Synergy
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-            _weaponHelper?.DebugLog($"Raw ignored weapons string: '{Settings.Value.IgnoredWeaponFormKeys}'");
+            _weaponDataManager?.DebugLog($"Raw ignored weapons string: '{Settings.Value.IgnoredWeaponFormKeys}'");
 
             Console.WriteLine("Plugin Processing Settings:");
             Console.WriteLine($"Filter Mode: {Settings.Value.PluginFilter}");
-            Console.WriteLine("Plugin List:");
-            foreach (var plugin in pluginList)
+            _weaponDataManager?.DebugLog("Plugin Include List:");
+            if (WeaponDataManager.DebugMode)
             {
-                Console.WriteLine($"     {plugin}");
+                foreach (var plugin in pluginIncludeList)
+                {
+                    _weaponDataManager?.DebugLog($"     {plugin}");
+                }
+                _weaponDataManager?.DebugLog("Plugin Exclude List:");
+                foreach (var plugin in pluginExcludeList)
+                {
+                    _weaponDataManager?.DebugLog($"     {plugin}");
+                }
             }
-            Console.WriteLine();
 
             // Get all available plugins in load order
             var availablePlugins = state.LoadOrder.PriorityOrder
@@ -77,7 +101,7 @@ namespace Weapon_Mod_Synergy
             // Check for missing plugins if we're in include mode
             if (Settings.Value.PluginFilter == PluginFilter.IncludePlugins)
             {
-                var missingPlugins = pluginList.Where(p => !availablePlugins.Contains(p)).ToList();
+                var missingPlugins = pluginIncludeList.Where(p => !availablePlugins.Contains(p)).ToList();
                 if (missingPlugins.Any())
                 {
                     Console.WriteLine("WARNING: The following plugins were listed for inclusion but could not be found:");
@@ -95,8 +119,8 @@ namespace Weapon_Mod_Synergy
                 var shouldProcess = Settings.Value.PluginFilter switch
                 {
                     PluginFilter.AllPlugins => true,
-                    PluginFilter.ExcludePlugins => !pluginList.Contains(modGetter.ModKey.FileName.String),
-                    PluginFilter.IncludePlugins => pluginList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.ExcludePlugins => !pluginExcludeList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.IncludePlugins => pluginIncludeList.Contains(modGetter.ModKey.FileName.String),
                     _ => true
                 };
 
@@ -116,38 +140,38 @@ namespace Weapon_Mod_Synergy
                 var shouldProcess = Settings.Value.PluginFilter switch
                 {
                     PluginFilter.AllPlugins => true,
-                    PluginFilter.ExcludePlugins => !pluginList.Contains(modGetter.ModKey.FileName.String),
-                    PluginFilter.IncludePlugins => pluginList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.ExcludePlugins => !pluginExcludeList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.IncludePlugins => pluginIncludeList.Contains(modGetter.ModKey.FileName.String),
                     _ => true
                 };
 
                 if (!shouldProcess) continue;
 
-                _weaponHelper?.DebugLog($"========================================");
+                _weaponDataManager?.DebugLog($"========================================");
                 Console.WriteLine($"Processing mod: {modGetter.ModKey.FileName}");
-                _weaponHelper?.DebugLog($"========================================");
+                _weaponDataManager?.DebugLog($"========================================");
 
                 // Process each weapon from the current mod
                 foreach (var weapon in state.LoadOrder.PriorityOrder.Weapon().WinningOverrides()
                     .Where(w => w.FormKey.ModKey == modGetter.ModKey))
                 {
-                    _weaponHelper?.DebugLog($"------------------------------------------");
-                    _weaponHelper?.DebugLog($"Processing weapon: {weapon.EditorID}");
-                    _weaponHelper?.DebugLog($"------------------------------------------");
-                    bool isSpecialWeapon = _weaponHelper?.IsSpecialWeapon(weapon) ?? false;
-                    _weaponHelper?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
+                    _weaponDataManager?.DebugLog($"------------------------------------------");
+                    _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
+                    _weaponDataManager?.DebugLog($"------------------------------------------");
+                    bool isSpecialWeapon = _weaponDataManager?.IsSpecialWeapon(weapon) ?? false;
+                    _weaponDataManager?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
                     bool isProcessNonPlayable = weapon.FormKey.ModKey.FileName.ToString().Equals("ccbgssse025-advdsgs.esm", StringComparison.OrdinalIgnoreCase);
 
                     // Check if weapon is bound
                     bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
                                   (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
 
-                    _weaponHelper?.DebugLog($"Is EDID {weapon.EditorID} from mod with non playable weapons that should be processed: {isProcessNonPlayable}");
+                    _weaponDataManager?.DebugLog($"Is EDID {weapon.EditorID} from mod with non playable weapons that should be processed: {isProcessNonPlayable}");
 
                     // Skip if weapon is not playable and it is not from mod ccbgssse025-advdsgs.esm and is not bound
                     if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isProcessNonPlayable && !isBound)
                     {
-                        _weaponHelper?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
+                        _weaponDataManager?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
                         continue;
                     }
 
@@ -157,7 +181,7 @@ namespace Weapon_Mod_Synergy
                         weapon.Template.FormKey.ToString() != "Null" &&
                         !isSpecialWeapon)
                     {
-                        _weaponHelper?.DebugLog($"Skipping template weapon: {weapon.EditorID}");
+                        _weaponDataManager?.DebugLog($"Skipping template weapon: {weapon.EditorID}");
                         continue;
                     }
 
@@ -165,27 +189,27 @@ namespace Weapon_Mod_Synergy
                     var formKeyString = weapon.FormKey.ToString();
                     if (formKeyString != null && ignoredWeaponFormKeys.Contains(formKeyString) && !isSpecialWeapon)
                     {
-                        _weaponHelper?.DebugLog($"Weapon {weapon.EditorID} is in ignoredWeaponFormKeys list");
+                        _weaponDataManager?.DebugLog($"Weapon {weapon.EditorID} is in ignoredWeaponFormKeys list");
                         continue;
                     }
 
                     // Get weapon setting key
-                    var weaponSettingKey = _weaponHelper?.GetWeaponSettingKey(weapon, state.LinkCache);
+                    var weaponSettingKey = _weaponDataManager?.GetWeaponSettingKey(weapon, state.LinkCache);
                     if (weaponSettingKey == null)
                     {
-                        _weaponHelper?.DebugLog($"Warning: Could not determine weapon setting key for {weapon.EditorID}");
+                        _weaponDataManager?.DebugLog($"Warning: Could not determine weapon setting key for {weapon.EditorID}");
                         continue;
                     }
 
                     // Process weapon based on if it is a special weapon or not
                     if (isSpecialWeapon)
                     {
-                        _weaponHelper?.DebugLog($"Processing special weapon: {weapon.EditorID}");
+                        _weaponDataManager?.DebugLog($"Processing special weapon: {weapon.EditorID}");
                         ProcessSpecialWeapon(weapon, state, weaponSettingKey);
                     }
                     else
                     {
-                        _weaponHelper?.DebugLog($"Processing weapon: {weapon.EditorID}");
+                        _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
                         ProcessWeapon(weapon, state, weaponSettingKey);
                     }
                 }
@@ -195,27 +219,13 @@ namespace Weapon_Mod_Synergy
         {
             if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
             {
-                _weaponHelper?.DebugLog("Invalid parameters in ProcessSpecialWeapon");
+                _weaponDataManager?.DebugLog("Invalid parameters in ProcessSpecialWeapon");
                 return;
             }
 
             // Get weapon settings from the appropriate category
             WeaponSettings? settings = null;
-            var categories = new[]
-            {
-                Settings.Value.Daggers,
-                Settings.Value.OnehandedSwords,
-                Settings.Value.OnehandedSpears,
-                Settings.Value.OnehandedBluntWeapons,
-                Settings.Value.OnehandedAxes,
-                Settings.Value.TwohandedSwords,
-                Settings.Value.TwohandedSpears,
-                Settings.Value.TwohandedBluntWeapons,
-                Settings.Value.TwohandedAxes,
-                Settings.Value.Others
-            };
-
-            foreach (var category in categories)
+            foreach (var category in Settings.Value.GetAllWeaponCategories())
             {
                 if (category.Weapons.TryGetValue(weaponSettingKey, out var weaponSettings))
                 {
@@ -226,51 +236,18 @@ namespace Weapon_Mod_Synergy
 
             if (settings == null)
             {
-                _weaponHelper?.DebugLog($"{weaponSettingKey} is not enabled in settings");
+                _weaponDataManager?.DebugLog($"{weaponSettingKey} is not enabled in settings");
                 return;
             }
 
-            // Get special weapon data
-            var specialWeapons = _weaponHelper?.GetLoadedSpecialWeapons();
-            var specialWeaponsWaccf = _weaponHelper?.GetLoadedSpecialWeaponsWaccf();
-            var specialWeaponsArtificer = _weaponHelper?.GetLoadedSpecialWeaponsArtificer();
+            // Get weapon keywords
+            var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
 
-            if (specialWeapons == null)
+            // Get default weapon stats
+            var defaultStats = _weaponDataManager?.GetDefaultWeaponStats(weaponKeywords);
+            if (defaultStats == null)
             {
-                _weaponHelper?.DebugLog($"ERROR: No special weapons data loaded. Skipping special weapon checks.");
-                return;
-            }
-            if (specialWeaponsWaccf == null)
-            {
-                _weaponHelper?.DebugLog($"Warning: No special weapons WACCF data loaded.");
-            }
-            if (specialWeaponsArtificer == null)
-            {
-                _weaponHelper?.DebugLog($"Warning: No special weapons artificer data loaded.");
-            }
-
-
-            // Find matching special weapon
-            SpecialWeaponData? specialWeapon = null;
-            foreach (var sw in specialWeapons)
-            {
-                if (string.IsNullOrEmpty(sw.FormKey))
-                {
-                    _weaponHelper?.DebugLog($"ERROR: Special weapon {sw.EditorID} has no form key. Skipping.");
-                    continue;
-                }
-
-                if (FormKey.TryFactory(sw.FormKey, out var formKey) && weapon.FormKey == formKey)
-                {
-                    _weaponHelper?.DebugLog($"Found by form key: {weapon.FormKey}");
-                    specialWeapon = sw;
-                    break;
-                }
-            }
-
-            if (specialWeapon == null)
-            {
-                _weaponHelper?.DebugLog($"No special weapon data found for {weapon.EditorID}");
+                _weaponDataManager?.DebugLog($"No matching default weapon stats found for {weapon.EditorID}");
                 return;
             }
 
@@ -278,162 +255,48 @@ namespace Weapon_Mod_Synergy
             var weaponOverride = state.PatchMod.Weapons.GetOrAddAsOverride(weapon);
             if (weaponOverride?.Data == null || weaponOverride.BasicStats == null || weaponOverride.Critical == null)
             {
-                _weaponHelper?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
+                _weaponDataManager?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
                 return;
             }
 
-            // Apply special weapon offsets
-            int damageOffset = specialWeapon.DamageOffset ?? 0;
-            float speedOffset = specialWeapon.SpeedOffset ?? 0;
-            float reachOffset = specialWeapon.ReachOffset ?? 0;
-            float staggerOffset = specialWeapon.StaggerOffset ?? 0;
-            int criticalDamageOffset = specialWeapon.CriticalDamageOffset ?? 0;
-            float criticalDamageChanceMultiplierOffset = specialWeapon.CriticalDamageChanceMultiplierOffset ?? 0;
+            // Calculate offsets between current weapon stats and default stats            
+            int damageOffset = weaponOverride.BasicStats.Damage - (Settings.Value.WACCFMaterialTiers ? defaultStats.DamageWaccf : defaultStats.Damage);
+            decimal speedOffset = (decimal)weaponOverride.Data.Speed - defaultStats.Speed;
+            decimal reachOffset = (decimal)weaponOverride.Data.Reach - defaultStats.Reach;
+            decimal staggerOffset = (decimal)weaponOverride.Data.Stagger - defaultStats.Stagger;
+            int criticalDamageOffset = weaponOverride.Critical.Damage - defaultStats.CriticalDamage;
+            decimal criticalDamageChanceMultiplierOffset = (decimal)weaponOverride.Critical.PercentMult - defaultStats.CriticalChanceMult;
 
-            _weaponHelper?.DebugLog($"Read basic special weapon offsets for {weapon.EditorID}:");
-            _weaponHelper?.DebugLog($"  - Damage Offset: {damageOffset}");
-            _weaponHelper?.DebugLog($"  - Speed Offset: {speedOffset}");
-            _weaponHelper?.DebugLog($"  - Reach Offset: {reachOffset}");
-            _weaponHelper?.DebugLog($"  - Stagger Offset: {staggerOffset}");
-            _weaponHelper?.DebugLog($"  - Critical Damage Offset: {criticalDamageOffset}");
-            _weaponHelper?.DebugLog($"  - Critical Damage Chance Multiplier Offset: {criticalDamageChanceMultiplierOffset}");
-
-            if (Settings.Value.WACCFMaterialTiers)
-            {
-                if (specialWeaponsWaccf == null)
-                {
-                    _weaponHelper?.DebugLog($"Warning: No special weapons WACCF data loaded.");
-                }
-                else if (specialWeaponsWaccf.Any(sw => sw.FormKey == specialWeapon.FormKey))
-                {
-                    var waccfWeapon = specialWeaponsWaccf.FirstOrDefault(sw => sw.FormKey == specialWeapon.FormKey);
-                    if (waccfWeapon != null)
-                    {
-                        if (waccfWeapon.DamageOffset != null)
-                        {
-                            damageOffset = waccfWeapon.DamageOffset.Value;
-                            _weaponHelper?.DebugLog($"Using WACCF damage offset: {damageOffset}");
-                        }
-                        if (waccfWeapon.SpeedOffset != null)
-                        {
-                            speedOffset = waccfWeapon.SpeedOffset.Value;
-                            _weaponHelper?.DebugLog($"Using WACCF speed offset: {speedOffset}");
-                        }
-                        if (waccfWeapon.ReachOffset != null)
-                        {
-                            reachOffset = waccfWeapon.ReachOffset.Value;
-                            _weaponHelper?.DebugLog($"Using WACCF reach offset: {reachOffset}");
-                        }
-                        if (waccfWeapon.StaggerOffset != null)
-                        {
-                            staggerOffset = waccfWeapon.StaggerOffset.Value;
-                            _weaponHelper?.DebugLog($"Using WACCF stagger offset: {staggerOffset}");
-                        }
-                        if (waccfWeapon.CriticalDamageOffset != null)
-                        {
-                            criticalDamageOffset = waccfWeapon.CriticalDamageOffset.Value;
-                            _weaponHelper?.DebugLog($"Using WACCF critical damage offset: {criticalDamageOffset}");
-                        }
-                        if (waccfWeapon.CriticalDamageChanceMultiplierOffset != null)
-                        {
-                            criticalDamageChanceMultiplierOffset = waccfWeapon.CriticalDamageChanceMultiplierOffset.Value;
-                            _weaponHelper?.DebugLog($"Using WACCF critical damage chance multiplier offset: {criticalDamageChanceMultiplierOffset}");
-                        }
-                    }
-                }
-            }
-
-            if (Settings.Value.SpecialWeaponsMod == SpecialWeaponsMod.Artificer)
-            {
-                if (specialWeaponsArtificer == null)
-                {
-                    _weaponHelper?.DebugLog($"Warning: No special weapons artificer data loaded.");
-                }
-                else if (specialWeaponsArtificer.Any(sw => sw.FormKey == specialWeapon.FormKey))
-                {
-                    var artificerWeapon = specialWeaponsArtificer.FirstOrDefault(sw => sw.FormKey == specialWeapon.FormKey);
-                    if (artificerWeapon != null)
-                    {
-                        if (artificerWeapon.DamageOffset != null)
-                        {
-                            damageOffset = artificerWeapon.DamageOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Artificer damage offset: {damageOffset}");
-                        }
-                        if (artificerWeapon.SpeedOffset != null)
-                        {
-                            speedOffset = artificerWeapon.SpeedOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Artificer speed offset: {speedOffset}");
-                        }
-                        if (artificerWeapon.ReachOffset != null)
-                        {
-                            reachOffset = artificerWeapon.ReachOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Artificer reach offset: {reachOffset}");
-                        }
-                        if (artificerWeapon.StaggerOffset != null)
-                        {
-                            staggerOffset = artificerWeapon.StaggerOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Artificer stagger offset: {staggerOffset}");
-                        }
-                        if (artificerWeapon.CriticalDamageOffset != null)
-                        {
-                            criticalDamageOffset = artificerWeapon.CriticalDamageOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Artificer critical damage offset: {criticalDamageOffset}");
-                        }
-                        if (artificerWeapon.CriticalDamageChanceMultiplierOffset != null)
-                        {
-                            criticalDamageChanceMultiplierOffset = artificerWeapon.CriticalDamageChanceMultiplierOffset.Value;
-                            _weaponHelper?.DebugLog($"Using Artificer critical damage chance multiplier offset: {criticalDamageChanceMultiplierOffset}");
-                        }
-                    }
-                }
-            }
-
-            // Apply stats with special weapon offsets
+            // Apply stats with offsets
             weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset);
-            weaponOverride.Data.Speed = Math.Max(0f, settings.Speed + speedOffset);
-            weaponOverride.Data.Reach = Math.Max(0f, settings.Reach + reachOffset);
-            weaponOverride.Data.Stagger = Math.Max(0f, settings.Stagger + staggerOffset);
-            weaponOverride.Critical.PercentMult = Math.Max(0f, settings.CriticalDamageChanceMultiplier + criticalDamageChanceMultiplierOffset);
+            weaponOverride.Data.Speed = Math.Max(0f, settings.Speed + (float)speedOffset);
+            weaponOverride.Data.Reach = Math.Max(0f, settings.Reach + (float)reachOffset);
+            weaponOverride.Data.Stagger = Math.Max(0f, settings.Stagger + (float)staggerOffset);
+            weaponOverride.Critical.PercentMult = Math.Max(0f, settings.CriticalDamageChanceMultiplier + (float)criticalDamageChanceMultiplierOffset);
+            decimal settingsCriticalDamage = Math.Floor((decimal)settings.CriticalDamageMultiplier * ((settings.Damage / 2m) + (decimal)settings.CriticalDamageOffset));
+            weaponOverride.Critical.Damage = (ushort)Math.Max(0, settingsCriticalDamage + criticalDamageOffset);
 
-            // Apply critical damage stats with special weapon offset
-            ushort criticalDamage = (ushort)Math.Floor(settings.CriticalDamageMultiplier * (settings.CriticalDamageOffset + criticalDamageOffset + (float)weaponOverride.BasicStats.Damage / 2));
-            weaponOverride.Critical.Damage = Math.Max((ushort)0, criticalDamage);
-
-            _weaponHelper?.DebugLog($"Successfully processed special weapon: {weapon.EditorID}");
-            _weaponHelper?.DebugLog($"Final stats:");
-            _weaponHelper?.DebugLog($"- Damage: {weaponOverride.BasicStats.Damage}");
-            _weaponHelper?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
-            _weaponHelper?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
-            _weaponHelper?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
-            _weaponHelper?.DebugLog($"- Critical Damage: {weaponOverride.Critical.Damage}");
-            _weaponHelper?.DebugLog($"- Critical Damage Chance Multiplier: {weaponOverride.Critical.PercentMult}");
+            _weaponDataManager?.DebugLog($"Successfully processed special weapon: {weapon.EditorID}");
+            _weaponDataManager?.DebugLog($"Final stats:");
+            _weaponDataManager?.DebugLog($"- Damage: {weaponOverride.BasicStats.Damage}");
+            _weaponDataManager?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
+            _weaponDataManager?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
+            _weaponDataManager?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
+            _weaponDataManager?.DebugLog($"- Critical Damage: {weaponOverride.Critical.Damage}");
+            _weaponDataManager?.DebugLog($"- Critical Damage Chance Multiplier: {weaponOverride.Critical.PercentMult}");
         }
 
         private static void ProcessWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey)
         {
             if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
             {
-                _weaponHelper?.DebugLog("Invalid parameters in ProcessWeapon");
+                _weaponDataManager?.DebugLog("Invalid parameters in ProcessWeapon");
                 return;
             }
 
             // Get weapon settings from the appropriate category
             WeaponSettings? settings = null;
-            var categories = new[]
-            {
-                Settings.Value.Daggers,
-                Settings.Value.OnehandedSwords,
-                Settings.Value.OnehandedSpears,
-                Settings.Value.OnehandedBluntWeapons,
-                Settings.Value.OnehandedAxes,
-                Settings.Value.TwohandedSwords,
-                Settings.Value.TwohandedSpears,
-                Settings.Value.TwohandedBluntWeapons,
-                Settings.Value.TwohandedAxes,
-                Settings.Value.Others
-            };
-
-            foreach (var category in categories)
+            foreach (var category in Settings.Value.GetAllWeaponCategories())
             {
                 if (category.Weapons.TryGetValue(weaponSettingKey, out var weaponSettings))
                 {
@@ -444,7 +307,7 @@ namespace Weapon_Mod_Synergy
 
             if (settings == null)
             {
-                _weaponHelper?.DebugLog($"{weaponSettingKey} is not enabled in settings");
+                _weaponDataManager?.DebugLog($"{weaponSettingKey} is not enabled in settings");
                 return;
             }
 
@@ -457,7 +320,7 @@ namespace Weapon_Mod_Synergy
                 switch (Settings.Value.BoundWeaponParsing)
                 {
                     case BoundWeaponParsing.IgnoreWeapon:
-                        _weaponHelper?.DebugLog($"Skipping bound weapon: {weapon.EditorID}");
+                        _weaponDataManager?.DebugLog($"Skipping bound weapon: {weapon.EditorID}");
                         return;
 
                     case BoundWeaponParsing.FromSettings:
@@ -473,29 +336,29 @@ namespace Weapon_Mod_Synergy
                         var keywords = weapon.Keywords?.Select(k => k.FormKey.ToString()) ?? Enumerable.Empty<string>();
 
                         // Find matching default damage
-                        var defaultDamage = _weaponHelper?.GetLoadedDefaultDamageData()
+                        var defaultDamage = _weaponDataManager?.GetLoadedDefaultWeaponStatsData()
                             .FirstOrDefault(d => keywords.Contains(d.Keyword));
 
                         if (defaultDamage == null)
                         {
-                            _weaponHelper?.DebugLog($"No matching default damage found for bound weapon {weapon.EditorID}");
+                            _weaponDataManager?.DebugLog($"No matching default damage found for bound weapon {weapon.EditorID}");
                             return;
                         }
 
                         // Calculate damage offset
                         damageOffset = currentDamage - defaultDamage.Damage;
-                        _weaponHelper?.DebugLog($"Calculated damage offset for bound weapon {weapon.EditorID}: {damageOffset}");
+                        _weaponDataManager?.DebugLog($"Calculated damage offset for bound weapon {weapon.EditorID}: {damageOffset}");
                         break;
                 }
             }
             else
             {
-                damageOffset = _weaponHelper?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
+                damageOffset = _weaponDataManager?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
             }
 
             if (damageOffset == null)
             {
-                _weaponHelper?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}. Skipping.");
+                _weaponDataManager?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}. Skipping.");
                 return;
             }
 
@@ -503,26 +366,32 @@ namespace Weapon_Mod_Synergy
             var weaponOverride = state.PatchMod.Weapons.GetOrAddAsOverride(weapon);
             if (weaponOverride?.Data == null || weaponOverride.BasicStats == null || weaponOverride.Critical == null)
             {
-                _weaponHelper?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
+                _weaponDataManager?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
                 return;
             }
 
+            // Get variant settings
+            var (additionalDamage, additionalReach, additionalSpeed, additionalStagger,
+                 additionalCriticalDamageOffset, additionalCriticalDamageChanceMultiplier,
+                 additionalCriticalDamageMultiplier) = _weaponDataManager?.GetVariantStats(weapon, state.LinkCache)
+                ?? (0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+
             // Apply stats
-            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset.Value);
-            weaponOverride.Data.Speed = Math.Max(0f, settings.Speed);
-            weaponOverride.Data.Reach = Math.Max(0f, settings.Reach);
-            weaponOverride.Data.Stagger = Math.Max(0f, settings.Stagger);
-            weaponOverride.Critical.PercentMult = Math.Max(0f, settings.CriticalDamageChanceMultiplier);
+            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset.Value + additionalDamage);
+            weaponOverride.Data.Speed = Math.Max(0f, settings.Speed + additionalSpeed);
+            weaponOverride.Data.Reach = Math.Max(0f, settings.Reach + additionalReach);
+            weaponOverride.Data.Stagger = Math.Max(0f, settings.Stagger + additionalStagger);
+            weaponOverride.Critical.PercentMult = Math.Max(0f, settings.CriticalDamageChanceMultiplier + additionalCriticalDamageChanceMultiplier);
 
             // Check for Stalhrim weapons and apply stagger bonus if WACCF material tiers are disabled
             if (!Settings.Value.WACCFMaterialTiers && weaponOverride.Data.Stagger > 0)
             {
                 bool isStalhrim = weapon.Keywords?.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("DLC2WeaponMaterialStalhrim") ?? false) ?? false;
-                _weaponHelper?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Stagger: {weaponOverride.Data.Stagger}");
+                _weaponDataManager?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Stagger: {weaponOverride.Data.Stagger}");
                 if (isStalhrim)
                 {
-                    weaponOverride.Data.Stagger += 0.1f;
-                    _weaponHelper?.DebugLog($"Applied Stalhrim stagger bonus to {weapon.EditorID}. Stagger: {weaponOverride.Data.Stagger}");
+                    weaponOverride.Data.Stagger = (float)Math.Max(0m, (decimal)weaponOverride.Data.Stagger + 0.1m);
+                    _weaponDataManager?.DebugLog($"Applied Stalhrim stagger bonus to {weapon.EditorID}. Stagger: {weaponOverride.Data.Stagger}");
                 }
             }
 
@@ -530,11 +399,11 @@ namespace Weapon_Mod_Synergy
             if (weaponOverride.Data.Stagger > 0)
             {
                 bool isStalhrim = weapon.Keywords?.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("DLC2WeaponMaterialStalhrim") ?? false) ?? false;
-                _weaponHelper?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Stagger: {weaponOverride.Data.Stagger}");
+                _weaponDataManager?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Stagger: {weaponOverride.Data.Stagger}");
                 if (isStalhrim)
                 {
-                    weaponOverride.Data.Stagger += Settings.Value.StalhrimStaggerBonus;
-                    _weaponHelper?.DebugLog($"Applied Stalhrim stagger bonus to {weapon.EditorID}. Stagger: {weaponOverride.Data.Stagger}");
+                    weaponOverride.Data.Stagger = (float)Math.Max(0m, (decimal)weaponOverride.Data.Stagger + (decimal)Settings.Value.StalhrimStaggerBonus);
+                    _weaponDataManager?.DebugLog($"Applied Stalhrim stagger bonus to {weapon.EditorID}. Stagger: {weaponOverride.Data.Stagger}");
                 }
             }
 
@@ -547,24 +416,42 @@ namespace Weapon_Mod_Synergy
 
                 if (isStalhrim && (isWarAxe || isMace))
                 {
-                    _weaponHelper?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Is War Axe: {isWarAxe}. Is Mace: {isMace}. Damage: {weaponOverride.BasicStats.Damage}");
+                    _weaponDataManager?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}. Is War Axe: {isWarAxe}. Is Mace: {isMace}. Damage: {weaponOverride.BasicStats.Damage}");
                     weaponOverride.BasicStats.Damage += (ushort)Settings.Value.StalhrimDamageBonus;
-                    _weaponHelper?.DebugLog($"Applied Stalhrim damage bonus to {weapon.EditorID}. Damage: {weaponOverride.BasicStats.Damage}");
+                    _weaponDataManager?.DebugLog($"Applied Stalhrim damage bonus to {weapon.EditorID}. Damage: {weaponOverride.BasicStats.Damage}");
                 }
             }
 
-            ushort criticalDamage = (ushort)Math.Floor(settings.CriticalDamageMultiplier * (settings.CriticalDamageOffset + (float)weaponOverride.BasicStats.Damage / 2));
-            // Apply critical damage stats
-            weaponOverride.Critical.Damage = Math.Max((ushort)0, criticalDamage);
+            // if material is glass and waccf is enabled, apply glass critical damage bonus of 0,5
+            decimal waccfCriticalDamageBonus = 0;
+            if (Settings.Value.WACCFMaterialTiers && weapon.Keywords != null)
+            {
+                bool isGlass = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapMaterialGlass") ?? false);
+                bool isDaedric = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapMaterialDaedric") ?? false);
+                bool isFalmerHoned = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapMaterialFalmerHoned") ?? false);
+                bool isWarAxe = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapTypeWarAxe") ?? false);
+                bool isWarHammer = weapon.Keywords.Any(k => k.TryResolve(state.LinkCache)?.EditorID?.Contains("WeapTypeWarhammer") ?? false);
+                if (isGlass || (isDaedric && isWarHammer) || (isFalmerHoned && isWarAxe))
+                {
+                    waccfCriticalDamageBonus = 0.5m;
+                }
+            }
 
-            _weaponHelper?.DebugLog($"Successfully processed weapon: {weapon.EditorID}");
-            _weaponHelper?.DebugLog($"Final stats:");
-            _weaponHelper?.DebugLog($"- Damage: {weaponOverride.BasicStats.Damage}");
-            _weaponHelper?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
-            _weaponHelper?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
-            _weaponHelper?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
-            _weaponHelper?.DebugLog($"- Critical Damage: {weaponOverride.Critical.Damage}");
-            _weaponHelper?.DebugLog($"- Critical Damage Chance Multiplier: {weaponOverride.Critical.PercentMult}");
+            // Apply critical damage stats
+            decimal halfDamage = (decimal)weaponOverride.BasicStats.Damage / 2m;
+            decimal criticalDamageOffset = (decimal)settings.CriticalDamageOffset + (decimal)additionalCriticalDamageOffset + waccfCriticalDamageBonus;
+            decimal criticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier + (decimal)additionalCriticalDamageMultiplier;
+            decimal criticalDamage = Math.Floor(criticalDamageMultiplier * (halfDamage + criticalDamageOffset));
+            weaponOverride.Critical.Damage = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, (int)criticalDamage));
+
+            _weaponDataManager?.DebugLog($"Successfully processed weapon: {weapon.EditorID}");
+            _weaponDataManager?.DebugLog($"Final stats:");
+            _weaponDataManager?.DebugLog($"- Damage: {weaponOverride.BasicStats.Damage}");
+            _weaponDataManager?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
+            _weaponDataManager?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
+            _weaponDataManager?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
+            _weaponDataManager?.DebugLog($"- Critical Damage: {weaponOverride.Critical.Damage}");
+            _weaponDataManager?.DebugLog($"- Critical Damage Chance Multiplier: {weaponOverride.Critical.PercentMult}");
         }
 
         /// <summary>
@@ -580,7 +467,7 @@ namespace Weapon_Mod_Synergy
                 string jsonContent = File.ReadAllText(specialWeaponsPath);
                 var specialWeapons = System.Text.Json.JsonSerializer.Deserialize<List<SpecialWeaponData>>(jsonContent) ?? new List<SpecialWeaponData>();
 
-                _weaponHelper?.DebugLog($"Loaded {specialWeapons.Count} special weapons from JSON file.");
+                _weaponDataManager?.DebugLog($"Loaded {specialWeapons.Count} special weapons from JSON file.");
 
                 // Lists to store valid and invalid entries
                 var validEntries = new List<(string EditorID, string FormKey)>();
@@ -680,16 +567,16 @@ namespace Weapon_Mod_Synergy
                 }
 
                 // Print results
-                _weaponHelper?.DebugLog("=== VALID FORM KEYS ===");
+                _weaponDataManager?.DebugLog("=== VALID FORM KEYS ===");
                 if (validEntries.Count == 0)
                 {
-                    _weaponHelper?.DebugLog("No valid form keys found.");
+                    _weaponDataManager?.DebugLog("No valid form keys found.");
                 }
                 else
                 {
                     foreach (var entry in validEntries)
                     {
-                        _weaponHelper?.DebugLog($"Valid: {entry.EditorID}: {entry.FormKey}");
+                        _weaponDataManager?.DebugLog($"Valid: {entry.EditorID}: {entry.FormKey}");
                     }
                 }
 

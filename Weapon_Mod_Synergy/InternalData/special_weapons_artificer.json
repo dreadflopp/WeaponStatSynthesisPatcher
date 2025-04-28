@@ -36,7 +36,7 @@
     "form_key": "06EA8B:Skyrim.esm",
     "damage_offset": 6,
     "critical_damage_offset": -1,
-    "speed_offset": 0.2
+    "speed_offset": 0.05
   },
   {
     "editor_id": "dunLiarsRetreatLonghammer",

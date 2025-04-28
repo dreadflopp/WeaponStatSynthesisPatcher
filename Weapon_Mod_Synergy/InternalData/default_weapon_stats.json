@@ -1,0 +1,272 @@
+[
+  {
+    "Keyword": "WeapTypeRapier",
+    "damage": 5,
+    "damage_waccf": 5,
+    "speed": 1.3,
+    "reach": 1.35,
+    "stagger": 0.75,
+    "critical_damage": 10,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypePike",
+    "damage": 11,
+    "damage_waccf": 12,
+    "speed": 1.2,
+    "reach": 1.7,
+    "stagger": 0.3,
+    "critical_damage": 10,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeSpear",
+    "damage": 6,
+    "damage_waccf": 6,
+    "speed": 1.1,
+    "reach": 1.3,
+    "stagger": 0.75,
+    "critical_damage": 3,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeHalberd",
+    "damage": 14,
+    "damage_waccf": 15,
+    "speed": 0.9,
+    "reach": 1.7,
+    "stagger": 0.6,
+    "critical_damage": 10,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeQtrStaff",
+    "damage": 10,
+    "damage_waccf": 11,
+    "speed": 1.0,
+    "reach": 1.5,
+    "stagger": 1.1,
+    "critical_damage": 5,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeClaw",
+    "damage": 5,
+    "damage_waccf": 5,
+    "speed": 1.3,
+    "reach": 1.0,
+    "stagger": 0.0,
+    "critical_damage": 0,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeWhip",
+    "damage": 7,
+    "damage_waccf": 7,
+    "speed": 0.9,
+    "reach": 2.0,
+    "stagger": 0.9,
+    "critical_damage": 2,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeKatana",
+    "damage": 8,
+    "damage_waccf": 8,
+    "speed": 1.0,
+    "reach": 1.0,
+    "stagger": 0.1,
+    "critical_damage": 5,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeMaul",
+    "damage": 12,
+    "damage_waccf": 12,
+    "speed": 0.75,
+    "reach": 1.0,
+    "stagger": 1.1,
+    "critical_damage": 6,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeClub",
+    "damage": 7,
+    "damage_waccf": 7,
+    "speed": 1.0,
+    "reach": 1.0,
+    "stagger": 0.9,
+    "critical_damage": 4,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeHatchet",
+    "damage": 7,
+    "damage_waccf": 7,
+    "speed": 1.1,
+    "reach": 0.85,
+    "stagger": 0.6,
+    "critical_damage": 3,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeShortsword",
+    "damage": 6,
+    "damage_waccf": 6,
+    "speed": 1.15,
+    "reach": 0.9,
+    "stagger": 0.6,
+    "critical_damage": 3,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeLongMace",
+    "damage": 17,
+    "damage_waccf": 18,
+    "speed": 0.65,
+    "reach": 1.3,
+    "stagger": 1.2,
+    "critical_damage": 8,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeWeapTypeSpear",
+    "damage": 12,
+    "damage_waccf": 13,
+    "speed": 0.8,
+    "reach": 1.6,
+    "stagger": 1.0,
+    "critical_damage": 7,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeGlaive",
+    "damage": 13,
+    "damage_waccf": 14,
+    "speed": 0.8,
+    "reach": 1.6,
+    "stagger": 1.1,
+    "critical_damage": 8,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeHalberd",
+    "damage": 15,
+    "damage_waccf": 16,
+    "speed": 0.75,
+    "reach": 1.45,
+    "stagger": 1.1,
+    "critical_damage": 8,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeTrident",
+    "damage": 14,
+    "damage_waccf": 15,
+    "speed": 0.7,
+    "reach": 1.5,
+    "stagger": 1.15,
+    "critical_damage": 9,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeShortspear",
+    "damage": 7,
+    "damage_waccf": 7,
+    "speed": 0.9,
+    "reach": 1.2,
+    "stagger": 0.75,
+    "critical_damage": 4,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "ShWeapTypeQuarterstaff",
+    "damage": 10,
+    "damage_waccf": 11,
+    "speed": 1.0,
+    "reach": 1.0,
+    "stagger": 0.9,
+    "critical_damage": 4,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeJavelin",
+    "damage": 4,
+    "damage_waccf": 4,
+    "speed": 1.2,
+    "reach": 1.0,
+    "stagger": 0.5,
+    "critical_damage": 1,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeSword",
+    "damage": 7,
+    "damage_waccf": 7,
+    "speed": 1.0,
+    "reach": 1.0,
+    "stagger": 0.75,
+    "critical_damage": 3,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeGreatsword",
+    "damage": 15,
+    "damage_waccf": 16,
+    "speed": 0.75,
+    "reach": 1.3,
+    "stagger": 1.1,
+    "critical_damage": 7,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeWarAxe",
+    "damage": 8,
+    "damage_waccf": 8,
+    "speed": 0.9,
+    "reach": 1.0,
+    "stagger": 0.85,
+    "critical_damage": 4,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeBattleAxe",
+    "damage": 16,
+    "damage_waccf": 17,
+    "speed": 0.7,
+    "reach": 1.3,
+    "stagger": 1.15,
+    "critical_damage": 8,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeDagger",
+    "damage": 4,
+    "damage_waccf": 4,
+    "speed": 1.3,
+    "reach": 0.7,
+    "stagger": 0.0,
+    "critical_damage": 2,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeMace",
+    "damage": 9,
+    "damage_waccf": 9,
+    "speed": 0.8,
+    "reach": 1.0,
+    "stagger": 1.0,
+    "critical_damage": 4,
+    "critical_chance_mult": 1.0
+  },
+  {
+    "Keyword": "WeapTypeWarhammer",
+    "damage": 18,
+    "damage_waccf": 19,
+    "speed": 0.6,
+    "reach": 1.3,
+    "stagger": 1.25,
+    "critical_damage": 9,
+    "critical_chance_mult": 1.0
+  }
+]
