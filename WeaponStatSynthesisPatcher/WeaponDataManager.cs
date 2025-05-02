@@ -62,18 +62,6 @@ namespace Weapon_Mod_Synergy
         public float? CriticalDamageChanceMultiplierOffset { get; set; }
     }
 
-    public class DefaultDamageData
-    {
-        [JsonPropertyName("keyword")]
-        public string Keyword { get; set; } = string.Empty;
-
-        [JsonPropertyName("damage")]
-        public int Damage { get; set; }
-
-        [JsonPropertyName("damage_waccf")]
-        public int DamageWaccf { get; set; }
-    }
-
     public class DefaultWeaponStatsData
     {
         [JsonPropertyName("Keyword")]
@@ -103,20 +91,11 @@ namespace Weapon_Mod_Synergy
 
     public class WeaponDataManager
     {
-        // Debug flag to enable/disable debug output
-        private static bool _debugMode = true;
-        public static bool DebugMode
-        {
-            get => _debugMode;
-            set => _debugMode = value;
-        }
-
         private readonly Settings _settings;
         private static Action<string>? _logger;
         private static List<MaterialData> _materialDataKeyword = new();
         private static List<MaterialData> _materialDataName = new();
         private static List<SpecialWeaponData> _specialWeapons = new();
-        private static List<DefaultDamageData> _defaultDamageData = new();
         private static List<DefaultWeaponStatsData> _defaultWeaponStatsData = new();
         private readonly IPatcherState<ISkyrimMod, ISkyrimModGetter> _state;
         private List<(string Key, WeaponSettings Settings)> _sortedSettings = new();
@@ -141,13 +120,11 @@ namespace Weapon_Mod_Synergy
                 var materialNamePath = _state.RetrieveInternalFile("material_data_name.json");
                 var materialKeywordPath = _state.RetrieveInternalFile("material_data_keyword.json");
                 var specialWeaponsPath = _state.RetrieveInternalFile("special_weapons.json");
-                var defaultDamagePath = _state.RetrieveInternalFile("default_damage.json");
                 var defaultWeaponStatsPath = _state.RetrieveInternalFile("default_weapon_stats.json");
 
                 _materialDataName = LoadJsonData<List<MaterialData>>(materialNamePath) ?? new List<MaterialData>();
                 _materialDataKeyword = LoadJsonData<List<MaterialData>>(materialKeywordPath) ?? new List<MaterialData>();
                 _specialWeapons = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsPath) ?? new List<SpecialWeaponData>();
-                _defaultDamageData = LoadJsonData<List<DefaultDamageData>>(defaultDamagePath) ?? new List<DefaultDamageData>();
                 _defaultWeaponStatsData = LoadJsonData<List<DefaultWeaponStatsData>>(defaultWeaponStatsPath) ?? new List<DefaultWeaponStatsData>();
 
                 DebugLog("Material data loaded successfully");
@@ -178,7 +155,7 @@ namespace Weapon_Mod_Synergy
         // Debug logging function
         public void DebugLog(string message)
         {
-            if (_debugMode)
+            if (_settings.DebugMode)
             {
                 _logger?.Invoke($"[DEBUG] {message}");
             }
@@ -567,16 +544,12 @@ namespace Weapon_Mod_Synergy
             return _defaultWeaponStatsData;
         }
 
-        public List<DefaultDamageData> GetLoadedDefaultDamageData()
-        {
-            return _defaultDamageData;
-        }
-
         public DefaultWeaponStatsData? GetDefaultWeaponStats(List<string> weaponKeywords)
         {
             foreach (var keyword in weaponKeywords)
             {
-                var stats = _defaultWeaponStatsData.FirstOrDefault(d => d.Keyword == keyword);
+                var stats = _defaultWeaponStatsData.FirstOrDefault(d =>
+                    string.Equals(d.Keyword, keyword, StringComparison.OrdinalIgnoreCase));
                 if (stats != null)
                 {
                     return stats;
@@ -663,6 +636,78 @@ namespace Weapon_Mod_Synergy
                     (float)additionalCriticalDamageOffset,
                     (float)additionalCriticalDamageChanceMultiplier,
                     (float)additionalCriticalDamageMultiplier);
+        }
+
+        public WeaponSettings? GetWeaponSettings(string weaponSettingKey)
+        {
+            if (string.IsNullOrEmpty(weaponSettingKey))
+            {
+                DebugLog("Error: Invalid weapon setting key");
+                return null;
+            }
+
+            foreach (var category in _settings.GetAllWeaponCategories())
+            {
+                if (category.Weapons.TryGetValue(weaponSettingKey, out var weaponSettings))
+                {
+                    return weaponSettings;
+                }
+            }
+
+            DebugLog($"Warning: No weapon settings found for key {weaponSettingKey}");
+            return null;
+        }
+
+        public int? GetBoundWeaponDamageOffset(IWeapon weapon, WeaponSettings settings)
+        {
+            if (weapon == null || settings == null || weapon.BasicStats == null)
+            {
+                DebugLog("Error: Invalid parameters in ApplyBoundWeaponStats");
+                return null;
+            }
+
+            DebugLog($"Applying bound weapon stats for {weapon.EditorID} using setting: {_settings.BoundWeaponParsing}");
+            switch (_settings.BoundWeaponParsing)
+            {
+                case BoundWeaponParsing.IgnoreWeapon:
+                    DebugLog($"Skipping bound weapon: {weapon.EditorID}");
+                    return null;
+
+                case BoundWeaponParsing.FromSettings:
+                    bool isMysticBound = weapon.EditorID?.Contains("mystic", StringComparison.OrdinalIgnoreCase) ?? false;
+                    int damageOffset = isMysticBound
+                        ? settings.BoundMysticWeaponAdditionalDamage
+                        : settings.BoundWeaponAdditionalDamage;
+                    DebugLog($"Damage offset for bound weapon read from settings: {weapon.EditorID}: {damageOffset}");
+                    return damageOffset;
+
+                case BoundWeaponParsing.CalculateFromMods:
+                    DebugLog($"Calculating damage offset for bound weapon {weapon.EditorID} from mods");
+                    // Get current damage and keywords
+                    var currentDamage = weapon.BasicStats.Damage;
+                    var keywords = GetWeaponKeywords(weapon, _state.LinkCache);
+                    DebugLog($"Current damage for bound weapon {weapon.EditorID}: {currentDamage}");
+                    DebugLog($"Keywords for bound weapon {weapon.EditorID}: {string.Join(", ", keywords)}");
+                    // Find matching default weapon stats
+                    var defaultStats = GetLoadedDefaultWeaponStatsData()
+                        .FirstOrDefault(d => keywords.Contains(d.Keyword));
+
+                    if (defaultStats == null)
+                    {
+                        DebugLog($"No matching default weapon stats found for bound weapon {weapon.EditorID}");
+                        return null;
+                    }
+
+                    DebugLog($"Default stats for bound weapon {weapon.EditorID}: {defaultStats.Keyword}, {defaultStats.Damage}");
+
+                    // Calculate damage offset
+                    int calculatedOffset = currentDamage - defaultStats.Damage;
+                    weapon.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + calculatedOffset);
+                    DebugLog($"Calculated damage offset for bound weapon {weapon.EditorID}: {calculatedOffset}");
+                    return calculatedOffset;
+            }
+            DebugLog($"Unhandled case for bound weapon {weapon.EditorID}");
+            return null; // Default return for any unhandled cases
         }
     }
 }

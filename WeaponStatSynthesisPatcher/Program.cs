@@ -1,0 +1,878 @@
+using Mutagen.Bethesda;
+using Mutagen.Bethesda.Synthesis;
+using Mutagen.Bethesda.Skyrim;
+using Mutagen.Bethesda.Plugins;
+using Mutagen.Bethesda.Plugins.Cache;
+using Mutagen.Bethesda.Plugins.Records;
+using Mutagen.Bethesda.Plugins.Order;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+using Mutagen.Bethesda.Plugins.Binary.Headers;
+#pragma warning disable CA1416 
+
+namespace Weapon_Mod_Synergy
+{
+    public class WeaponDebugInfo
+    {
+        public string EditorID { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public int InDamage { get; set; }
+        public float InSpeed { get; set; }
+        public float InReach { get; set; }
+        public float InStagger { get; set; }
+        public int InCriticalDamage { get; set; }
+        public float InCriticalChanceMult { get; set; }
+        public bool UsesTemplate { get; set; }
+        public bool IsPlayable { get; set; }
+        public string SettingsKey { get; set; } = string.Empty;
+        public string Material { get; set; } = string.Empty;
+        public int? MaterialDamageOffset { get; set; }
+        public bool IsSpecial { get; set; }
+        public bool IsIgnored { get; set; }
+        public string Variant { get; set; } = string.Empty;
+        public int VariantDamageOffset { get; set; }
+        public float VariantReachOffset { get; set; }
+        public float VariantSpeedOffset { get; set; }
+        public float VariantStaggerOffset { get; set; }
+        public float VariantCriticalDamageOffset { get; set; }
+        public float VariantCriticalChanceMultOffset { get; set; }
+        public float VariantCriticalDamageMultOffset { get; set; }
+        public int SettingsDamageOffset { get; set; }
+        public float SettingsSpeedOffset { get; set; }
+        public float SettingsReachOffset { get; set; }
+        public float SettingsStaggerOffset { get; set; }
+        public float SettingsCriticalDamageOffset { get; set; }
+        public float SettingsCriticalChanceMultOffset { get; set; }
+        public float SettingsCriticalDamageMultOffset { get; set; }
+        public int FinalDamage { get; set; }
+        public float FinalSpeed { get; set; }
+        public float FinalReach { get; set; }
+        public float FinalStagger { get; set; }
+        public int FinalCriticalDamage { get; set; }
+        public float FinalCriticalChanceMult { get; set; }
+        public string ProcessingResult { get; set; } = string.Empty;
+        public string InKeywords { get; set; } = string.Empty;
+
+        public string ToCsvLine()
+        {
+            return string.Join(",",
+                EscapeCsv(EditorID),
+                EscapeCsv(Name),
+                InDamage,
+                InSpeed,
+                InReach,
+                InStagger,
+                InCriticalDamage,
+                InCriticalChanceMult,
+                UsesTemplate,
+                IsPlayable,
+                EscapeCsv(SettingsKey),
+                EscapeCsv(Material),
+                MaterialDamageOffset?.ToString() ?? "",
+                IsSpecial,
+                IsIgnored,
+                EscapeCsv(Variant),
+                VariantDamageOffset,
+                VariantReachOffset,
+                VariantSpeedOffset,
+                VariantStaggerOffset,
+                VariantCriticalDamageOffset,
+                VariantCriticalChanceMultOffset,
+                VariantCriticalDamageMultOffset,
+                SettingsDamageOffset,
+                SettingsSpeedOffset,
+                SettingsReachOffset,
+                SettingsStaggerOffset,
+                SettingsCriticalDamageOffset,
+                SettingsCriticalChanceMultOffset,
+                SettingsCriticalDamageMultOffset,
+                FinalDamage,
+                FinalSpeed,
+                FinalReach,
+                FinalStagger,
+                FinalCriticalDamage,
+                FinalCriticalChanceMult,
+                EscapeCsv(ProcessingResult),
+                EscapeCsv(InKeywords)
+            );
+        }
+
+        private static string EscapeCsv(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return "";
+            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n"))
+            {
+                return $"\"{value.Replace("\"", "\"\"")}\"";
+            }
+            return value;
+        }
+    }
+
+    public class Program
+    {
+        static Lazy<Settings> Settings = null!;
+        private static WeaponDataManager? _weaponDataManager;
+        private static List<WeaponDebugInfo> _processedWeapons = new();
+
+        public static async Task<int> Main(string[] args)
+        {
+            return await SynthesisPipeline.Instance
+                .AddPatch<ISkyrimMod, ISkyrimModGetter>(RunPatch)
+                .SetAutogeneratedSettings(
+                    nickname: "Settings",
+                    path: "settings.json",
+                    out Settings)
+                .SetTypicalOpen(GameRelease.SkyrimSE, "Weapon_Mod_Synergy.esp")
+                .Run(args);
+        }
+
+        public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
+        {
+            // Create WeaponDataManager instance with the new Settings structure
+            _weaponDataManager = new WeaponDataManager(Settings.Value, Console.WriteLine, state);
+
+            // Print settings
+            _weaponDataManager?.DebugLog($"Settings:");
+            _weaponDataManager?.DebugLog($"  - PluginFilter: {Settings.Value.PluginFilter}");
+            _weaponDataManager?.DebugLog($"  - WACCFMaterialTiers: {Settings.Value.WACCFMaterialTiers}");
+            _weaponDataManager?.DebugLog($"  - StalhrimStaggerBonus: {Settings.Value.StalhrimStaggerBonus}");
+            _weaponDataManager?.DebugLog($"  - StalhrimDamageBonus: {Settings.Value.StalhrimDamageBonus}");
+            _weaponDataManager?.DebugLog($"  - BoundWeaponParsing: {Settings.Value.BoundWeaponParsing}");
+
+            // Resolve weapon setting overlaps
+            Action<string> logger = _weaponDataManager != null
+                ? (message) => _weaponDataManager.DebugLog(message)
+                : Console.WriteLine;
+            var overlapResolver = new WeaponSettingOverlapResolver(Settings.Value, logger);
+            Console.WriteLine("Checking settings integrity...");
+            overlapResolver.ResolveOverlaps();
+            Console.WriteLine("Settings integrity check complete.");
+
+            // Set the resolved settings in WeaponDataManager
+            _weaponDataManager?.SetSortedSettings(overlapResolver.GetSortedSettings());
+
+            // Get the list of plugins to include
+            var pluginIncludeList = Settings.Value.PluginIncludeList
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            // Get the list of plugins to exclude
+            var pluginExcludeList = Settings.Value.PluginExcludeList
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            // Get the list of ignored weapon form keys
+            var ignoredWeaponFormKeys = Settings.Value.IgnoredWeaponFormKeys
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            _weaponDataManager?.DebugLog($"Raw ignored weapons string: '{Settings.Value.IgnoredWeaponFormKeys}'");
+
+            Console.WriteLine("Plugin Processing Settings:");
+            Console.WriteLine($"Filter Mode: {Settings.Value.PluginFilter}");
+            _weaponDataManager?.DebugLog("Plugin Include List:");
+            if (Settings.Value.DebugMode)
+            {
+                foreach (var plugin in pluginIncludeList)
+                {
+                    _weaponDataManager?.DebugLog($"     {plugin}");
+                }
+                _weaponDataManager?.DebugLog("Plugin Exclude List:");
+                foreach (var plugin in pluginExcludeList)
+                {
+                    _weaponDataManager?.DebugLog($"     {plugin}");
+                }
+            }
+
+            // Get all available plugins in load order
+            var availablePlugins = state.LoadOrder.PriorityOrder
+                .Select(mod => mod.ModKey.FileName.String)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            // Check for missing plugins if we're in include mode
+            if (Settings.Value.PluginFilter == PluginFilter.IncludePlugins)
+            {
+                var missingPlugins = pluginIncludeList.Where(p => !availablePlugins.Contains(p)).ToList();
+                if (missingPlugins.Any())
+                {
+                    Console.WriteLine("WARNING: The following plugins were listed for inclusion but could not be found:");
+                    foreach (var plugin in missingPlugins)
+                    {
+                        Console.WriteLine($"     {plugin}");
+                    }
+                    Console.WriteLine();
+                }
+            }
+
+            Console.WriteLine("Processing the following plugins:");
+            foreach (var modGetter in state.LoadOrder.PriorityOrder)
+            {
+                var shouldProcess = Settings.Value.PluginFilter switch
+                {
+                    PluginFilter.AllPlugins => true,
+                    PluginFilter.ExcludePlugins => !pluginExcludeList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.IncludePlugins => pluginIncludeList.Contains(modGetter.ModKey.FileName.String),
+                    _ => true
+                };
+
+                if (shouldProcess)
+                {
+                    Console.WriteLine($"     {modGetter.ModKey.FileName}");
+                }
+            }
+            Console.WriteLine();
+
+            // Verify form keys in special_weapons.json
+            VerifyFormKeys(state);
+
+            // Process weapons from plugins
+            foreach (var modGetter in state.LoadOrder.PriorityOrder)
+            {
+                var shouldProcess = Settings.Value.PluginFilter switch
+                {
+                    PluginFilter.AllPlugins => true,
+                    PluginFilter.ExcludePlugins => !pluginExcludeList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.IncludePlugins => pluginIncludeList.Contains(modGetter.ModKey.FileName.String),
+                    _ => true
+                };
+
+                if (!shouldProcess) continue;
+
+                _weaponDataManager?.DebugLog($"========================================");
+                Console.WriteLine($"Processing mod: {modGetter.ModKey.FileName}");
+                _weaponDataManager?.DebugLog($"========================================");
+
+                // Process each weapon from the current mod
+                foreach (var weapon in state.LoadOrder.PriorityOrder.Weapon().WinningOverrides()
+                    .Where(w => w.FormKey.ModKey == modGetter.ModKey))
+                {
+                    _weaponDataManager?.DebugLog($"------------------------------------------");
+                    _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
+                    _weaponDataManager?.DebugLog($"------------------------------------------");
+                    bool isSpecialWeapon = _weaponDataManager?.IsSpecialWeapon(weapon) ?? false;
+                    _weaponDataManager?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
+
+                    // Check if weapon is bound
+                    bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                  (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
+
+                    // Skip if weapon is not playable and is not bound
+                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isBound)
+                    {
+                        _weaponDataManager?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
+                        continue;
+                    }
+
+                    // Skip if weapon uses a template
+                    if (weapon.Template?.FormKey != null &&
+                        !weapon.Template.FormKey.IsNull &&
+                        weapon.Template.FormKey.ToString() != "Null" &&
+                        !isSpecialWeapon)
+                    {
+                        _weaponDataManager?.DebugLog($"Skipping template weapon: {weapon.EditorID}");
+                        continue;
+                    }
+
+                    // Check if weapon should be ignored
+                    var formKeyString = weapon.FormKey.ToString();
+                    if (formKeyString != null && ignoredWeaponFormKeys.Contains(formKeyString) && !isSpecialWeapon)
+                    {
+                        _weaponDataManager?.DebugLog($"Weapon {weapon.EditorID} is in ignoredWeaponFormKeys list");
+                        continue;
+                    }
+
+                    // Get weapon setting key
+                    var weaponSettingKey = _weaponDataManager?.GetWeaponSettingKey(weapon, state.LinkCache);
+                    if (weaponSettingKey == null)
+                    {
+                        _weaponDataManager?.DebugLog($"Warning: Could not determine weapon setting key for {weapon.EditorID}");
+                        continue;
+                    }
+
+                    // Process weapon based on if it is a special weapon or not
+                    if (isSpecialWeapon)
+                    {
+                        _weaponDataManager?.DebugLog($"Processing special weapon: {weapon.EditorID}");
+                        ProcessSpecialWeapon(weapon, state, weaponSettingKey);
+                    }
+                    else
+                    {
+                        _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
+                        ProcessWeapon(weapon, state, weaponSettingKey);
+                    }
+                }
+            }
+
+            // Output debug information if debug mode is enabled
+            if (Settings.Value.DebugMode && _processedWeapons.Count > 0)
+            {
+                var header = "EditorID,Name,InDamage,InSpeed,InReach,InStagger,InCriticalDamage,InCriticalChanceMult,UsesTemplate,IsPlayable,SettingsKey,Material,MaterialDamageOffset,IsSpecial,IsIgnored,Variant,VariantDamageOffset,VariantReachOffset,VariantSpeedOffset,VariantStaggerOffset,VariantCriticalDamageOffset,VariantCriticalChanceMultOffset,VariantCriticalDamageMultOffset,SettingsDamageOffset,SettingsSpeedOffset,SettingsReachOffset,SettingsStaggerOffset,SettingsCriticalDamageOffset,SettingsCriticalChanceMultOffset,SettingsCriticalDamageMultOffset,FinalDamage,FinalSpeed,FinalReach,FinalStagger,FinalCriticalDamage,FinalCriticalChanceMult,ProcessingResult,InKeywords";
+
+                Console.WriteLine("\n=== Weapon Debug Information ===");
+                Console.WriteLine(header);
+                foreach (var weapon in _processedWeapons)
+                {
+                    Console.WriteLine(weapon.ToCsvLine());
+                }
+                Console.WriteLine($"\nTotal weapons processed: {_processedWeapons.Count}");
+            }
+        }
+        private static void ProcessSpecialWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey)
+        {
+            if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
+            {
+                _weaponDataManager?.DebugLog("Invalid parameters in ProcessSpecialWeapon");
+                return;
+            }
+
+            // Create debug info object
+            var debugInfo = new WeaponDebugInfo
+            {
+                EditorID = weapon.EditorID ?? string.Empty,
+                Name = weapon.Name?.String ?? string.Empty,
+                InDamage = weapon.BasicStats?.Damage ?? 0,
+                InSpeed = weapon.Data?.Speed ?? 0,
+                InReach = weapon.Data?.Reach ?? 0,
+                InStagger = weapon.Data?.Stagger ?? 0,
+                InCriticalDamage = weapon.Critical?.Damage ?? 0,
+                InCriticalChanceMult = weapon.Critical?.PercentMult ?? 0,
+                UsesTemplate = weapon.Template?.FormKey != null && !weapon.Template.FormKey.IsNull && weapon.Template.FormKey.ToString() != "Null",
+                IsPlayable = !(weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true),
+                SettingsKey = weaponSettingKey,
+                IsSpecial = true,
+                IsIgnored = false
+            };
+
+            // Get weapon settings
+            var settings = _weaponDataManager?.GetWeaponSettings(weaponSettingKey);
+            if (settings == null)
+            {
+                _weaponDataManager?.DebugLog($"{weaponSettingKey} is not enabled in settings");
+                debugInfo.ProcessingResult = "No settings found";
+                if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+                return;
+            }
+
+            // Get weapon keywords
+            var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
+            debugInfo.InKeywords = string.Join(";", weaponKeywords);
+
+            // Get default weapon stats
+            var defaultStats = _weaponDataManager?.GetDefaultWeaponStats(weaponKeywords);
+            if (defaultStats == null)
+            {
+                _weaponDataManager?.DebugLog($"No matching default weapon stats found for {weapon.EditorID}");
+                debugInfo.ProcessingResult = "No default stats found";
+                if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+                return;
+            }
+
+            // Create a copy of the weapon for modification
+            var weaponOverride = weapon.DeepCopy();
+            if (weaponOverride?.Data == null || weaponOverride.BasicStats == null || weaponOverride.Critical == null)
+            {
+                _weaponDataManager?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
+                debugInfo.ProcessingResult = "Could not create override";
+                if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+                return;
+            }
+
+            // Store original values for later comparison
+            var originalStats = new
+            {
+                Damage = weaponOverride.BasicStats.Damage,
+                Speed = weaponOverride.Data.Speed,
+                Reach = weaponOverride.Data.Reach,
+                Stagger = weaponOverride.Data.Stagger,
+                CriticalDamage = weaponOverride.Critical.Damage,
+                CriticalChanceMult = weaponOverride.Critical.PercentMult
+            };
+
+            _weaponDataManager?.DebugLog($"Default stats: " +
+                $"   Damage: {defaultStats.Damage}, " +
+                $"   DamageWaccf: {defaultStats.DamageWaccf}, " +
+                $"   Speed: {defaultStats.Speed}, " +
+                $"   Reach: {defaultStats.Reach}, " +
+                $"   Stagger: {defaultStats.Stagger}, " +
+                $"   CriticalDamage: {defaultStats.CriticalDamage}, " +
+                $"   CriticalChanceMult: {defaultStats.CriticalChanceMult}");
+
+            _weaponDataManager?.DebugLog($"Weapon stats: " +
+                $"   Damage: {weaponOverride.BasicStats.Damage}, " +
+                $"   Speed: {weaponOverride.Data.Speed}, " +
+                $"   Reach: {weaponOverride.Data.Reach}, " +
+                $"   Stagger: {weaponOverride.Data.Stagger}, " +
+                $"   CriticalDamage: {weaponOverride.Critical.Damage}, " +
+                $"   CriticalChanceMult: {weaponOverride.Critical.PercentMult}");
+
+            // Calculate offsets between current weapon stats and default stats            
+            int damageOffset = weaponOverride.BasicStats.Damage - defaultStats.Damage;
+            decimal speedOffset = (decimal)weaponOverride.Data.Speed - defaultStats.Speed;
+            decimal reachOffset = (decimal)weaponOverride.Data.Reach - defaultStats.Reach;
+            decimal staggerOffset = (decimal)weaponOverride.Data.Stagger - defaultStats.Stagger;
+            int criticalDamageOffset = weaponOverride.Critical.Damage - weaponOverride.BasicStats.Damage / 2;
+            decimal criticalDamageChanceMultiplierOffset = (decimal)weaponOverride.Critical.PercentMult - defaultStats.CriticalChanceMult;
+
+            _weaponDataManager?.DebugLog($"Offsets: " +
+                $"   Damage: {damageOffset}, " +
+                $"   Speed: {speedOffset}, " +
+                $"   Reach: {reachOffset}, " +
+                $"   Stagger: {staggerOffset}, " +
+                $"   CriticalDamage: {criticalDamageOffset}, " +
+                $"   CriticalChanceMult: {criticalDamageChanceMultiplierOffset}");
+
+            // Update debug info with offsets
+            debugInfo.SettingsDamageOffset = damageOffset;
+            debugInfo.SettingsSpeedOffset = (float)speedOffset;
+            debugInfo.SettingsReachOffset = (float)reachOffset;
+            debugInfo.SettingsStaggerOffset = (float)staggerOffset;
+            debugInfo.SettingsCriticalDamageOffset = criticalDamageOffset;
+            debugInfo.SettingsCriticalChanceMultOffset = (float)criticalDamageChanceMultiplierOffset;
+
+            // Apply stats with offsets
+            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset);
+            weaponOverride.Data.Speed = Math.Max(0f, (float)((decimal)settings.Speed + (decimal)speedOffset));
+            weaponOverride.Data.Reach = Math.Max(0f, (float)((decimal)settings.Reach + (decimal)reachOffset));
+            weaponOverride.Data.Stagger = Math.Max(0f, (float)((decimal)settings.Stagger + staggerOffset));
+            weaponOverride.Critical.PercentMult = Math.Max(0f, (float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)criticalDamageChanceMultiplierOffset));
+            weaponOverride.Critical.Damage = (ushort)Math.Floor((decimal)settings.CriticalDamageMultiplier * ((decimal)criticalDamageOffset + (decimal)settings.CriticalDamageOffset + weaponOverride.BasicStats.Damage / 2m));
+
+            // Update debug info with final stats
+            debugInfo.FinalDamage = weaponOverride.BasicStats.Damage;
+            debugInfo.FinalSpeed = weaponOverride.Data.Speed;
+            debugInfo.FinalReach = weaponOverride.Data.Reach;
+            debugInfo.FinalStagger = weaponOverride.Data.Stagger;
+            debugInfo.FinalCriticalDamage = weaponOverride.Critical.Damage;
+            debugInfo.FinalCriticalChanceMult = weaponOverride.Critical.PercentMult;
+            debugInfo.ProcessingResult = "Successfully processed";
+
+            // Check if any values actually changed
+            bool madeModification = weaponOverride.BasicStats.Damage != originalStats.Damage ||
+                                   weaponOverride.Data.Speed != originalStats.Speed ||
+                                   weaponOverride.Data.Reach != originalStats.Reach ||
+                                   weaponOverride.Data.Stagger != originalStats.Stagger ||
+                                   weaponOverride.Critical.Damage != originalStats.CriticalDamage ||
+                                   weaponOverride.Critical.PercentMult != originalStats.CriticalChanceMult;
+
+            // Only add to mod if changes were made
+            if (madeModification || 1 == 1)
+            {
+                state.PatchMod.Weapons.Set(weaponOverride);
+                _weaponDataManager?.DebugLog($"Successfully processed special weapon: {weapon.EditorID}");
+                _weaponDataManager?.DebugLog($"Final stats:");
+                _weaponDataManager?.DebugLog($"- Damage: {weaponOverride.BasicStats.Damage}");
+                _weaponDataManager?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
+                _weaponDataManager?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
+                _weaponDataManager?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
+                _weaponDataManager?.DebugLog($"- Critical Damage: {weaponOverride.Critical.Damage}");
+                _weaponDataManager?.DebugLog($"- Critical Damage Chance Multiplier: {weaponOverride.Critical.PercentMult}");
+            }
+            else
+            {
+                _weaponDataManager?.DebugLog($"No changes needed for special weapon: {weapon.EditorID}");
+                debugInfo.ProcessingResult = "No changes needed";
+            }
+
+            if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+        }
+
+        private static void ProcessWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey)
+        {
+            if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
+            {
+                _weaponDataManager?.DebugLog("Invalid parameters in ProcessWeapon");
+                return;
+            }
+
+            // Create debug info object
+            var debugInfo = new WeaponDebugInfo
+            {
+                EditorID = weapon.EditorID ?? string.Empty,
+                Name = weapon.Name?.String ?? string.Empty,
+                InDamage = weapon.BasicStats?.Damage ?? 0,
+                InSpeed = weapon.Data?.Speed ?? 0,
+                InReach = weapon.Data?.Reach ?? 0,
+                InStagger = weapon.Data?.Stagger ?? 0,
+                InCriticalDamage = weapon.Critical?.Damage ?? 0,
+                InCriticalChanceMult = weapon.Critical?.PercentMult ?? 0,
+                UsesTemplate = weapon.Template?.FormKey != null && !weapon.Template.FormKey.IsNull && weapon.Template.FormKey.ToString() != "Null",
+                IsPlayable = !(weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true),
+                SettingsKey = weaponSettingKey,
+                IsSpecial = false,
+                IsIgnored = false
+            };
+
+            // Get weapon settings
+            var settings = _weaponDataManager?.GetWeaponSettings(weaponSettingKey);
+            if (settings == null)
+            {
+                _weaponDataManager?.DebugLog($"{weaponSettingKey} is not enabled in settings");
+                debugInfo.ProcessingResult = "No settings found";
+                if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+                return;
+            }
+
+            // Create a copy of the weapon for modification
+            var weaponOverride = weapon.DeepCopy();
+            if (weaponOverride?.Data == null || weaponOverride.BasicStats == null || weaponOverride.Critical == null)
+            {
+                _weaponDataManager?.DebugLog($"Warning: Could not create override for {weapon.EditorID}");
+                debugInfo.ProcessingResult = "Could not create override";
+                if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+                return;
+            }
+
+            // Store original values for later comparison
+            var originalStats = new
+            {
+                Damage = weaponOverride.BasicStats.Damage,
+                Speed = weaponOverride.Data.Speed,
+                Reach = weaponOverride.Data.Reach,
+                Stagger = weaponOverride.Data.Stagger,
+                CriticalDamage = weaponOverride.Critical.Damage,
+                CriticalChanceMult = weaponOverride.Critical.PercentMult
+            };
+
+            _weaponDataManager?.DebugLog($"Original stats: " +
+                $"   Damage: {originalStats.Damage}, " +
+                $"   Speed: {originalStats.Speed}, " +
+                $"   Reach: {originalStats.Reach}, " +
+                $"   Stagger: {originalStats.Stagger}, " +
+                $"   CriticalDamage: {originalStats.CriticalDamage}, " +
+                $"   CriticalChanceMult: {originalStats.CriticalChanceMult}");
+
+            int damageOffset = 0;
+            decimal staggerOffset = 0;
+            decimal criticalDamageOffset = 0;
+
+            // Initialize variant stats with default values
+            int additionalDamage = 0;
+            float additionalReach = 0.0f;
+            float additionalSpeed = 0.0f;
+            float additionalStagger = 0.0f;
+            float additionalCriticalDamageOffset = 0.0f;
+            float additionalCriticalDamageChanceMultiplier = 0.0f;
+            float additionalCriticalDamageMultiplier = 0.0f;
+
+            // Check if weapon is bound
+            bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                          (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
+
+            // Handle bound weapons
+            if (isBound)
+            {
+                var boundDamageOffset = _weaponDataManager?.GetBoundWeaponDamageOffset(weaponOverride, settings);
+                if (boundDamageOffset.HasValue)
+                {
+                    damageOffset += boundDamageOffset.Value;
+                    debugInfo.MaterialDamageOffset = boundDamageOffset.Value;
+                }
+            }
+            else
+            {
+                // Get damage offset for non-bound weapons
+                var nonBoundDamageOffset = _weaponDataManager?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
+                if (nonBoundDamageOffset == null)
+                {
+                    _weaponDataManager?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}. Skipping.");
+                    debugInfo.ProcessingResult = "Could not determine damage offset";
+                    if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+                    return;
+                }
+                damageOffset += nonBoundDamageOffset.Value;
+                debugInfo.MaterialDamageOffset = nonBoundDamageOffset.Value;
+
+                // Get variant settings for non-bound weapons
+                var variantStats = _weaponDataManager?.GetVariantStats(weapon, state.LinkCache);
+                if (variantStats != null)
+                {
+                    (additionalDamage, additionalReach, additionalSpeed, additionalStagger,
+                     additionalCriticalDamageOffset, additionalCriticalDamageChanceMultiplier,
+                     additionalCriticalDamageMultiplier) = variantStats.Value;
+
+                    debugInfo.VariantDamageOffset = additionalDamage;
+                    debugInfo.VariantReachOffset = additionalReach;
+                    debugInfo.VariantSpeedOffset = additionalSpeed;
+                    debugInfo.VariantStaggerOffset = additionalStagger;
+                    debugInfo.VariantCriticalDamageOffset = additionalCriticalDamageOffset;
+                    debugInfo.VariantCriticalChanceMultOffset = additionalCriticalDamageChanceMultiplier;
+                    debugInfo.VariantCriticalDamageMultOffset = additionalCriticalDamageMultiplier;
+
+                    _weaponDataManager?.DebugLog($"Weapon variant stats: " +
+                        $"   AdditionalDamage: {additionalDamage}, " +
+                        $"   AdditionalReach: {additionalReach}, " +
+                        $"   AdditionalSpeed: {additionalSpeed}, " +
+                        $"   AdditionalStagger: {additionalStagger}, " +
+                        $"   AdditionalCriticalDamageOffset: {additionalCriticalDamageOffset}, " +
+                        $"   AdditionalCriticalDamageChanceMultiplier: {additionalCriticalDamageChanceMultiplier}, " +
+                        $"   AdditionalCriticalDamageMultiplier: {additionalCriticalDamageMultiplier}");
+                }
+
+                // Get weapon keywords for material checks
+                List<string> weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
+                debugInfo.InKeywords = string.Join(";", weaponKeywords);
+
+                // Apply Stalhrim-specific bonuses if applicable
+                bool isStalhrim = weaponKeywords.Contains("DLC2WeaponMaterialStalhrim");
+                if (isStalhrim)
+                {
+                    _weaponDataManager?.DebugLog($"Has DLC2WeaponMaterialStalhrim: {isStalhrim}");
+
+                    // Apply Stalhrim stagger bonus
+                    if (weaponOverride.Data.Stagger > 0)
+                    {
+                        _weaponDataManager?.DebugLog($"Stagger: {weaponOverride.Data.Stagger}. Adding Stalhrim stagger bonus: {Settings.Value.StalhrimStaggerBonus}");
+                        staggerOffset += (decimal)Settings.Value.StalhrimStaggerBonus;
+                    }
+
+                    // Apply Stalhrim damage bonus for war axes and maces
+                    bool isWarAxe = weaponKeywords.Contains("WeapTypeWarAxe");
+                    bool isMace = weaponKeywords.Contains("WeapTypeMace");
+                    if (isWarAxe || isMace)
+                    {
+                        _weaponDataManager?.DebugLog($"Is War Axe: {isWarAxe}. Is Mace: {isMace}. Adding Stalhrim damage bonus: {Settings.Value.StalhrimDamageBonus}");
+                        damageOffset += Settings.Value.StalhrimDamageBonus;
+                        _weaponDataManager?.DebugLog($"Applied Stalhrim damage bonus. Damage: {weaponOverride.BasicStats.Damage}");
+                    }
+                }
+
+                // if material is glass and waccf is enabled, apply glass critical damage bonus of 0,5
+                if (Settings.Value.WACCFMaterialTiers)
+                {
+                    bool isGlass = weaponKeywords.Contains("WeapMaterialGlass");
+                    bool isDaedric = weaponKeywords.Contains("WeapMaterialDaedric");
+                    bool isFalmerHoned = weaponKeywords.Contains("WeapMaterialFalmerHoned");
+                    bool isWarAxe = weaponKeywords.Contains("WeapTypeWarAxe");
+                    bool isWarHammer = weaponKeywords.Contains("WeapTypeWarhammer");
+                    _weaponDataManager?.DebugLog($"WACCFMaterialTiers: {Settings.Value.WACCFMaterialTiers}, checking if glass or daedric warhammer or falmer honed waraxe");
+                    _weaponDataManager?.DebugLog($"isGlass: {isGlass}, isDaedric: {isDaedric}, isFalmerHoned: {isFalmerHoned}, isWarAxe: {isWarAxe}, isWarHammer: {isWarHammer}");
+                    if (isGlass || (isDaedric && isWarHammer) || (isFalmerHoned && isWarAxe))
+                    {
+                        _weaponDataManager?.DebugLog($"Adding critical damage bonus of 0,5");
+                        criticalDamageOffset += 0.5m;
+                    }
+                    else
+                    {
+                        _weaponDataManager?.DebugLog($"No glass or daedric warhammer or falmer honed waraxe, not adding critical damage bonus");
+                    }
+                }
+            }
+
+            // Apply stats
+            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset + additionalDamage);
+            weaponOverride.Data.Speed = Math.Max(0f, (float)((decimal)settings.Speed + (decimal)additionalSpeed));
+            weaponOverride.Data.Reach = Math.Max(0f, (float)((decimal)settings.Reach + (decimal)additionalReach));
+            weaponOverride.Data.Stagger = Math.Max(0f, (float)((decimal)settings.Stagger + staggerOffset + (decimal)additionalStagger));
+            weaponOverride.Critical.PercentMult = Math.Max(0f, (float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)additionalCriticalDamageChanceMultiplier));
+
+            // Apply critical damage stats
+            decimal halfDamage = (decimal)weaponOverride.BasicStats.Damage / 2m;
+            decimal finalCriticalDamageOffset = (decimal)settings.CriticalDamageOffset + (decimal)additionalCriticalDamageOffset + criticalDamageOffset;
+            decimal criticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier + (decimal)additionalCriticalDamageMultiplier;
+            decimal criticalDamage = Math.Floor(criticalDamageMultiplier * (halfDamage + finalCriticalDamageOffset));
+            weaponOverride.Critical.Damage = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, (int)criticalDamage));
+            _weaponDataManager?.DebugLog($"Critical damage: {criticalDamage}");
+
+            // Update debug info with final stats
+            debugInfo.FinalDamage = weaponOverride.BasicStats.Damage;
+            debugInfo.FinalSpeed = weaponOverride.Data.Speed;
+            debugInfo.FinalReach = weaponOverride.Data.Reach;
+            debugInfo.FinalStagger = weaponOverride.Data.Stagger;
+            debugInfo.FinalCriticalDamage = weaponOverride.Critical.Damage;
+            debugInfo.FinalCriticalChanceMult = weaponOverride.Critical.PercentMult;
+            debugInfo.ProcessingResult = "Successfully processed";
+
+            // Check if any values actually changed
+            bool madeModification = weaponOverride.BasicStats.Damage != originalStats.Damage ||
+                                   weaponOverride.Data.Speed != originalStats.Speed ||
+                                   weaponOverride.Data.Reach != originalStats.Reach ||
+                                   weaponOverride.Data.Stagger != originalStats.Stagger ||
+                                   weaponOverride.Critical.Damage != originalStats.CriticalDamage ||
+                                   weaponOverride.Critical.PercentMult != originalStats.CriticalChanceMult;
+
+            // Only add to mod if changes were made
+            if (madeModification || 1 == 1)
+            {
+                state.PatchMod.Weapons.Set(weaponOverride);
+                _weaponDataManager?.DebugLog($"Successfully processed weapon: {weapon.EditorID}");
+                _weaponDataManager?.DebugLog($"Final stats:");
+                _weaponDataManager?.DebugLog($"- Damage: {weaponOverride.BasicStats.Damage}");
+                _weaponDataManager?.DebugLog($"- Speed: {weaponOverride.Data.Speed}");
+                _weaponDataManager?.DebugLog($"- Reach: {weaponOverride.Data.Reach}");
+                _weaponDataManager?.DebugLog($"- Stagger: {weaponOverride.Data.Stagger}");
+                _weaponDataManager?.DebugLog($"- Critical Damage: {weaponOverride.Critical.Damage}");
+                _weaponDataManager?.DebugLog($"- Critical Damage Chance Multiplier: {weaponOverride.Critical.PercentMult}");
+            }
+            else
+            {
+                _weaponDataManager?.DebugLog($"No changes needed for weapon: {weapon.EditorID}");
+                debugInfo.ProcessingResult = "No changes needed";
+            }
+
+            if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
+        }
+
+        /// <summary>
+        /// Verifies that all form keys in the special_weapons.json file are correct by looking up each editor ID.
+        /// </summary>
+        private static void VerifyFormKeys(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
+        {
+            Console.WriteLine("Verifying form keys in special_weapons.json...");
+
+            try
+            {
+                var specialWeaponsPath = state.RetrieveInternalFile("special_weapons.json");
+                string jsonContent = File.ReadAllText(specialWeaponsPath);
+                var specialWeapons = System.Text.Json.JsonSerializer.Deserialize<List<SpecialWeaponData>>(jsonContent) ?? new List<SpecialWeaponData>();
+
+                _weaponDataManager?.DebugLog($"Loaded {specialWeapons.Count} special weapons from JSON file.");
+
+                // Lists to store valid and invalid entries
+                var validEntries = new List<(string EditorID, string FormKey)>();
+                var invalidEntries = new List<(string EditorID, string FormKey, string Error)>();
+                var suggestedFormKeys = new List<(string EditorID, string CurrentFormKey, string SuggestedFormKey)>();
+
+                // Check each special weapon
+                foreach (var specialWeapon in specialWeapons)
+                {
+                    if (string.IsNullOrEmpty(specialWeapon.EditorID))
+                    {
+                        invalidEntries.Add((specialWeapon.EditorID ?? "null", specialWeapon.FormKey ?? "null", "EditorID is null or empty"));
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(specialWeapon.FormKey))
+                    {
+                        invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey ?? "null", "FormKey is null or empty"));
+                        continue;
+                    }
+
+                    // Try to parse the form key
+                    if (!FormKey.TryFactory(specialWeapon.FormKey, out var formKey))
+                    {
+                        invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Invalid form key format"));
+                        continue;
+                    }
+
+                    try
+                    {
+                        // Look up the weapon by form key
+                        var weapon = state.LinkCache.Resolve<IWeaponGetter>(formKey);
+
+                        if (weapon == null)
+                        {
+                            // Try to look up the weapon by editor ID in original definitions
+                            var originalWeapon = state.LoadOrder.ListedOrder.Weapon()
+                                .WinningOverrides()
+                                .FirstOrDefault(w => w.EditorID == specialWeapon.EditorID);
+
+                            if (originalWeapon != null)
+                            {
+                                var suggestedFormKey = $"{originalWeapon.FormKey.ID:X6}:{originalWeapon.FormKey.ModKey.FileName}";
+                                suggestedFormKeys.Add((specialWeapon.EditorID, specialWeapon.FormKey, suggestedFormKey));
+                                invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, $"Record not found in load order. Suggested form key: {suggestedFormKey}"));
+                            }
+                            else
+                            {
+                                invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Record not found in load order"));
+                            }
+                            continue;
+                        }
+
+                        // Check if the editor ID matches
+                        if (weapon.EditorID != specialWeapon.EditorID)
+                        {
+                            // Get the original definition of this weapon
+                            var originalWeapon = state.LoadOrder.ListedOrder.Weapon()
+                                .WinningOverrides()
+                                .FirstOrDefault(w => w.FormKey == weapon.FormKey);
+
+                            if (originalWeapon != null && originalWeapon.EditorID == specialWeapon.EditorID)
+                            {
+                                // The original version matches our editor ID, so this is valid
+                                validEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey));
+                            }
+                            else
+                            {
+                                invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey,
+                                    $"EditorID mismatch: expected '{specialWeapon.EditorID}', found '{weapon.EditorID}' in current version. " +
+                                    $"Original version has EditorID '{originalWeapon?.EditorID ?? "unknown"}'"));
+                            }
+                            continue;
+                        }
+
+                        // If we get here, the form key is valid
+                        validEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey));
+                    }
+                    catch (Mutagen.Bethesda.Plugins.Exceptions.MissingRecordException)
+                    {
+                        // Try to look up the weapon by editor ID in original definitions
+                        var originalWeapon = state.LoadOrder.ListedOrder.Weapon()
+                            .WinningOverrides()
+                            .FirstOrDefault(w => w.EditorID == specialWeapon.EditorID);
+
+                        if (originalWeapon != null)
+                        {
+                            var suggestedFormKey = $"{originalWeapon.FormKey.ID:X6}:{originalWeapon.FormKey.ModKey.FileName}";
+                            suggestedFormKeys.Add((specialWeapon.EditorID, specialWeapon.FormKey, suggestedFormKey));
+                            invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, $"Record not found in load order. Suggested form key: {suggestedFormKey}"));
+                        }
+                        else
+                        {
+                            invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Record not found in load order"));
+                        }
+                    }
+                }
+
+                // Print results
+                _weaponDataManager?.DebugLog("=== VALID FORM KEYS ===");
+                if (validEntries.Count == 0)
+                {
+                    _weaponDataManager?.DebugLog("No valid form keys found.");
+                }
+                else
+                {
+                    foreach (var entry in validEntries)
+                    {
+                        _weaponDataManager?.DebugLog($"Valid: {entry.EditorID}: {entry.FormKey}");
+                    }
+                }
+
+                Console.WriteLine("=== INVALID FORM KEYS ===");
+                if (invalidEntries.Count == 0)
+                {
+                    Console.WriteLine("No invalid form keys found.");
+                }
+                else
+                {
+                    foreach (var entry in invalidEntries)
+                    {
+                        Console.WriteLine($"Invalid: {entry.EditorID}: {entry.FormKey} - {entry.Error}");
+                    }
+                }
+
+                Console.WriteLine($"\nSummary: {validEntries.Count} valid, {invalidEntries.Count} invalid form keys.");
+
+                // Print suggested form keys
+                if (suggestedFormKeys.Count > 0)
+                {
+                    Console.WriteLine("\n=== SUGGESTED FORM KEY CORRECTIONS ===");
+                    Console.WriteLine("The following entries have incorrect form keys. Here are the suggested corrections:");
+                    foreach (var suggestion in suggestedFormKeys)
+                    {
+                        Console.WriteLine($"  {suggestion.EditorID}: {suggestion.CurrentFormKey} -> {suggestion.SuggestedFormKey}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error verifying form keys: {ex.Message}");
+            }
+        }
+    }
+}

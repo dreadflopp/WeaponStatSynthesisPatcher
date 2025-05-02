@@ -1,0 +1,1118 @@
+[
+  {
+    "editor_id": "DA10MaceofMolagBal",
+    "form_key": "0233E3:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword02",
+    "form_key": "0F5D1B:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword03",
+    "form_key": "0F5D1A:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword04",
+    "form_key": "0F5D1B:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword05",
+    "form_key": "0F5D1C:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFolgunthurMikrulSword06",
+    "form_key": "0F5D1D:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade01",
+    "form_key": "0D37CE:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade02",
+    "form_key": "0F5D2A:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade03",
+    "form_key": "0F5D2B:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade04",
+    "form_key": "0F5D2C:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade05",
+    "form_key": "0F5D2D:Skyrim.esm"
+  },
+  {
+    "editor_id": "DragonPriestDagger",
+    "form_key": "01C1FE:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA07MehrunesRazor",
+    "form_key": "0240D2:Skyrim.esm"
+  },
+  {
+    "editor_id": "MQ203AkaviriKatana1",
+    "form_key": "0F1AC1:Skyrim.esm"
+  },
+  {
+    "editor_id": "MQ203AkaviriKatana2",
+    "form_key": "0F71CD:Skyrim.esm"
+  },
+  {
+    "editor_id": "MQ203AkaviriKatana3",
+    "form_key": "0F71CE:Skyrim.esm"
+  },
+  {
+    "editor_id": "MQ203AkaviriKatana4",
+    "form_key": "0F71CF:Skyrim.esm"
+  },
+  {
+    "editor_id": "MQ203AkaviriKatana5",
+    "form_key": "0F71D0:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunBloatedMansKatana",
+    "form_key": "0C1989:Skyrim.esm"
+  },
+  {
+    "editor_id": "DBClawsUnEnch",
+    "form_key": "1A4CFF:NewArmoury.esp"
+  },
+  {
+    "editor_id": "DBClawsUnEnchLeft",
+    "form_key": "1A4D00:NewArmoury.esp"
+  },
+  {
+    "editor_id": "DBClaws",
+    "form_key": "19AAB2:NewArmoury.esp"
+  },
+  {
+    "editor_id": "DBClawsLeft",
+    "form_key": "19AAEE:NewArmoury.esp"
+  },
+  {
+    "editor_id": "StormWhip01",
+    "form_key": "31BDEC:NewArmoury.esp"
+  },
+  {
+    "editor_id": "StormWhip02",
+    "form_key": "31BDF3:NewArmoury.esp"
+  },
+  {
+    "editor_id": "StormWhip03",
+    "form_key": "31BDF4:NewArmoury.esp"
+  },
+  {
+    "editor_id": "StormWhip04",
+    "form_key": "31BDF5:NewArmoury.esp"
+  },
+  {
+    "editor_id": "StormWhip05",
+    "form_key": "31BDF6:NewArmoury.esp"
+  },
+  {
+    "editor_id": "StormWhip06",
+    "form_key": "31BDF7:NewArmoury.esp"
+  },
+  {
+    "editor_id": "VampireSlayerWhip01",
+    "form_key": "31BDEB:NewArmoury.esp"
+  },
+  {
+    "editor_id": "VampireSlayerWhipDW",
+    "form_key": "31BE0E:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip01",
+    "form_key": "31BDED:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip02",
+    "form_key": "31BDF8:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip03",
+    "form_key": "31BDF9:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip04",
+    "form_key": "31BDFA:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip05",
+    "form_key": "31BDFB:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip06",
+    "form_key": "31BDFC:NewArmoury.esp"
+  },
+  {
+    "editor_id": "FlameWhip06DW",
+    "form_key": "31BE0D:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip01",
+    "form_key": "31BDE9:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip02",
+    "form_key": "31BDEE:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip03",
+    "form_key": "31BDEF:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip04",
+    "form_key": "31BDF0:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip05",
+    "form_key": "31BDF1:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip06",
+    "form_key": "31BDF2:NewArmoury.esp"
+  },
+  {
+    "editor_id": "IcicleWhip06DW",
+    "form_key": "31BE0B:NewArmoury.esp"
+  },
+  {
+    "editor_id": "SSM_Javelin_Riekling",
+    "form_key": "010393:SkyrimSpearMechanic.esp"
+  },
+  {
+    "editor_id": "T03Nettlebane",
+    "form_key": "01C492:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA03RuefulAxe",
+    "form_key": "01C4E6:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunPinewoodGroveWoodsmansFriend",
+    "form_key": "022265:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA10RustyMace",
+    "form_key": "022F0F:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA06Volendrung",
+    "form_key": "02ACD2:Skyrim.esm"
+  },
+  {
+    "editor_id": "MS02Shiv",
+    "form_key": "0426C8:Skyrim.esm"
+  },
+  {
+    "editor_id": "FFRiften13ArkayDagger",
+    "form_key": "043E1E:Skyrim.esm"
+  },
+  {
+    "editor_id": "MG07DraugrMagicAxe",
+    "form_key": "0F82FA:Skyrim.esm"
+  },
+  {
+    "editor_id": "MG07DraugrMagicSword",
+    "form_key": "0F71DD:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA08EbonyBlade",
+    "form_key": "04A38F:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA09Dawnbreaker",
+    "form_key": "04E4EE:Skyrim.esm"
+  },
+  {
+    "editor_id": "MGRKeening",
+    "form_key": "06A13C:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunPOITrollsbane",
+    "form_key": "06AF63:Skyrim.esm"
+  },
+  {
+    "editor_id": "Scimitar",
+    "form_key": "07A91A:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunKatariahScimitar",
+    "form_key": "06EA8B:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunAnsilvundGhostblade",
+    "form_key": "094A2B:Skyrim.esm"
+  },
+  {
+    "editor_id": "C06BladeOfYsgramor",
+    "form_key": "0956B5:Skyrim.esm"
+  },
+  {
+    "editor_id": "DBBladeOfWoeAstrid",
+    "form_key": "0964C9:Skyrim.esm"
+  },
+  {
+    "editor_id": "DBBladeOfWoeReward",
+    "form_key": "09CCDC:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunLiarsRetreatLonghammer",
+    "form_key": "0AE085:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunRedEagleSwordUpgraded",
+    "form_key": "0AE087:Skyrim.esm"
+  },
+  {
+    "editor_id": "ExecutionerAxe",
+    "form_key": "0BE25E:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunLostValleyRedoubtAxe",
+    "form_key": "0AE087:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunMossMotherValdrDagger",
+    "form_key": "0B994E:Skyrim.esm"
+  },
+  {
+    "editor_id": "DA08RealEbonyBlade",
+    "form_key": "0EA29C:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunFrostmereCryptPaleBlade05",
+    "form_key": "0F5D2D:Skyrim.esm"
+  },
+  {
+    "editor_id": "NightingaleBlade02",
+    "form_key": "0F6524:Skyrim.esm"
+  },
+  {
+    "editor_id": "NightingaleBlade03",
+    "form_key": "0F6525:Skyrim.esm"
+  },
+  {
+    "editor_id": "NightingaleBlade04",
+    "form_key": "0F6526:Skyrim.esm"
+  },
+  {
+    "editor_id": "NightingaleBlade05",
+    "form_key": "0F6527:Skyrim.esm"
+  },
+  {
+    "editor_id": "TG07Chillrend001",
+    "form_key": "0F8313:Skyrim.esm"
+  },
+  {
+    "editor_id": "TG07Chillrend002",
+    "form_key": "0F8314:Skyrim.esm"
+  },
+  {
+    "editor_id": "TG07Chillrend003",
+    "form_key": "0F8315:Skyrim.esm"
+  },
+  {
+    "editor_id": "TG07Chillrend004",
+    "form_key": "0F8316:Skyrim.esm"
+  },
+  {
+    "editor_id": "TG07Chillrend005",
+    "form_key": "0F8317:Skyrim.esm"
+  },
+  {
+    "editor_id": "TG07Chillrend006",
+    "form_key": "0F8318:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunVolunruudPickaxe",
+    "form_key": "1019D4:Skyrim.esm"
+  },
+  {
+    "editor_id": "DLC1PrelateMace",
+    "form_key": "01681E:Dawnguard.esm"
+  },
+  {
+    "editor_id": "DLC2dunHaknirScimitar01",
+    "form_key": "018DDD:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2RR01FalxWarhammer",
+    "form_key": "01A578:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2BloodskalBlade",
+    "form_key": "01AEA4:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2RR03NordPickaxe",
+    "form_key": "0206F2:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2dunHaknirScimitar02",
+    "form_key": "036689:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2MKMiraakSword1",
+    "form_key": "0397F6:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2MKMiraakSword2",
+    "form_key": "039FB1:Dragonborn.esm"
+  },
+  {
+    "editor_id": "DLC2MKMiraakSword3",
+    "form_key": "039FB4:Dragonborn.esm"
+  },
+  {
+    "editor_id": "ccASVSSE001_Trueflame",
+    "form_key": "00083A:ccasvsse001-almsivi.esm"
+  },
+  {
+    "editor_id": "ccASVSSE001_Hopesfire",
+    "form_key": "000C28:ccasvsse001-almsivi.esm"
+  },
+  {
+    "editor_id": "ccASVSSE001_CleaverStFelms",
+    "form_key": "057384:ccasvsse001-almsivi.esm"
+  },
+  {
+    "editor_id": "ccASVSSE001_Skullcrusher",
+    "form_key": "11CBF0:ccasvsse001-almsivi.esm"
+  },
+  {
+    "editor_id": "ccASVSSE001_Magebane",
+    "form_key": "13101B:ccasvsse001-almsivi.esm"
+  },
+  {
+    "editor_id": "ccASVSSE001_LightOfDay",
+    "form_key": "13101E:ccasvsse001-almsivi.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE001_SpecialDwarvenAxe01",
+    "form_key": "0009D9:ccbgssse001-fish.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE001_ArtifactArgonianDagger",
+    "form_key": "000ED3:ccbgssse001-fish.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE001_SpecialDwarvenAxe02",
+    "form_key": "04D05E:ccbgssse001-fish.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE001_SpecialDwarvenAxeUnenchanted",
+    "form_key": "07AED6:ccbgssse001-fish.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE005_Goldbrand",
+    "form_key": "000D61:ccBGSSSE005-Goldbrand.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE006StendarsHammer",
+    "form_key": "000D62:ccbgssse006-stendarshammer.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE007Chrysamere",
+    "form_key": "000D63:ccbgssse007-chrysamere.esl"
+  },
+  {
+    "editor_id": "ccMTYSSE001_KOTNSword",
+    "form_key": "00080C:ccmtysse001-knightsofthenine.esl"
+  },
+  {
+    "editor_id": "ccMTYSSE001_KOTNMace",
+    "form_key": "00080D:ccMTYSSE001-KnightsoftheNine.esl"
+  },
+  {
+    "editor_id": "BGSSSE018ShadowrendBattleaxe",
+    "form_key": "000D62:ccBGSSSE018-Shadowrend.esl"
+  },
+  {
+    "editor_id": "BGSSSE018ShadowrendClaymore",
+    "form_key": "000D63:ccbgssse018-shadowrend.esl"
+  },
+  {
+    "editor_id": "BGSSSE008Sunder",
+    "form_key": "000801:ccbgssse008-wraithguard.esl"
+  },
+  {
+    "editor_id": "ccFFBSSE001DragonsOath",
+    "form_key": "00084F:ccFFBSSE001-ImperialDragon.esl"
+  },
+  {
+    "editor_id": "ccFFBSSE001_StormBearAxe",
+    "form_key": "000850:ccffbsse001-imperialdragon.esl"
+  },
+  {
+    "editor_id": "ccFFBSSE001_StormBearSword",
+    "form_key": "000D61:ccFFBSSE001-ImperialDragon.esl"
+  },
+  {
+    "editor_id": "ccFFBSSE001AkatoshTalon",
+    "form_key": "000D62:ccFFBSSE001-ImperialDragon.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE031_BlackwaterBlade",
+    "form_key": "000A4B:ccbgssse031-advcyrus.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE031_CyrusSabre",
+    "form_key": "000D63:ccbgssse031-advcyrus.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE059_TyrantsBaneAxe",
+    "form_key": "000869:ccBGSSSE059-BA_Dragonplate.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE059_CrowsToothWeapon",
+    "form_key": "00086A:ccbgssse059-ba_dragonplate.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE059_FalmerWarAxe",
+    "form_key": "00086B:ccbgssse059-ba_dragonplate.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE067_DaedricMaceScourge",
+    "form_key": "000B5E:ccbgssse067-daedinv.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE067_DaedricLongswordTorment",
+    "form_key": "000B5F:ccbgssse067-daedinv.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE068_BloodfallBlade",
+    "form_key": "000803:ccbgssse068-bloodfall.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE069_IceBladeMonarch",
+    "form_key": "000815:ccBGSSSE069-Contest.esl"
+  },
+  {
+    "editor_id": "ccVSVSSE003_WPN_SkeleWarAxe",
+    "form_key": "0008F9:ccVSVSSE003-NecroArts.esl"
+  },
+  {
+    "editor_id": "ccVSVSSE003_WPN_SkeleGreatsword",
+    "form_key": "000916:ccVSVSSE003-NecroArts.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE025_Jyggalag",
+    "form_key": "00083B:ccbgssse025-advdsgs.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE025_Nerveshatter",
+    "form_key": "000BE3:ccbgssse025-advdsgs.esm"
+  },
+  {
+    "editor_id": "ccSBJSSE001_Zulfiqar",
+    "form_key": "000805:ccEDHSSE003-Redguard.esl"
+  },
+  {
+    "editor_id": "ccEDHSSE003_Boneshaver",
+    "form_key": "0008D6:ccEDHSSE003-Redguard.esl"
+  },
+  {
+    "editor_id": "ccSBJSSE001_ZulfiqarFire04",
+    "form_key": "000E44:ccEDHSSE003-Redguard.esl"
+  },
+  {
+    "editor_id": "ccKRTSSE001_RedDiamondGladius",
+    "form_key": "000807:cckrtsse001_altar.esl"
+  },
+  {
+    "editor_id": "EC_SS_GrummiteCleaver",
+    "form_key": "2F68AD:Skyrim Extended Cut - Saints and Seducers.esp"
+  },
+  {
+    "editor_id": "EC_SS_GrummiteDagger",
+    "form_key": "2F68AF:Skyrim Extended Cut - Saints and Seducers.esp"
+  },
+  {
+    "editor_id": "EC_SS_GrummiteMace",
+    "form_key": "2F68B0:Skyrim Extended Cut - Saints and Seducers.esp"
+  },
+  {
+    "editor_id": "EC_SS_GrummiteGreatcleaver",
+    "form_key": "4B9E83:Skyrim Extended Cut - Saints and Seducers.esp"
+  },
+  {
+    "editor_id": "EC_SS_GrummiteGreatcudgel",
+    "form_key": "4B9E84:Skyrim Extended Cut - Saints and Seducers.esp"
+  },
+  {
+    "editor_id": "MASHopesfire",
+    "form_key": "00E242:MoonAndStar_MAS.esp"
+  },
+  {
+    "editor_id": "MASTrueflame",
+    "form_key": "00E243:MoonAndStar_MAS.esp"
+  },
+  {
+    "editor_id": "MASMaceOfAevar",
+    "form_key": "010337:MoonAndStar_MAS.esp"
+  },
+  {
+    "editor_id": "MASChrysamere",
+    "form_key": "01033E:MoonAndStar_MAS.esp"
+  },
+  {
+    "editor_id": "DwaSpDagger",
+    "form_key": "97F2C3:Dwarfsphere.esp"
+  },
+  {
+    "editor_id": "DwaSpSword",
+    "form_key": "B4E81B:Dwarfsphere.esp"
+  },
+  {
+    "editor_id": "DwaSpGreatsword",
+    "form_key": "B4E81C:Dwarfsphere.esp"
+  },
+  {
+    "editor_id": "DrakusSwordMidwoodIsle",
+    "form_key": "041267:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "DaelarSwordMidwoodIsleUnenchant",
+    "form_key": "04184E:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "DaelarSwordMidwoodIsleEnchant",
+    "form_key": "041850:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "ZahkrisSwordMidwoodIsle",
+    "form_key": "041857:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "MidwoodIsleQ03Dagger",
+    "form_key": "0CCADD:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "DyndilanSwordMidwoodIsle",
+    "form_key": "163A1C:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "MidwoodIsleValdilSword",
+    "form_key": "232EA4:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "SoulscytheMidwoodIsle",
+    "form_key": "2FE971:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "KatanaMidwoodIsle",
+    "form_key": "842A95:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "manny_GF_Weapon_Umbra",
+    "form_key": "00334E:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "manny_GF_Weapon_AncientScimitar",
+    "form_key": "004D9F:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "manny_GF_Weapon_GoldenScimitar",
+    "form_key": "02B7DC:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "manny_GF_Weapon_BladeOfYokuda",
+    "form_key": "05F05D:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "WTBrokenSteelSword",
+    "form_key": "716525:Wyrmstooth.esp"
+  },
+  {
+    "editor_id": "WTBladedBroom",
+    "form_key": "723033:Wyrmstooth.esp"
+  },
+  {
+    "editor_id": "WTBloodletterDagger",
+    "form_key": "784A71:Wyrmstooth.esp"
+  },
+  {
+    "editor_id": "SariqsDagger01",
+    "form_key": "06BB89:KhajiitWillFollow.esp"
+  },
+  {
+    "editor_id": "SariqsDagger02",
+    "form_key": "06BB8A:KhajiitWillFollow.esp"
+  },
+  {
+    "editor_id": "KWF_DasamaHammer",
+    "form_key": "82CD26:KhajiitWillFollow.esp"
+  },
+  {
+    "editor_id": "SOS_BOBRollingPin",
+    "form_key": "0009DD:Skyrim On Skooma.esp"
+  },
+  {
+    "editor_id": "InigoThunderSword",
+    "form_key": "0D955D:Inigo.esp"
+  },
+  {
+    "editor_id": "000RedwaveSword",
+    "form_key": "000D6B:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000WitsplinterElvenDagger",
+    "form_key": "001DB6:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000AmelionSwordWeapon",
+    "form_key": "002333:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000AntiqueSword",
+    "form_key": "003486:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000BattleaxeofHate",
+    "form_key": "003487:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000Kordonsword",
+    "form_key": "003FCF:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000AkaviriSunderblade",
+    "form_key": "00453A:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000HonorbladeofChorrol",
+    "form_key": "020439:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000HonorbladeofChorrolCursed",
+    "form_key": "02043D:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000SufferthornDagger",
+    "form_key": "02044F:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000HatredsHeart",
+    "form_key": "022C19:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000Rockshatter",
+    "form_key": "027B65:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000RedwaveSword2",
+    "form_key": "03BAEE:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000RedwaveSword3",
+    "form_key": "040A2D:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000BlackwaterSteelSword",
+    "form_key": "07F8B4:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000BlackwaterSteelSwordUpgraded",
+    "form_key": "08A088:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "000FirstMateScimitarBlackwater",
+    "form_key": "09457D:WZOblivionArtifacts.esp"
+  },
+  {
+    "editor_id": "DBDestroyNazirScimitar02",
+    "form_key": "000854:Destroy the Dark Brotherhood - Quest Expansion.esp"
+  },
+  {
+    "editor_id": "BSMAyleidWarAxe",
+    "form_key": "001865:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMRimmenMace",
+    "form_key": "001875:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMRoscreanIronGreatsword",
+    "form_key": "001876:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMMithrilBattleaxe",
+    "form_key": "001877:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMCommonKnife01",
+    "form_key": "0131ED:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMCommonKnife02",
+    "form_key": "0131EE:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMFishbat",
+    "form_key": "013207:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "BSMBonemoldWarAxe",
+    "form_key": "013208:BeyondSkyrimMerchant.esp"
+  },
+  {
+    "editor_id": "aaIS3EVvarDaedricCrescent",
+    "form_key": "000D63:Lore Weapon Expansion - Daedric Crescent.esp"
+  },
+  {
+    "editor_id": "aaIS3ECyrodGoldbrand",
+    "form_key": "000D63:Lore Weapon Expansion - Goldbrand.esp"
+  },
+  {
+    "editor_id": "aaIS3ECyrodEltonbrand",
+    "form_key": "00230C:Lore Weapon Expansion - Goldbrand.esp"
+  },
+  {
+    "editor_id": "aaIS3EKOTNCrusaderMace",
+    "form_key": "000D63:Lore Weapon Expansion - Relics of the Crusader.esp"
+  },
+  {
+    "editor_id": "aaIS3EKOTNCrusaderSword",
+    "form_key": "00182D:Lore Weapon Expansion - Relics of the Crusader.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordWarAxeUnique",
+    "form_key": "00080B:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordMaceUnique",
+    "form_key": "000811:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordAxeUnique",
+    "form_key": "000812:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordWarhammerUnique",
+    "form_key": "000813:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DragonPriestDaggerUnique",
+    "form_key": "000814:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordClubUnique",
+    "form_key": "000826:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordGreatswordUnique",
+    "form_key": "000830:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordGlaiveUnique",
+    "form_key": "000833:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordTridentUnique",
+    "form_key": "000834:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordSwordUnique",
+    "form_key": "00083F:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordLongMaceUnique",
+    "form_key": "000840:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_lunarBlade",
+    "form_key": "000408:PrvtI_LunarArmory.esp"
+  },
+  {
+    "editor_id": "PICalcelmoShortswordNoEnch",
+    "form_key": "153C81:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PINelothStaffNoEnch",
+    "form_key": "153C7E:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PINelothStaff",
+    "form_key": "153C7A:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICalcelmoShortsword",
+    "form_key": "14EB78:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIFreaAxe02NoEnch",
+    "form_key": "149A70:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIFreaAxe01NoEnch",
+    "form_key": "149A6E:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIFreaAxe02",
+    "form_key": "149A6A:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIFreaAxe01",
+    "form_key": "149A69:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIGrayManeSwordNoEnch",
+    "form_key": "117050:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIGrayManeSword",
+    "form_key": "11704D:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICresentAxeNoEnch",
+    "form_key": "11704C:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICresentAxe",
+    "form_key": "117047:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PISilverbloodSwordNoEnch",
+    "form_key": "111F40:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PISilverbloodSword",
+    "form_key": "111F3D:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIKeeperLongMaceNoEnch",
+    "form_key": "0F3925:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PISmileDaggerNoEnch",
+    "form_key": "0F3916:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICaptainSwordNoEnch",
+    "form_key": "0F390E:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIElfShortswordNoEnch",
+    "form_key": "0EE809:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIElfShortsword",
+    "form_key": "0E9702:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICaptainSword",
+    "form_key": "0E9701:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIKeeperLongMace",
+    "form_key": "0E9700:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PISmileDagger",
+    "form_key": "0E96FF:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIIceSwordNoEnch",
+    "form_key": "0C0EE6:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIIceSword",
+    "form_key": "0C0EE4:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIGalmarWarhammerNoEnch",
+    "form_key": "0A28D4:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIMercerSwordNoEnch",
+    "form_key": "09D7CE:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICompanionAxeNoEnch",
+    "form_key": "0935C7:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIUlfricAxeNoEnch",
+    "form_key": "0935C0:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIBalgruufSwordNoEnch",
+    "form_key": "0935BB:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIBladesSwordNoEnch",
+    "form_key": "0935B6:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIMageDaggerNoEnch",
+    "form_key": "08E4B1:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PITulliusSwordNoEnch",
+    "form_key": "08E4AC:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIKematuSwordNoEnch",
+    "form_key": "08E4A9:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICrowDaggerNoEnch",
+    "form_key": "08E4A5:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIIsranWarhammerNoEnch",
+    "form_key": "08E4A3:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIAltmerSwordOndolemar",
+    "form_key": "08938F:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIAltmerSwordAncano",
+    "form_key": "08938E:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIAltmerSwordElenwen",
+    "form_key": "08938C:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIMageDagger",
+    "form_key": "05BA6A:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIBladesSword",
+    "form_key": "056965:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIMercerSword",
+    "form_key": "056964:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIIsranWarhammer",
+    "form_key": "04C75E:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIKematuSword",
+    "form_key": "04765A:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIBalgruufSword",
+    "form_key": "042556:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIGalmarWarhammer",
+    "form_key": "038351:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PITulliusSword",
+    "form_key": "02E14B:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIUlfricAxe",
+    "form_key": "019D3D:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICompanionAxe",
+    "form_key": "00FB0A:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIRikkeSword",
+    "form_key": "00AA07:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PIAltmerSword",
+    "form_key": "00AA06:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "PICrowDagger",
+    "form_key": "005902:PrvtIRoyalArmory.esp"
+  },
+  {
+    "editor_id": "CYRdunFrostfireUniqEnchColovianSteelMace",
+    "form_key": "06C14D:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRBrumaRiljaDraugrWarAxeHoned",
+    "form_key": "06DB68:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRBladeOfPrepotence",
+    "form_key": "07058A:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRWornAkaviriKatana",
+    "form_key": "073C67:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRWornElvenSword",
+    "form_key": "073C68:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRdunPOISwordEpic",
+    "form_key": "08B1C2:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRPOIFallenStormcloakTriKeyChestNordHeroAntique",
+    "form_key": "0C8CC0:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRHvitbrand",
+    "form_key": "0D383B:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRHvitbrandImbued",
+    "form_key": "0D3840:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRUniqueThorinaSteelWarhammer",
+    "form_key": "0DB0F6:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRGoldbrand",
+    "form_key": "0DF0F0:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRThorneblade",
+    "form_key": "0EE5C5:BSHeartland.esm"
+  },
+  {
+    "editor_id": "CYRAranedeanSword",
+    "form_key": "0EF659:BSHeartland.esm"
+  },
+  {
+    "editor_id": "aaElv3ECyrodSaintLongsword",
+    "form_key": "00C09E:Lore Weapon Expansion.esp"
+  },
+  {
+    "editor_id": "aaIS3ECyrodSpikedClubTruncheon",
+    "form_key": "00E666:Lore Weapon Expansion.esp"
+  },
+  {
+    "editor_id": "SOS_BOBSkillet",
+    "form_key": "0009DC:Skyrim On Skooma.esp"
+  },
+  {
+    "editor_id": "BSKHatchet",
+    "form_key": "60259C:BSAssets.esm"
+  },
+  {
+    "editor_id": "WTGiantClub",
+    "form_key": "6F4631:Wyrmstooth.esp"
+  },
+  {
+    "editor_id": "Manny_GF_Weapon_TheWithdrawal",
+    "form_key": "01FAEC:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "Manny_GF_Weapon_Ocato",
+    "form_key": "02298B:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "MidwoodIsleQ27Dagger",
+    "form_key": "813409:Midwood Isle.esp"
+  }
+]

@@ -230,7 +230,7 @@
     "critical_chance_mult": 1.0
   },
   {
-    "Keyword": "WeapTypeBattleAxe",
+    "Keyword": "WeapTypeBattleaxe",
     "damage": 16,
     "damage_waccf": 17,
     "speed": 0.7,
