@@ -732,9 +732,10 @@ namespace Weapon_Mod_Synergy
 
                 _weaponDataManager?.DebugLog($"Loaded {specialWeapons.Count} special weapons from JSON file.");
 
-                // Lists to store valid and invalid entries
+                // Lists to store valid, invalid, and skipped entries
                 var validEntries = new List<(string EditorID, string FormKey)>();
                 var invalidEntries = new List<(string EditorID, string FormKey, string Error)>();
+                var skippedEntries = new List<(string EditorID, string FormKey, string Reason)>();
                 var suggestedFormKeys = new List<(string EditorID, string CurrentFormKey, string SuggestedFormKey)>();
 
                 // Check each special weapon
@@ -756,6 +757,13 @@ namespace Weapon_Mod_Synergy
                     if (!FormKey.TryFactory(specialWeapon.FormKey, out var formKey))
                     {
                         invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, "Invalid form key format"));
+                        continue;
+                    }
+
+                    // Check if the mod is in the load order
+                    if (!state.LoadOrder.PriorityOrder.Any(mod => mod.ModKey == formKey.ModKey))
+                    {
+                        skippedEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey, $"Mod '{formKey.ModKey.FileName}' not in load order"));
                         continue;
                     }
 
@@ -800,8 +808,7 @@ namespace Weapon_Mod_Synergy
                             else
                             {
                                 invalidEntries.Add((specialWeapon.EditorID, specialWeapon.FormKey,
-                                    $"EditorID mismatch: expected '{specialWeapon.EditorID}', found '{weapon.EditorID}' in current version. " +
-                                    $"Original version has EditorID '{originalWeapon?.EditorID ?? "unknown"}'"));
+                                    $"EditorID mismatch: expected '{specialWeapon.EditorID}', found '{originalWeapon?.EditorID ?? "unknown"}'."));
                             }
                             continue;
                         }
@@ -856,7 +863,20 @@ namespace Weapon_Mod_Synergy
                     }
                 }
 
-                Console.WriteLine($"\nSummary: {validEntries.Count} valid, {invalidEntries.Count} invalid form keys.");
+                _weaponDataManager?.DebugLog("\n=== SKIPPED FORM KEYS ===");
+                if (skippedEntries.Count == 0)
+                {
+                    _weaponDataManager?.DebugLog("No skipped form keys found.");
+                }
+                else
+                {
+                    foreach (var entry in skippedEntries)
+                    {
+                        _weaponDataManager?.DebugLog($"Skipped: {entry.EditorID}: {entry.FormKey} - {entry.Reason}");
+                    }
+                }
+
+                Console.WriteLine($"\nSummary: {validEntries.Count} valid, {invalidEntries.Count} invalid, {skippedEntries.Count} skipped form keys.\n");
 
                 // Print suggested form keys
                 if (suggestedFormKeys.Count > 0)
@@ -867,6 +887,7 @@ namespace Weapon_Mod_Synergy
                     {
                         Console.WriteLine($"  {suggestion.EditorID}: {suggestion.CurrentFormKey} -> {suggestion.SuggestedFormKey}");
                     }
+                    Console.WriteLine("==================\n");
                 }
             }
             catch (Exception ex)

@@ -5,7 +5,7 @@
   },
   {
     "editor_id": "dunFolgunthurMikrulSword02",
-    "form_key": "0F5D1B:Skyrim.esm"
+    "form_key": "0AB702:Skyrim.esm"
   },
   {
     "editor_id": "dunFolgunthurMikrulSword03",
@@ -265,7 +265,7 @@
   },
   {
     "editor_id": "dunRedEagleSwordUpgraded",
-    "form_key": "0AE087:Skyrim.esm"
+    "form_key": "0AB703:Skyrim.esm"
   },
   {
     "editor_id": "ExecutionerAxe",
@@ -664,7 +664,7 @@
     "form_key": "001DB6:WZOblivionArtifacts.esp"
   },
   {
-    "editor_id": "000AmelionSwordWeapon",
+    "editor_id": "000AmelionSwordWeap",
     "form_key": "002333:WZOblivionArtifacts.esp"
   },
   {
@@ -672,8 +672,8 @@
     "form_key": "003486:WZOblivionArtifacts.esp"
   },
   {
-    "editor_id": "000BattleaxeofHate",
-    "form_key": "003487:WZOblivionArtifacts.esp"
+    "editor_id": "0000BattleaxeofHate",
+    "form_key": "003FC9:WZOblivionArtifacts.esp"
   },
   {
     "editor_id": "000Kordonsword",
@@ -821,7 +821,7 @@
   },
   {
     "editor_id": "PI_DraugrLordLongMaceUnique",
-    "form_key": "000840:Prvti_DragonCultWeapons.esp"
+    "form_key": "000864:Prvti_DragonCultWeapons.esp"
   },
   {
     "editor_id": "PI_lunarBlade",
@@ -1080,7 +1080,7 @@
     "form_key": "0EE5C5:BSHeartland.esm"
   },
   {
-    "editor_id": "CYRAranedeanSword",
+    "editor_id": "CYRAranedean",
     "form_key": "0EF659:BSHeartland.esm"
   },
   {
@@ -1104,11 +1104,11 @@
     "form_key": "6F4631:Wyrmstooth.esp"
   },
   {
-    "editor_id": "Manny_GF_Weapon_TheWithdrawal",
+    "editor_id": "manny_GF_Weapon_TheWithdrawal",
     "form_key": "01FAEC:Gray Fox Cowl.esm"
   },
   {
-    "editor_id": "Manny_GF_Weapon_Ocato",
+    "editor_id": "manny_GF_Weapon_Ocato",
     "form_key": "02298B:Gray Fox Cowl.esm"
   },
   {
