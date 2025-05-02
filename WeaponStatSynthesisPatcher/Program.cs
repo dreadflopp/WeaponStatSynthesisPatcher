@@ -460,7 +460,7 @@ namespace Weapon_Mod_Synergy
                                    weaponOverride.Critical.PercentMult != originalStats.CriticalChanceMult;
 
             // Only add to mod if changes were made
-            if (madeModification || 1 == 1)
+            if (madeModification)
             {
                 state.PatchMod.Weapons.Set(weaponOverride);
                 _weaponDataManager?.DebugLog($"Successfully processed special weapon: {weapon.EditorID}");
@@ -696,7 +696,7 @@ namespace Weapon_Mod_Synergy
                                    weaponOverride.Critical.PercentMult != originalStats.CriticalChanceMult;
 
             // Only add to mod if changes were made
-            if (madeModification || 1 == 1)
+            if (madeModification)
             {
                 state.PatchMod.Weapons.Set(weaponOverride);
                 _weaponDataManager?.DebugLog($"Successfully processed weapon: {weapon.EditorID}");

@@ -111,8 +111,10 @@ namespace Weapon_Mod_Synergy
                     var current = remaining[0];
                     remaining.RemoveAt(0);
 
-                    // Get all NamedIDs for current setting
+                    // Get all NamedIDs and KeywordIDs for current setting
                     var currentNames = current.Settings.MatchLogicSettings.NamedIDs?
+                        .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+                    var currentKeywords = current.Settings.MatchLogicSettings.KeywordIDs?
                         .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
                     // Check for conflicts with remaining settings
@@ -127,8 +129,26 @@ namespace Weapon_Mod_Synergy
 
                         var otherNames = other.Settings.MatchLogicSettings.NamedIDs?
                             .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+                        var otherKeywords = other.Settings.MatchLogicSettings.KeywordIDs?
+                            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
-                        // Check for mutual substring relationships
+                        // For AND settings, we need to check both names and keywords
+                        if (current.Settings.MatchLogicSettings.SearchLogic == LogicOperator.AND &&
+                            other.Settings.MatchLogicSettings.SearchLogic == LogicOperator.AND)
+                        {
+                            // Check if both settings have keywords
+                            if (currentKeywords.Length > 0 && otherKeywords.Length > 0)
+                            {
+                                // If they have different keyword patterns, they can't conflict
+                                bool hasCommonKeyword = currentKeywords.Any(k1 => otherKeywords.Any(k2 => k1.Equals(k2, StringComparison.OrdinalIgnoreCase)));
+                                if (!hasCommonKeyword)
+                                {
+                                    continue; // Different keywords, no conflict possible
+                                }
+                            }
+                        }
+
+                        // Check for mutual substring relationships in names
                         bool hasMutualSubstring = false;
                         foreach (var name1 in currentNames)
                         {
@@ -236,22 +256,8 @@ namespace Weapon_Mod_Synergy
             foreach (var skillGroup in settingsBySkill)
             {
                 var skillSettings = skillGroup.ToList();
-
-                // Process names
-                var allNames = new HashSet<string>();
-                foreach (var setting in skillSettings)
-                {
-                    if (!string.IsNullOrWhiteSpace(setting.MatchLogicSettings.NamedIDs))
-                    {
-                        var names = setting.MatchLogicSettings.NamedIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                        foreach (var name in names)
-                        {
-                            allNames.Add(name);
-                        }
-                    }
-                }
-
                 var disabledOrSettings = new HashSet<WeaponSettings>();
+
                 foreach (var orSetting in skillSettings)
                 {
                     if (disabledOrSettings.Contains(orSetting))
@@ -259,11 +265,13 @@ namespace Weapon_Mod_Synergy
                         continue;
                     }
 
+                    // Check names
                     if (!string.IsNullOrWhiteSpace(orSetting.MatchLogicSettings.NamedIDs))
                     {
                         var names = orSetting.MatchLogicSettings.NamedIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                         foreach (var name in names)
                         {
+                            // Check against all other settings in the same skill group
                             var overlappingSettings = skillSettings.Where(s =>
                                 s != orSetting &&
                                 !disabledOrSettings.Contains(s) &&
@@ -273,48 +281,31 @@ namespace Weapon_Mod_Synergy
 
                             if (overlappingSettings.Any())
                             {
-                                Console.WriteLine($"WARNING: Name '{name}' appears in multiple OR settings with skill {skillGroup.Key}. Disabling all affected settings:");
+                                Console.WriteLine($"WARNING: Name '{name}' is used in multiple settings within skill {skillGroup.Key}. Disabling ALL conflicting OR settings:");
                                 Console.WriteLine($"- {GetSettingDescription(orSetting)}");
                                 orSetting.Enabled = false;
                                 disabledOrSettings.Add(orSetting);
 
                                 foreach (var overlappingSetting in overlappingSettings)
                                 {
-                                    Console.WriteLine($"- {GetSettingDescription(overlappingSetting)}");
-                                    overlappingSetting.Enabled = false;
-                                    disabledOrSettings.Add(overlappingSetting);
+                                    if (overlappingSetting.MatchLogicSettings.SearchLogic == LogicOperator.OR)
+                                    {
+                                        Console.WriteLine($"- {GetSettingDescription(overlappingSetting)}");
+                                        overlappingSetting.Enabled = false;
+                                        disabledOrSettings.Add(overlappingSetting);
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                // Process keywords
-                var allKeywords = new HashSet<string>();
-                foreach (var setting in skillSettings)
-                {
-                    if (!string.IsNullOrWhiteSpace(setting.MatchLogicSettings.KeywordIDs))
-                    {
-                        var keywords = setting.MatchLogicSettings.KeywordIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                        foreach (var keyword in keywords)
-                        {
-                            allKeywords.Add(keyword);
-                        }
-                    }
-                }
-
-                foreach (var orSetting in skillSettings)
-                {
-                    if (disabledOrSettings.Contains(orSetting))
-                    {
-                        continue;
-                    }
-
+                    // Check keywords
                     if (!string.IsNullOrWhiteSpace(orSetting.MatchLogicSettings.KeywordIDs))
                     {
                         var keywords = orSetting.MatchLogicSettings.KeywordIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                         foreach (var keyword in keywords)
                         {
+                            // Check against all other settings in the same skill group
                             var overlappingSettings = skillSettings.Where(s =>
                                 s != orSetting &&
                                 !disabledOrSettings.Contains(s) &&
@@ -324,16 +315,19 @@ namespace Weapon_Mod_Synergy
 
                             if (overlappingSettings.Any())
                             {
-                                Console.WriteLine($"WARNING: Keyword '{keyword}' appears in multiple OR settings with skill {skillGroup.Key}. Disabling all affected settings:");
+                                Console.WriteLine($"WARNING: Keyword '{keyword}' is used in multiple settings within skill {skillGroup.Key}. Disabling ALL conflicting OR settings:");
                                 Console.WriteLine($"- {GetSettingDescription(orSetting)}");
                                 orSetting.Enabled = false;
                                 disabledOrSettings.Add(orSetting);
 
                                 foreach (var overlappingSetting in overlappingSettings)
                                 {
-                                    Console.WriteLine($"- {GetSettingDescription(overlappingSetting)}");
-                                    overlappingSetting.Enabled = false;
-                                    disabledOrSettings.Add(overlappingSetting);
+                                    if (overlappingSetting.MatchLogicSettings.SearchLogic == LogicOperator.OR)
+                                    {
+                                        Console.WriteLine($"- {GetSettingDescription(overlappingSetting)}");
+                                        overlappingSetting.Enabled = false;
+                                        disabledOrSettings.Add(overlappingSetting);
+                                    }
                                 }
                             }
                         }
@@ -355,23 +349,64 @@ namespace Weapon_Mod_Synergy
                 {
                     if (!skillSettings[i].Enabled) continue;
 
-                    var names1 = skillSettings[i].MatchLogicSettings.NamedIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                    var keywords1 = skillSettings[i].MatchLogicSettings.KeywordIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    var names1 = skillSettings[i].MatchLogicSettings.NamedIDs?.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+                    var keywords1 = skillSettings[i].MatchLogicSettings.KeywordIDs?.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+
+                    // Check if both fields are empty
+                    if (names1.Length == 0 && keywords1.Length == 0)
+                    {
+                        Console.WriteLine($"WARNING: AND setting has both name and keyword fields empty. Disabling it:");
+                        Console.WriteLine($"- {GetSettingDescription(skillSettings[i])}");
+                        skillSettings[i].Enabled = false;
+                        continue;
+                    }
 
                     for (int j = i + 1; j < skillSettings.Count; j++)
                     {
                         if (!skillSettings[j].Enabled) continue;
 
-                        var names2 = skillSettings[j].MatchLogicSettings.NamedIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                        var keywords2 = skillSettings[j].MatchLogicSettings.KeywordIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        var names2 = skillSettings[j].MatchLogicSettings.NamedIDs?.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
+                        var keywords2 = skillSettings[j].MatchLogicSettings.KeywordIDs?.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
-                        // Check if they share both a name and a keyword
-                        bool hasSharedName = names1.Any(n1 => names2.Contains(n1));
-                        bool hasSharedKeyword = keywords1.Any(k1 => keywords2.Contains(k1));
-
-                        if (hasSharedName && hasSharedKeyword)
+                        // Check if both fields are empty
+                        if (names2.Length == 0 && keywords2.Length == 0)
                         {
-                            Console.WriteLine($"WARNING: Found AND settings with both name and keyword overlap for skill {skillGroup.Key}. Disabling both:");
+                            Console.WriteLine($"WARNING: AND setting has both name and keyword fields empty. Disabling it:");
+                            Console.WriteLine($"- {GetSettingDescription(skillSettings[j])}");
+                            skillSettings[j].Enabled = false;
+                            continue;
+                        }
+
+                        // Check for conflicts
+                        bool hasNameConflict = false;
+                        bool hasKeywordConflict = false;
+
+                        // If either setting has empty names, consider it a wildcard
+                        if (names1.Length == 0 || names2.Length == 0)
+                        {
+                            hasNameConflict = true;
+                        }
+                        else
+                        {
+                            // Check if they share any names
+                            hasNameConflict = names1.Any(n1 => names2.Any(n2 => n1.Equals(n2, StringComparison.OrdinalIgnoreCase)));
+                        }
+
+                        // If either setting has empty keywords, consider it a wildcard
+                        if (keywords1.Length == 0 || keywords2.Length == 0)
+                        {
+                            hasKeywordConflict = true;
+                        }
+                        else
+                        {
+                            // Check if they share any keywords
+                            hasKeywordConflict = keywords1.Any(k1 => keywords2.Any(k2 => k1.Equals(k2, StringComparison.OrdinalIgnoreCase)));
+                        }
+
+                        // If they share both names and keywords (or have wildcards), they conflict
+                        if (hasNameConflict && hasKeywordConflict)
+                        {
+                            Console.WriteLine($"WARNING: Found ambiguous AND settings within skill {skillGroup.Key}. Disabling both:");
                             Console.WriteLine($"- {GetSettingDescription(skillSettings[i])}");
                             Console.WriteLine($"- {GetSettingDescription(skillSettings[j])}");
                             skillSettings[i].Enabled = false;

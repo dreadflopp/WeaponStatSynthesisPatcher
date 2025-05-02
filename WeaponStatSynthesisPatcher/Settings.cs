@@ -282,7 +282,6 @@ namespace Weapon_Mod_Synergy
         "Lore Weapon Expansion - Goldbrand.esp;" +
         "Lore Weapon Expansion - Relics of the Crusader.esp;" +
         "Skyrim Weapons Expansion.esp;" +
-        "Skyrim Weapons Expansion.esp;" +
         "Weapons Armor Clothing & Clutter Fixes.esp;" +
         "BSMBonemoldSet.esp;" +
         "PrvtI_DaedricKatanas.esp;" +
@@ -295,7 +294,6 @@ namespace Weapon_Mod_Synergy
         "PrvtI_LunarArmory.esp;" +
         "Prvti_AshenArmory.esp;" +
         "PrvtIRoyalArmory.esp;" +
-        "Weapons Armor Clothing & Clutter Fixes.esp;" +
         "PrvtI_HeavyArmory.esp;" +
         "KatanaCrafting.esp;";
 
