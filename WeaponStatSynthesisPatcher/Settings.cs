@@ -330,7 +330,7 @@ namespace Weapon_Mod_Synergy
         [SettingName("Read bound weapon damage from settings, calculate mod offsets or ignore")]
         [Tooltip("Choose how to parse bound weapons")]
         [JsonProperty]
-        public BoundWeaponParsing BoundWeaponParsing { get; set; } = BoundWeaponParsing.FromSettings;
+        public BoundWeaponParsing BoundWeaponParsing { get; set; } = BoundWeaponParsing.CalculateFromMods;
 
         [JsonProperty]
         public VariantCategory Variants { get; set; }
