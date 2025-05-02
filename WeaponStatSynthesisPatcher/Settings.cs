@@ -210,7 +210,7 @@ namespace Weapon_Mod_Synergy
         [SettingName("Debug Mode")]
         [Tooltip("Enable debug output")]
         [JsonProperty]
-        public bool DebugMode { get; set; } = true;
+        public bool DebugMode { get; set; } = false;
 
         [SettingName("Plugin Processing")]
         [Tooltip("Choose which plugins to process")]
