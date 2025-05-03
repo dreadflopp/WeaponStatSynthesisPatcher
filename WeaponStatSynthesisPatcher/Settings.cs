@@ -148,7 +148,7 @@ namespace Weapon_Mod_Synergy
             OnehandedSwords.Weapons["Wakizashi"] = new WeaponSettings { Damage = 5, BoundWeaponAdditionalDamage = 2, BoundMysticWeaponAdditionalDamage = 7, Reach = 0.9f, Speed = 1.25f, Stagger = 0.65f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "wakizashi;ninjato", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" } };
             OnehandedSwords.Weapons["Shortsword"] = new WeaponSettings { Damage = 6, BoundWeaponAdditionalDamage = 2, BoundMysticWeaponAdditionalDamage = 7, Reach = 0.9f, Speed = 1.15f, Stagger = 0.65f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "shortsword", KeywordIDs = "ShWeapTypeShortsword" } };
             OnehandedSwords.Weapons["Katana"] = new WeaponSettings { Damage = 6, BoundWeaponAdditionalDamage = 2, BoundMysticWeaponAdditionalDamage = 7, Reach = 1.0f, Speed = 1.2f, Stagger = 0.7f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "katana;akaviri sword;blades sword;bolar's oathblade;shadow's edge;dragonbane", KeywordIDs = "WeapTypeKatana" } };
-            OnehandedSwords.Weapons["Scimitar"] = new WeaponSettings { Damage = 7, BoundWeaponAdditionalDamage = 2, BoundMysticWeaponAdditionalDamage = 7, Reach = 0.95f, Speed = 1.1f, Stagger = 0.75f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar;heartsplitter;blade of yokuda;bloodscythe;soulrender;viper's fang", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" } };
+            OnehandedSwords.Weapons["Scimitar"] = new WeaponSettings { Damage = 7, BoundWeaponAdditionalDamage = 2, BoundMysticWeaponAdditionalDamage = 7, Reach = 0.95f, Speed = 1.1f, Stagger = 0.75f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.OneHanded, NamedIDs = "scimitar;heartsplitter;blade of yokuda;bloodscythe;soulrender;viper's fang;boneshaver", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" } };
         }
 
         private void InitializeOnehandedSpears()
@@ -175,7 +175,7 @@ namespace Weapon_Mod_Synergy
         {
             TwohandedSwords.Weapons["Greatsword"] = new WeaponSettings { Damage = 15, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.3f, Speed = 0.75f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeGreatSword" } };
             TwohandedSwords.Weapons["Glaive"] = new WeaponSettings { Damage = 13, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.6f, Speed = 0.8f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "glaive", KeywordIDs = "ShWeapTypeGlaive" } };
-            TwohandedSwords.Weapons["DaiKatana"] = new WeaponSettings { Damage = 14, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.3f, Speed = 0.85f, Stagger = 1.05f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "dai-katana;daikatana;dai katana;nodachi", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeSword" } };
+            TwohandedSwords.Weapons["DaiKatana"] = new WeaponSettings { Damage = 14, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.3f, Speed = 0.85f, Stagger = 1.05f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "dai-katana;daikatana;dai katana;nodachi", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeGreatSword" } };
         }
 
         private void InitializeTwohandedSpears()
@@ -295,7 +295,10 @@ namespace Weapon_Mod_Synergy
         "Prvti_AshenArmory.esp;" +
         "PrvtIRoyalArmory.esp;" +
         "PrvtI_HeavyArmory.esp;" +
-        "KatanaCrafting.esp;";
+        "KatanaCrafting.esp;" +
+        "Requiem.esp;" +
+        "Requiem - Creation Club.esp;" +
+        "Spear of Skyrim.esp;";
 
         [SettingName("Plugin Exclude List")]
         [Tooltip("List of plugins to exclude (semicolon separated)")]

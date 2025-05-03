@@ -1114,5 +1114,17 @@
   {
     "editor_id": "MidwoodIsleQ27Dagger",
     "form_key": "813409:Midwood Isle.esp"
+  },
+  {
+    "editor_id": "REQ_Artifact_GharolsSword",
+    "form_key": "AE3741:Requiem.esp"
+  },
+  {
+    "editor_id": "REQ_Artifact_Boneshaver",
+    "form_key": "ADDD6D:Requiem.esp"
+  },
+  {
+    "editor_id": "REQ_Weapon_Alikr_Sword",
+    "form_key": "ADDD6E:Requiem.esp"
   }
 ]
