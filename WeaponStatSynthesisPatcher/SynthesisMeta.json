@@ -1,8 +1,9 @@
 {
-    "Nickname": "Weapon Stat Synthesis Patcher",
-    "Visibility": "Visible",
-    "OneLineDescription": "A customizable patcher that analyzes and adjusts weapon stats for better balance between mods",
-    "LongDescription": "This patcher normalizes weapon stats from multiple mods. It handles damage values, material types, and special weapon properties. Everything is cutomizable. Check out the Nexus page for more details: https://www.nexusmods.com/skyrimspecialedition/mods/149027",
-    "PreferredAutoVersioning": "Default",
-    "RequiredMods": []
+  "Nickname": "Weapon Stat Synthesis Patcher",
+  "Visibility": "Visible",
+  "OneLineDescription": "A customizable patcher that analyzes and adjusts weapon stats for better balance between mods",
+  "LongDescription": "This patcher normalizes weapon stats from multiple mods. It handles damage values, material types, and special weapon properties. Everything is cutomizable. Check out the Nexus page for more details: https://www.nexusmods.com/skyrimspecialedition/mods/149027",
+  "PreferredAutoVersioning": "Default",
+  "RequiredMods": [],
+  "TargetedReleases": []
 }

@@ -4,7 +4,13 @@
     "damage_offset_1h": -1,
     "damage_offset_2h": -2,
     "damage_offset_1h_waccf": -1,
-    "damage_offset_2h_waccf": -2
+    "damage_offset_2h_waccf": -2,
+    "reach_offset": 0.0,
+    "speed_offset": 0.0,
+    "stagger_offset": 0.0,
+    "critical_damage_offset": 0.0,
+    "critical_damage_chance_multiplier_offset": 0.0,
+    "critical_damage_multiplier_offset": 0.0
   },
   {
     "keyword": "WeapMaterialIron",

@@ -451,8 +451,8 @@ namespace Weapon_Mod_Synergy
 
     public class VariantSettings
     {
-        [SettingName("Has in name")]
-        [Tooltip("If not empty, the variant will be used. Semicolon separated list of words to search for in the weapon name.")]
+        [SettingName("Has in keywords or in name")]
+        [Tooltip("If not empty, the variant will be used. Semicolon separated list of words to search for in the weapon's keywords or name.")]
         [JsonProperty]
         public string NameIDs { get; set; } = "";
 

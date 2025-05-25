@@ -33,6 +33,24 @@ namespace Weapon_Mod_Synergy
 
         [JsonPropertyName("damage_offset_2h_waccf")]
         public int DamageOffset2hWaccf { get; set; }
+
+        [JsonPropertyName("reach_offset")]
+        public float ReachOffset { get; set; }
+
+        [JsonPropertyName("speed_offset")]
+        public float SpeedOffset { get; set; }
+
+        [JsonPropertyName("stagger_offset")]
+        public float StaggerOffset { get; set; }
+
+        [JsonPropertyName("critical_damage_offset")]
+        public float CriticalDamageOffset { get; set; }
+
+        [JsonPropertyName("critical_damage_chance_multiplier_offset")]
+        public float CriticalDamageChanceMultiplierOffset { get; set; }
+
+        [JsonPropertyName("critical_damage_multiplier_offset")]
+        public float CriticalDamageMultiplierOffset { get; set; }
     }
 
     public class SpecialWeaponData
@@ -126,6 +144,12 @@ namespace Weapon_Mod_Synergy
                 _materialDataKeyword = LoadJsonData<List<MaterialData>>(materialKeywordPath) ?? new List<MaterialData>();
                 _specialWeapons = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsPath) ?? new List<SpecialWeaponData>();
                 _defaultWeaponStatsData = LoadJsonData<List<DefaultWeaponStatsData>>(defaultWeaponStatsPath) ?? new List<DefaultWeaponStatsData>();
+
+                // Sort only name-based material data by keyword length in descending order
+                if (_materialDataName != null)
+                {
+                    _materialDataName = _materialDataName.OrderByDescending(m => m.Keyword.Length).ToList();
+                }
 
                 DebugLog("Material data loaded successfully");
             }
@@ -588,13 +612,25 @@ namespace Weapon_Mod_Synergy
                 if (string.IsNullOrEmpty(variant.Value.NameIDs))
                     continue;
 
-                // Check if weapon name contains any of the variant's NameIDs as whole words
+                // Split NameIDs into individual words to check
                 var nameIDs = variant.Value.NameIDs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                bool nameMatch = nameIDs.Any(id =>
+
+                // Check if any NameID matches either the weapon name or any keyword
+                bool nameOrKeywordMatch = nameIDs.Any(id =>
                 {
                     // Create a regex pattern that matches the word as a whole word
                     string pattern = $@"\b{Regex.Escape(id)}\b";
-                    return Regex.IsMatch(weapon.Name?.String ?? "", pattern, RegexOptions.IgnoreCase);
+
+                    // Check weapon name
+                    bool nameMatch = Regex.IsMatch(weapon.Name?.String ?? "", pattern, RegexOptions.IgnoreCase);
+                    if (nameMatch) return true;
+
+                    // Check keywords
+                    bool keywordMatch = weaponKeywords.Any(kw =>
+                        Regex.IsMatch(kw, pattern, RegexOptions.IgnoreCase));
+                    if (keywordMatch) return true;
+
+                    return false;
                 });
 
                 // Check if skill matches
@@ -616,8 +652,8 @@ namespace Weapon_Mod_Synergy
                     exclusionMatch = hasExcludedKeyword || hasExcludedName;
                 }
 
-                // If both name and skill match, and no excluded keywords are present, add the variant's stats
-                if (nameMatch && skillMatch && !exclusionMatch)
+                // If either name or keyword matches, and skill matches, and no excluded keywords are present, add the variant's stats
+                if (nameOrKeywordMatch && skillMatch && !exclusionMatch)
                 {
                     additionalDamage += variant.Value.AdditionalDamage;
                     additionalReach += (decimal)variant.Value.AdditionalReach;

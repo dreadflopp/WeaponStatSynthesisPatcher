@@ -641,7 +641,7 @@ namespace Weapon_Mod_Synergy
                     }
                 }
 
-                // if material is glass and waccf is enabled, apply glass critical damage bonus of 0,5
+                // if material is glass and waccf is enabled, apply glass critical damage bonus of 0.5
                 if (Settings.Value.WACCFMaterialTiers)
                 {
                     bool isGlass = weaponKeywords.Contains("WeapMaterialGlass");
@@ -653,7 +653,7 @@ namespace Weapon_Mod_Synergy
                     _weaponDataManager?.DebugLog($"isGlass: {isGlass}, isDaedric: {isDaedric}, isFalmerHoned: {isFalmerHoned}, isWarAxe: {isWarAxe}, isWarHammer: {isWarHammer}");
                     if (isGlass || (isDaedric && isWarHammer) || (isFalmerHoned && isWarAxe))
                     {
-                        _weaponDataManager?.DebugLog($"Adding critical damage bonus of 0,5");
+                        _weaponDataManager?.DebugLog($"Adding critical damage bonus of 0.5");
                         criticalDamageOffset += 0.5m;
                     }
                     else
