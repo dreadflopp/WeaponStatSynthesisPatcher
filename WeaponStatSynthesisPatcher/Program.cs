@@ -550,14 +550,23 @@ namespace Weapon_Mod_Synergy
             decimal staggerOffset = 0;
             decimal criticalDamageOffset = 0;
 
+            // Initialize material offsets with default values
+            int additionalMaterialDamage = 0;
+            float additionalMaterialReach = 0.0f;
+            float additionalMaterialSpeed = 0.0f;
+            float additionalMaterialStagger = 0.0f;
+            float additionalMaterialCriticalDamageOffset = 0.0f;
+            float additionalMaterialCriticalDamageChanceMultiplier = 0.0f;
+            float additionalMaterialCriticalDamageMultiplier = 0.0f;
+
             // Initialize variant stats with default values
-            int additionalDamage = 0;
-            float additionalReach = 0.0f;
-            float additionalSpeed = 0.0f;
-            float additionalStagger = 0.0f;
-            float additionalCriticalDamageOffset = 0.0f;
-            float additionalCriticalDamageChanceMultiplier = 0.0f;
-            float additionalCriticalDamageMultiplier = 0.0f;
+            int additionalVariantDamage = 0;
+            float additionalVariantReach = 0.0f;
+            float additionalVariantSpeed = 0.0f;
+            float additionalVariantStagger = 0.0f;
+            float additionalVariantCriticalDamageOffset = 0.0f;
+            float additionalVariantCriticalDamageChanceMultiplier = 0.0f;
+            float additionalVariantCriticalDamageMultiplier = 0.0f;
 
             // Check if weapon is bound
             bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
@@ -575,42 +584,48 @@ namespace Weapon_Mod_Synergy
             }
             else
             {
-                // Get damage offset for non-bound weapons
-                var nonBoundDamageOffset = _weaponDataManager?.GetDamageOffset(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
-                if (nonBoundDamageOffset == null)
+                // Get material offsets for non-bound weapons
+                var materialOffsets = _weaponDataManager?.GetMaterialOffsets(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
+                if (materialOffsets == null)
                 {
-                    _weaponDataManager?.DebugLog($"Warning: Could not determine damage offset for {weapon.EditorID}. Skipping.");
-                    debugInfo.ProcessingResult = "Could not determine damage offset";
+                    _weaponDataManager?.DebugLog($"Warning: Could not determine material offsets for {weapon.EditorID}. Skipping.");
+                    debugInfo.ProcessingResult = "Could not determine material offsets";
                     if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
                     return;
                 }
-                damageOffset += nonBoundDamageOffset.Value;
-                debugInfo.MaterialDamageOffset = nonBoundDamageOffset.Value;
+                additionalMaterialDamage = materialOffsets.Value.DamageOffset;
+                additionalMaterialReach = materialOffsets.Value.ReachOffset;
+                additionalMaterialSpeed = materialOffsets.Value.SpeedOffset;
+                additionalMaterialStagger = materialOffsets.Value.StaggerOffset;
+                additionalMaterialCriticalDamageOffset = materialOffsets.Value.CriticalDamageOffset;
+                additionalMaterialCriticalDamageChanceMultiplier = materialOffsets.Value.CriticalDamageChanceMultiplierOffset;
+                additionalMaterialCriticalDamageMultiplier = materialOffsets.Value.CriticalDamageMultiplierOffset;
+                debugInfo.MaterialDamageOffset = materialOffsets.Value.DamageOffset;
 
                 // Get variant settings for non-bound weapons
                 var variantStats = _weaponDataManager?.GetVariantStats(weapon, state.LinkCache);
                 if (variantStats != null)
                 {
-                    (additionalDamage, additionalReach, additionalSpeed, additionalStagger,
-                     additionalCriticalDamageOffset, additionalCriticalDamageChanceMultiplier,
-                     additionalCriticalDamageMultiplier) = variantStats.Value;
+                    (additionalVariantDamage, additionalVariantReach, additionalVariantSpeed, additionalVariantStagger,
+                     additionalVariantCriticalDamageOffset, additionalVariantCriticalDamageChanceMultiplier,
+                     additionalVariantCriticalDamageMultiplier) = variantStats.Value;
 
-                    debugInfo.VariantDamageOffset = additionalDamage;
-                    debugInfo.VariantReachOffset = additionalReach;
-                    debugInfo.VariantSpeedOffset = additionalSpeed;
-                    debugInfo.VariantStaggerOffset = additionalStagger;
-                    debugInfo.VariantCriticalDamageOffset = additionalCriticalDamageOffset;
-                    debugInfo.VariantCriticalChanceMultOffset = additionalCriticalDamageChanceMultiplier;
-                    debugInfo.VariantCriticalDamageMultOffset = additionalCriticalDamageMultiplier;
+                    debugInfo.VariantDamageOffset = additionalVariantDamage;
+                    debugInfo.VariantReachOffset = additionalVariantReach;
+                    debugInfo.VariantSpeedOffset = additionalVariantSpeed;
+                    debugInfo.VariantStaggerOffset = additionalVariantStagger;
+                    debugInfo.VariantCriticalDamageOffset = additionalVariantCriticalDamageOffset;
+                    debugInfo.VariantCriticalChanceMultOffset = additionalVariantCriticalDamageChanceMultiplier;
+                    debugInfo.VariantCriticalDamageMultOffset = additionalVariantCriticalDamageMultiplier;
 
                     _weaponDataManager?.DebugLog($"Weapon variant stats: " +
-                        $"   AdditionalDamage: {additionalDamage}, " +
-                        $"   AdditionalReach: {additionalReach}, " +
-                        $"   AdditionalSpeed: {additionalSpeed}, " +
-                        $"   AdditionalStagger: {additionalStagger}, " +
-                        $"   AdditionalCriticalDamageOffset: {additionalCriticalDamageOffset}, " +
-                        $"   AdditionalCriticalDamageChanceMultiplier: {additionalCriticalDamageChanceMultiplier}, " +
-                        $"   AdditionalCriticalDamageMultiplier: {additionalCriticalDamageMultiplier}");
+                        $"   AdditionalDamage: {additionalVariantDamage}, " +
+                        $"   AdditionalReach: {additionalVariantReach}, " +
+                        $"   AdditionalSpeed: {additionalVariantSpeed}, " +
+                        $"   AdditionalStagger: {additionalVariantStagger}, " +
+                        $"   AdditionalCriticalDamageOffset: {additionalVariantCriticalDamageOffset}, " +
+                        $"   AdditionalCriticalDamageChanceMultiplier: {additionalVariantCriticalDamageChanceMultiplier}, " +
+                        $"   AdditionalCriticalDamageMultiplier: {additionalVariantCriticalDamageMultiplier}");
                 }
 
                 // Get weapon keywords for material checks
@@ -664,16 +679,16 @@ namespace Weapon_Mod_Synergy
             }
 
             // Apply stats
-            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset + additionalDamage);
-            weaponOverride.Data.Speed = Math.Max(0f, (float)((decimal)settings.Speed + (decimal)additionalSpeed));
-            weaponOverride.Data.Reach = Math.Max(0f, (float)((decimal)settings.Reach + (decimal)additionalReach));
-            weaponOverride.Data.Stagger = Math.Max(0f, (float)((decimal)settings.Stagger + staggerOffset + (decimal)additionalStagger));
-            weaponOverride.Critical.PercentMult = Math.Max(0f, (float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)additionalCriticalDamageChanceMultiplier));
+            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset + additionalMaterialDamage + additionalVariantDamage);
+            weaponOverride.Data.Speed = Math.Max(0f, (float)((decimal)settings.Speed + (decimal)additionalMaterialSpeed + (decimal)additionalVariantSpeed));
+            weaponOverride.Data.Reach = Math.Max(0f, (float)((decimal)settings.Reach + (decimal)additionalMaterialReach + (decimal)additionalVariantReach));
+            weaponOverride.Data.Stagger = Math.Max(0f, (float)((decimal)settings.Stagger + staggerOffset + (decimal)additionalMaterialStagger + (decimal)additionalVariantStagger));
+            weaponOverride.Critical.PercentMult = Math.Max(0f, (float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)additionalMaterialCriticalDamageChanceMultiplier + (decimal)additionalVariantCriticalDamageChanceMultiplier));
 
             // Apply critical damage stats
             decimal halfDamage = (decimal)weaponOverride.BasicStats.Damage / 2m;
-            decimal finalCriticalDamageOffset = (decimal)settings.CriticalDamageOffset + (decimal)additionalCriticalDamageOffset + criticalDamageOffset;
-            decimal criticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier + (decimal)additionalCriticalDamageMultiplier;
+            decimal finalCriticalDamageOffset = (decimal)settings.CriticalDamageOffset + (decimal)additionalMaterialCriticalDamageOffset + (decimal)additionalVariantCriticalDamageOffset + criticalDamageOffset;
+            decimal criticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier + (decimal)additionalMaterialCriticalDamageMultiplier + (decimal)additionalVariantCriticalDamageMultiplier;
             decimal criticalDamage = Math.Floor(criticalDamageMultiplier * (halfDamage + finalCriticalDamageOffset));
             weaponOverride.Critical.Damage = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, (int)criticalDamage));
             _weaponDataManager?.DebugLog($"Critical damage: {criticalDamage}");

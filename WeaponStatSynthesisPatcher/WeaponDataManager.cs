@@ -17,6 +17,28 @@ using Noggog;
 namespace Weapon_Mod_Synergy
 {
     // Classes for JSON deserialization
+    public struct MaterialOffsets
+    {
+        public int DamageOffset;
+        public float ReachOffset;
+        public float SpeedOffset;
+        public float StaggerOffset;
+        public float CriticalDamageOffset;
+        public float CriticalDamageChanceMultiplierOffset;
+        public float CriticalDamageMultiplierOffset;
+
+        public static MaterialOffsets Zero => new()
+        {
+            DamageOffset = 0,
+            ReachOffset = 0f,
+            SpeedOffset = 0f,
+            StaggerOffset = 0f,
+            CriticalDamageOffset = 0f,
+            CriticalDamageChanceMultiplierOffset = 0f,
+            CriticalDamageMultiplierOffset = 0f
+        };
+    }
+
     public class MaterialData
     {
         [JsonPropertyName("keyword")]
@@ -368,13 +390,14 @@ namespace Weapon_Mod_Synergy
             return null;
         }
 
-        private int? CalculateDamageOffset(
+        private MaterialOffsets? CalculateMaterialOffsets(
             string input,
             List<MaterialData> materialData,
             WeaponSkill weaponSkill,
             bool includeWACCF)
         {
-            int highestOffset = int.MinValue;
+            int highestDamageOffset = int.MinValue;
+            MaterialOffsets? bestMatch = null;
             bool foundMatch = false;
 
             foreach (var material in materialData)
@@ -392,52 +415,66 @@ namespace Weapon_Mod_Synergy
                 if (Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase))
                 {
                     foundMatch = true;
-                    int offset = weaponSkill == WeaponSkill.OneHanded
+                    int damageOffset = weaponSkill == WeaponSkill.OneHanded
                         ? (includeWACCF ? material.DamageOffset1hWaccf : material.DamageOffset1h)
                         : (includeWACCF ? material.DamageOffset2hWaccf : material.DamageOffset2h);
 
-                    DebugLog($"   {(weaponSkill == WeaponSkill.OneHanded ? "One-handed" : "Two-handed")} weapon, offset: {offset}");
+                    DebugLog($"   {(weaponSkill == WeaponSkill.OneHanded ? "One-handed" : "Two-handed")} weapon, damage offset: {damageOffset}");
+                    DebugLog($"   Additional offsets - Reach: {material.ReachOffset}, Speed: {material.SpeedOffset}, Stagger: {material.StaggerOffset}");
+                    DebugLog($"   Critical offsets - Damage: {material.CriticalDamageOffset}, Chance Mult: {material.CriticalDamageChanceMultiplierOffset}, Damage Mult: {material.CriticalDamageMultiplierOffset}");
 
-                    if (offset > highestOffset)
+                    if (damageOffset > highestDamageOffset)
                     {
-                        highestOffset = offset;
-                        DebugLog($"   New highest offset: {highestOffset}");
+                        highestDamageOffset = damageOffset;
+                        bestMatch = new MaterialOffsets
+                        {
+                            DamageOffset = damageOffset,
+                            ReachOffset = material.ReachOffset,
+                            SpeedOffset = material.SpeedOffset,
+                            StaggerOffset = material.StaggerOffset,
+                            CriticalDamageOffset = material.CriticalDamageOffset,
+                            CriticalDamageChanceMultiplierOffset = material.CriticalDamageChanceMultiplierOffset,
+                            CriticalDamageMultiplierOffset = material.CriticalDamageMultiplierOffset
+                        };
+                        DebugLog($"   New best match with damage offset: {highestDamageOffset}");
                     }
                 }
             }
 
-            return foundMatch ? highestOffset : null;
+            return foundMatch ? bestMatch : null;
         }
 
-        private int? GetNameBasedDamageOffset(string weaponName, WeaponSkill weaponSkill, bool includeWACCF)
+        private MaterialOffsets? GetNameBasedMaterialOffsets(string weaponName, WeaponSkill weaponSkill, bool includeWACCF)
         {
             var materialDataName = GetLoadedData(ref _materialDataName);
-            return CalculateDamageOffset(weaponName, materialDataName, weaponSkill, includeWACCF);
+            return CalculateMaterialOffsets(weaponName, materialDataName, weaponSkill, includeWACCF);
         }
 
-        private int? GetKeywordBasedDamageOffset(List<string> weaponKeywords, WeaponSkill weaponSkill, bool includeWACCF)
+        private MaterialOffsets? GetKeywordBasedMaterialOffsets(List<string> weaponKeywords, WeaponSkill weaponSkill, bool includeWACCF)
         {
             var materialData = GetLoadedData(ref _materialDataKeyword);
-            int highestOffset = int.MinValue;
+            int highestDamageOffset = int.MinValue;
+            MaterialOffsets? bestMatch = null;
             bool foundMatch = false;
 
             foreach (var keyword in weaponKeywords)
             {
-                var offset = CalculateDamageOffset(keyword, materialData, weaponSkill, includeWACCF);
-                if (offset.HasValue)
+                var offsets = CalculateMaterialOffsets(keyword, materialData, weaponSkill, includeWACCF);
+                if (offsets.HasValue)
                 {
                     foundMatch = true;
-                    if (offset.Value > highestOffset)
+                    if (offsets.Value.DamageOffset > highestDamageOffset)
                     {
-                        highestOffset = offset.Value;
+                        highestDamageOffset = offsets.Value.DamageOffset;
+                        bestMatch = offsets.Value;
                     }
                 }
             }
 
-            return foundMatch ? highestOffset : null;
+            return foundMatch ? bestMatch : null;
         }
 
-        public int? GetDamageOffset(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF)
+        public MaterialOffsets? GetMaterialOffsets(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF)
         {
             if (weapon == null || linkCache == null)
             {
@@ -478,26 +515,28 @@ namespace Weapon_Mod_Synergy
             // Try name-based offset first
             if (!string.IsNullOrEmpty(weaponName))
             {
-                int? nameBasedOffset = GetNameBasedDamageOffset(weaponName, weaponSkill.Value, includeWACCF);
-                if (nameBasedOffset.HasValue)
+                var nameBasedOffsets = GetNameBasedMaterialOffsets(weaponName, weaponSkill.Value, includeWACCF);
+                if (nameBasedOffsets.HasValue)
                 {
-                    DebugLog($"   Found name-based offset: {nameBasedOffset.Value}");
-                    return nameBasedOffset.Value;
+                    DebugLog($"   Found name-based offsets - Damage: {nameBasedOffsets.Value.DamageOffset}, Reach: {nameBasedOffsets.Value.ReachOffset}, Speed: {nameBasedOffsets.Value.SpeedOffset}, Stagger: {nameBasedOffsets.Value.StaggerOffset}");
+                    DebugLog($"   Critical offsets - Damage: {nameBasedOffsets.Value.CriticalDamageOffset}, Chance Mult: {nameBasedOffsets.Value.CriticalDamageChanceMultiplierOffset}, Damage Mult: {nameBasedOffsets.Value.CriticalDamageMultiplierOffset}");
+                    return nameBasedOffsets.Value;
                 }
             }
 
             // Try keyword-based offset if name-based failed
             if (weaponKeywords.Count > 0)
             {
-                int? keywordBasedOffset = GetKeywordBasedDamageOffset(weaponKeywords, weaponSkill.Value, includeWACCF);
-                if (keywordBasedOffset.HasValue)
+                var keywordBasedOffsets = GetKeywordBasedMaterialOffsets(weaponKeywords, weaponSkill.Value, includeWACCF);
+                if (keywordBasedOffsets.HasValue)
                 {
-                    DebugLog($"   Found keyword-based offset: {keywordBasedOffset.Value}");
-                    return keywordBasedOffset.Value;
+                    DebugLog($"   Found keyword-based offsets - Damage: {keywordBasedOffsets.Value.DamageOffset}, Reach: {keywordBasedOffsets.Value.ReachOffset}, Speed: {keywordBasedOffsets.Value.SpeedOffset}, Stagger: {keywordBasedOffsets.Value.StaggerOffset}");
+                    DebugLog($"   Critical offsets - Damage: {keywordBasedOffsets.Value.CriticalDamageOffset}, Chance Mult: {keywordBasedOffsets.Value.CriticalDamageChanceMultiplierOffset}, Damage Mult: {keywordBasedOffsets.Value.CriticalDamageMultiplierOffset}");
+                    return keywordBasedOffsets.Value;
                 }
             }
 
-            DebugLog($"   No damage offset found for {weaponName}");
+            DebugLog($"   No material offsets found for {weaponName}");
             return null;
         }
 
