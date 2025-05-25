@@ -140,6 +140,25 @@ namespace Weapon_Mod_Synergy
         private readonly IPatcherState<ISkyrimMod, ISkyrimModGetter> _state;
         private List<(string Key, WeaponSettings Settings)> _sortedSettings = new();
 
+        // Constants for value bounds
+        private const int MAX_VALUE = 60000;
+
+        /// <summary>
+        /// Ensures an unsigned short value stays within safe bounds (0 to MAX_VALUE)
+        /// </summary>
+        public static ushort ClampUshort(int value)
+        {
+            return (ushort)Math.Max(0, Math.Min(MAX_VALUE, value));
+        }
+
+        /// <summary>
+        /// Ensures a float value stays within safe bounds (0 to MAX_VALUE)
+        /// </summary>
+        public static float ClampFloat(float value)
+        {
+            return Math.Max(0f, Math.Min(MAX_VALUE, value));
+        }
+
         public void SetSortedSettings(List<(string Key, WeaponSettings Settings)> settings)
         {
             _sortedSettings = settings;
@@ -777,7 +796,7 @@ namespace Weapon_Mod_Synergy
 
                     // Calculate damage offset
                     int calculatedOffset = currentDamage - defaultStats.Damage;
-                    weapon.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + calculatedOffset);
+                    weapon.BasicStats.Damage = ClampUshort(settings.Damage + calculatedOffset);
                     DebugLog($"Calculated damage offset for bound weapon {weapon.EditorID}: {calculatedOffset}");
                     return calculatedOffset;
             }

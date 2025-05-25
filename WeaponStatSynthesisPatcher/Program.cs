@@ -435,12 +435,12 @@ namespace Weapon_Mod_Synergy
             debugInfo.SettingsCriticalChanceMultOffset = (float)criticalDamageChanceMultiplierOffset;
 
             // Apply stats with offsets
-            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset);
-            weaponOverride.Data.Speed = Math.Max(0f, (float)((decimal)settings.Speed + (decimal)speedOffset));
-            weaponOverride.Data.Reach = Math.Max(0f, (float)((decimal)settings.Reach + (decimal)reachOffset));
-            weaponOverride.Data.Stagger = Math.Max(0f, (float)((decimal)settings.Stagger + staggerOffset));
-            weaponOverride.Critical.PercentMult = Math.Max(0f, (float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)criticalDamageChanceMultiplierOffset));
-            weaponOverride.Critical.Damage = (ushort)Math.Floor((decimal)settings.CriticalDamageMultiplier * ((decimal)criticalDamageOffset + (decimal)settings.CriticalDamageOffset + weaponOverride.BasicStats.Damage / 2m));
+            weaponOverride.BasicStats.Damage = WeaponDataManager.ClampUshort(settings.Damage + damageOffset);
+            weaponOverride.Data.Speed = WeaponDataManager.ClampFloat((float)((decimal)settings.Speed + (decimal)speedOffset));
+            weaponOverride.Data.Reach = WeaponDataManager.ClampFloat((float)((decimal)settings.Reach + (decimal)reachOffset));
+            weaponOverride.Data.Stagger = WeaponDataManager.ClampFloat((float)((decimal)settings.Stagger + staggerOffset));
+            weaponOverride.Critical.PercentMult = WeaponDataManager.ClampFloat((float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)criticalDamageChanceMultiplierOffset));
+            weaponOverride.Critical.Damage = WeaponDataManager.ClampUshort((int)Math.Floor((decimal)settings.CriticalDamageMultiplier * ((decimal)criticalDamageOffset + (decimal)settings.CriticalDamageOffset + weaponOverride.BasicStats.Damage / 2m)));
 
             // Update debug info with final stats
             debugInfo.FinalDamage = weaponOverride.BasicStats.Damage;
@@ -679,18 +679,18 @@ namespace Weapon_Mod_Synergy
             }
 
             // Apply stats
-            weaponOverride.BasicStats.Damage = (ushort)Math.Max(0, settings.Damage + damageOffset + additionalMaterialDamage + additionalVariantDamage);
-            weaponOverride.Data.Speed = Math.Max(0f, (float)((decimal)settings.Speed + (decimal)additionalMaterialSpeed + (decimal)additionalVariantSpeed));
-            weaponOverride.Data.Reach = Math.Max(0f, (float)((decimal)settings.Reach + (decimal)additionalMaterialReach + (decimal)additionalVariantReach));
-            weaponOverride.Data.Stagger = Math.Max(0f, (float)((decimal)settings.Stagger + staggerOffset + (decimal)additionalMaterialStagger + (decimal)additionalVariantStagger));
-            weaponOverride.Critical.PercentMult = Math.Max(0f, (float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)additionalMaterialCriticalDamageChanceMultiplier + (decimal)additionalVariantCriticalDamageChanceMultiplier));
+            weaponOverride.BasicStats.Damage = WeaponDataManager.ClampUshort(settings.Damage + damageOffset + additionalMaterialDamage + additionalVariantDamage);
+            weaponOverride.Data.Speed = WeaponDataManager.ClampFloat((float)((decimal)settings.Speed + (decimal)additionalMaterialSpeed + (decimal)additionalVariantSpeed));
+            weaponOverride.Data.Reach = WeaponDataManager.ClampFloat((float)((decimal)settings.Reach + (decimal)additionalMaterialReach + (decimal)additionalVariantReach));
+            weaponOverride.Data.Stagger = WeaponDataManager.ClampFloat((float)((decimal)settings.Stagger + staggerOffset + (decimal)additionalMaterialStagger + (decimal)additionalVariantStagger));
+            weaponOverride.Critical.PercentMult = WeaponDataManager.ClampFloat((float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)additionalMaterialCriticalDamageChanceMultiplier + (decimal)additionalVariantCriticalDamageChanceMultiplier));
 
             // Apply critical damage stats
             decimal halfDamage = (decimal)weaponOverride.BasicStats.Damage / 2m;
             decimal finalCriticalDamageOffset = (decimal)settings.CriticalDamageOffset + (decimal)additionalMaterialCriticalDamageOffset + (decimal)additionalVariantCriticalDamageOffset + criticalDamageOffset;
             decimal criticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier + (decimal)additionalMaterialCriticalDamageMultiplier + (decimal)additionalVariantCriticalDamageMultiplier;
             decimal criticalDamage = Math.Floor(criticalDamageMultiplier * (halfDamage + finalCriticalDamageOffset));
-            weaponOverride.Critical.Damage = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, (int)criticalDamage));
+            weaponOverride.Critical.Damage = WeaponDataManager.ClampUshort((int)criticalDamage);
             _weaponDataManager?.DebugLog($"Critical damage: {criticalDamage}");
 
             // Update debug info with final stats
