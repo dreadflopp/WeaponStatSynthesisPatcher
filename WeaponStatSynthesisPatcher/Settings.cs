@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Weapon_Mod_Synergy
+namespace WeaponStatSynthesisPatcher
 {
     public enum WeaponSkill
     {
@@ -76,6 +76,39 @@ namespace Weapon_Mod_Synergy
         public Dictionary<string, WeaponSettings> Weapons { get; set; } = new();
     }
 
+    public class WeaponAttributeEnablers
+    {
+        [SettingName("Enable Damage Edits")]
+        [Tooltip("Enable or disable damage attribute edits")]
+        [JsonProperty]
+        public bool EnableDamage { get; set; } = true;
+
+        [SettingName("Enable Reach Edits")]
+        [Tooltip("Enable or disable reach attribute edits")]
+        [JsonProperty]
+        public bool EnableReach { get; set; } = true;
+
+        [SettingName("Enable Speed Edits")]
+        [Tooltip("Enable or disable speed attribute edits")]
+        [JsonProperty]
+        public bool EnableSpeed { get; set; } = true;
+
+        [SettingName("Enable Stagger Edits")]
+        [Tooltip("Enable or disable stagger attribute edits")]
+        [JsonProperty]
+        public bool EnableStagger { get; set; } = true;
+
+        [SettingName("Enable Critical Damage Edits")]
+        [Tooltip("Enable or disable critical damage edits (damage and multiplier)")]
+        [JsonProperty]
+        public bool EnableCriticalDamage { get; set; } = true;
+
+        [SettingName("Enable Critical Damage Chance Multiplier Edits")]
+        [Tooltip("Enable or disable critical damage chance multiplier edits")]
+        [JsonProperty]
+        public bool EnableCriticalDamageChanceMultiplier { get; set; } = true;
+    }
+
     public class VariantCategory
     {
         [JsonProperty]
@@ -100,6 +133,9 @@ namespace Weapon_Mod_Synergy
             TwohandedBluntWeapons = new WeaponCategory();
             TwohandedAxes = new WeaponCategory();
             Others = new WeaponCategory();
+
+            // initialize weapon attribute enablers
+            WeaponAttributeEnablers = new WeaponAttributeEnablers();
 
             // initialize variant categories
             Variants = new VariantCategory();
@@ -180,7 +216,7 @@ namespace Weapon_Mod_Synergy
 
         private void InitializeTwohandedSpears()
         {
-            TwohandedSpears.Weapons["Pike"] = new WeaponSettings { Damage = 11, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.7f, Speed = 0.9f, Stagger =   1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "pike", KeywordIDs = "WeapTypePike" } };
+            TwohandedSpears.Weapons["Pike"] = new WeaponSettings { Damage = 11, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.7f, Speed = 0.9f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "pike", KeywordIDs = "WeapTypePike" } };
             TwohandedSpears.Weapons["Twohanded Spear"] = new WeaponSettings { Damage = 12, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.6f, Speed = 0.8f, Stagger = 1.05f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "spear;halfpike;half pike", KeywordIDs = "ShWeapTypeSpear" } };
             TwohandedSpears.Weapons["Trident"] = new WeaponSettings { Damage = 14, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.5f, Speed = 0.7f, Stagger = 1.1f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "trident", KeywordIDs = "ShWeapTypeTrident" } };
         }
@@ -188,7 +224,7 @@ namespace Weapon_Mod_Synergy
         private void InitializeTwohandedBluntWeapons()
         {
             TwohandedBluntWeapons.Weapons["Warhammer"] = new WeaponSettings { Damage = 18, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.3f, Speed = 0.6f, Stagger = 1.25f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "", SearchLogic = LogicOperator.AND, KeywordIDs = "WeapTypeWarhammer" } };
-            TwohandedBluntWeapons.Weapons["Quarterstaff, shorter"] = new WeaponSettings { Damage = 11   , BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.2f, Speed = 1.0f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "shortstaff", KeywordIDs = "ShWeapTypeQuarterStaff" } };
+            TwohandedBluntWeapons.Weapons["Quarterstaff, shorter"] = new WeaponSettings { Damage = 11, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.2f, Speed = 1.0f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "shortstaff", KeywordIDs = "ShWeapTypeQuarterStaff" } };
             TwohandedBluntWeapons.Weapons["Quarterstaff"] = new WeaponSettings { Damage = 10, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.5f, Speed = 1.1f, Stagger = 1.0f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "battle staff;battlestaff;quarterstaff;quarter staff", KeywordIDs = "WeapTypeQtrStaff" } };
             TwohandedBluntWeapons.Weapons["LongMace"] = new WeaponSettings { Damage = 17, BoundWeaponAdditionalDamage = 1, BoundMysticWeaponAdditionalDamage = 6, Reach = 1.3f, Speed = 0.65f, Stagger = 1.2f, MatchLogicSettings = new MatchLogicSettings { Skill = WeaponSkill.TwoHanded, NamedIDs = "longmace;long mace", KeywordIDs = "ShWeapTypeLongMace" } };
         }
@@ -227,7 +263,7 @@ namespace Weapon_Mod_Synergy
         [SettingName("Plugin Include List")]
         [Tooltip("List of plugins to include (semicolon separated)")]
         [JsonProperty]
-        public string PluginIncludeList { get; set; } = 
+        public string PluginIncludeList { get; set; } =
         "Skyrim.esm;" +
         "Dawnguard.esm;" +
         "Dragonborn.esm;" +
@@ -260,10 +296,10 @@ namespace Weapon_Mod_Synergy
         "Wyrmstooth.esp;" +
         "BSAssets.esm;" +
         "BSHeartland.esm;" +
-        "Thaumaturgy.esp;" + 
+        "Thaumaturgy.esp;" +
         "MysticismMagic.esp;" +
         "Adamant.esp;" +
-        "Artificer.esp;" + 
+        "Artificer.esp;" +
         "Bound Armory Extravaganza.esp;" +
         "KhajiitWillFollow.esp;" +
         "NewArmoury.esp;" +
@@ -312,7 +348,7 @@ namespace Weapon_Mod_Synergy
         "000801:ccbgssse019-staffofsheogorath.esl;000850:ccbgssse020-graycowl.esl;" +
         "000854:ccvsvsse004-beafarmer.esl;59F322:Skyrim Extended Cut - Saints and Seducers.esp;59F323:Skyrim Extended Cut - Saints and Seducers.esp;" +
         "014FBA:MoonAndStar_MAS.esp;014FC0:MoonAndStar_MAS.esp;00341D:Gray Fox Cowl.esm;4A12C8:Wyrmstooth.esp;00090A:College Of Winterhold - Quest Expansion.esp;013209:BeyondSkyrimMerchant.esp;" +
-        "10F6D4:Bound Armory Extravaganza.esp;10F6DA:Bound Armory Extravaganza.esp;" + 
+        "10F6D4:Bound Armory Extravaganza.esp;10F6DA:Bound Armory Extravaganza.esp;" +
         "00084D:ccbgssse001-fish.esm;00084E:ccbgssse001-fish.esm;00084F:ccbgssse001-fish.esm;000850:ccbgssse001-fish.esm;01F25A:Skyrim.esm;01F25B:Skyrim.esm";
 
         [SettingName("WACCF material tiers and stat changes")]
@@ -334,6 +370,11 @@ namespace Weapon_Mod_Synergy
         [Tooltip("Choose how to parse bound weapons")]
         [JsonProperty]
         public BoundWeaponParsing BoundWeaponParsing { get; set; } = BoundWeaponParsing.CalculateFromMods;
+
+        [SettingName("Weapon Attribute Enablers")]
+        [Tooltip("Global enablers/disablers for weapon attribute edits")]
+        [JsonProperty]
+        public WeaponAttributeEnablers WeaponAttributeEnablers { get; set; }
 
         [JsonProperty]
         public VariantCategory Variants { get; set; }

@@ -14,7 +14,7 @@ using Mutagen.Bethesda;
 using Noggog;
 #pragma warning disable CA1416 
 
-namespace Weapon_Mod_Synergy
+namespace WeaponStatSynthesisPatcher
 {
     // Classes for JSON deserialization
     public struct MaterialOffsets
@@ -796,7 +796,6 @@ namespace Weapon_Mod_Synergy
 
                     // Calculate damage offset
                     int calculatedOffset = currentDamage - defaultStats.Damage;
-                    weapon.BasicStats.Damage = ClampUshort(settings.Damage + calculatedOffset);
                     DebugLog($"Calculated damage offset for bound weapon {weapon.EditorID}: {calculatedOffset}");
                     return calculatedOffset;
             }
