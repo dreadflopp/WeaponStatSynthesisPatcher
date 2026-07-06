@@ -286,6 +286,15 @@ namespace WeaponStatSynthesisPatcher
                         continue;
                     }
 
+                    // Skip dummy weapons
+                    var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
+                    bool isDummyWeapon = weaponKeywords.Any(k => k.Contains("Dummy", StringComparison.OrdinalIgnoreCase));
+                    if (isDummyWeapon)
+                    {
+                        _weaponDataManager?.DebugLog($"Skipping dummy weapon: {weapon.EditorID}");
+                        continue;
+                    }
+
                     // Get weapon setting key
                     var weaponSettingKey = _weaponDataManager?.GetWeaponSettingKey(weapon, state.LinkCache);
                     if (weaponSettingKey == null)
