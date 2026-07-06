@@ -1,5 +1,93 @@
 [
   {
+    "editor_id": "PI_DraugrLordClubUnique",
+    "form_key": "000826:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordGlaiveUnique",
+    "form_key": "000833:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordTridentUnique",
+    "form_key": "000834:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "PI_DraugrLordLongMaceUnique",
+    "form_key": "000864:Prvti_DragonCultWeapons.esp"
+  },
+  {
+    "editor_id": "zzTRD_RD_DraugrBossKingOlaf_Warhammer02",
+    "form_key": "0E2672:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_RD_DraugrBossKingOlaf_Warhammer03",
+    "form_key": "0E2673:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_RD_DraugrBossKingOlaf_Warhammer04",
+    "form_key": "0E2674:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_RD_DraugrBossKingOlaf_Warhammer05",
+    "form_key": "0E2675:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_CD_DraugrBossTempleOfMiraak_Battleaxe02",
+    "form_key": "028328:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_CD_DraugrBossTempleOfMiraak_Battleaxe03",
+    "form_key": "028329:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_CD_DraugrBossTempleOfMiraak_Battleaxe04",
+    "form_key": "02832A:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzTRD_CD_DraugrBossTempleOfMiraak_Battleaxe05",
+    "form_key": "02832B:The Restless Dead.esp"
+  },
+  {
+    "editor_id": "zzzAoMWeaverNeedle",
+    "form_key": "442D7E:Vigilant.esm"
+  },
+  {
+    "editor_id": "zzzCHSoulSqueezer",
+    "form_key": "11FB39:Vigilant.esm"
+  },
+  {
+    "editor_id": "zzzCHButcherLaddle",
+    "form_key": "0CE832:Vigilant.esm"
+  },
+  {
+    "editor_id": "aaa_Blade_of_Woe__Dagger_02_pr",
+    "form_key": "002DB3:RFM.esm"
+  },
+  {
+    "editor_id": "EVGSiren_AyleidSword",
+    "form_key": "54B244:evgSIRENROOT.esm"
+  },
+  {
+    "editor_id": "ccBGSSSE016_UmbraPlayer",
+    "form_key": "000D62:ccbgssse016-umbra.esm"
+  },
+  {
+    "editor_id": "dunGeirmundsWarAxeIllusion",
+    "form_key": "0E7A31:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunVolunruudEduj",
+    "form_key": "08FFDF:Skyrim.esm"
+  },
+  {
+    "editor_id": "dunVolunruudOkin",
+    "form_key": "08FFDE:Skyrim.esm"
+  },
+  {
+    "editor_id": "NightingaleBlade01",
+    "form_key": "07A917:Skyrim.esm"
+  },
+  {
     "editor_id": "DA10MaceofMolagBal",
     "form_key": "0233E3:Skyrim.esm"
   },
