@@ -140,6 +140,7 @@ namespace WeaponStatSynthesisPatcher
             _weaponDataManager?.DebugLog($"Settings:");
             _weaponDataManager?.DebugLog($"  - PluginFilter: {Settings.Value.PluginFilter}");
             _weaponDataManager?.DebugLog($"  - WACCFMaterialTiers: {Settings.Value.WACCFMaterialTiers}");
+            _weaponDataManager?.DebugLog($"  - EnableRestlessDeadNerfs: {Settings.Value.EnableRestlessDeadNerfs}");
             _weaponDataManager?.DebugLog($"  - StalhrimStaggerBonus: {Settings.Value.StalhrimStaggerBonus}");
             _weaponDataManager?.DebugLog($"  - StalhrimDamageBonus: {Settings.Value.StalhrimDamageBonus}");
             _weaponDataManager?.DebugLog($"  - BoundWeaponParsing: {Settings.Value.BoundWeaponParsing}");

@@ -438,6 +438,23 @@ namespace WeaponStatSynthesisPatcher
                         ? (includeWACCF ? material.DamageOffset1hWaccf : material.DamageOffset1h)
                         : (includeWACCF ? material.DamageOffset2hWaccf : material.DamageOffset2h);
 
+                    if (_settings.EnableRestlessDeadNerfs)
+                    {
+                        int restlessDeadReduction = material.Keyword switch
+                        {
+                            "WeapMaterialDraugr" when weaponSkill == WeaponSkill.OneHanded => 1,
+                            "WeapMaterialDraugr" => 2,
+                            "WeapMaterialDraugrHoned" => 3,
+                            _ => 0
+                        };
+
+                        if (restlessDeadReduction > 0)
+                        {
+                            DebugLog($"   Applying The Restless Dead material nerf to {material.Keyword}: -{restlessDeadReduction} damage offset");
+                            damageOffset -= restlessDeadReduction;
+                        }
+                    }
+
                     DebugLog($"   {(weaponSkill == WeaponSkill.OneHanded ? "One-handed" : "Two-handed")} weapon, damage offset: {damageOffset}");
                     DebugLog($"   Additional offsets - Reach: {material.ReachOffset}, Speed: {material.SpeedOffset}, Stagger: {material.StaggerOffset}");
                     DebugLog($"   Critical offsets - Damage: {material.CriticalDamageOffset}, Chance Mult: {material.CriticalDamageChanceMultiplierOffset}, Damage Mult: {material.CriticalDamageMultiplierOffset}");

@@ -356,6 +356,11 @@ namespace WeaponStatSynthesisPatcher
         [JsonProperty]
         public bool WACCFMaterialTiers { get; set; } = false;
 
+        [SettingName("Enable support for 'The Restless Dead' nerfs")]
+        [Tooltip("Reduce damage for Ancient Nord weapons. Enable this if you use the mod 'The Restless Dead'.")]
+        [JsonProperty]
+        public bool EnableRestlessDeadNerfs { get; set; } = false;
+
         [SettingName("Stalhrim stagger bonus (default vanilla value is 0.1, WACCF value is 0)")]
         [Tooltip("Enable support for Stalhrim stagger bonus, if current stagger is greater than 0")]
         [JsonProperty]
