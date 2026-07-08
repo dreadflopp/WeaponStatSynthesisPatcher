@@ -315,7 +315,7 @@ namespace WeaponStatSynthesisPatcher
         /// <summary>
         /// Gets the weapon setting key based on the weapon's name, keywords, and skill type
         /// </summary>
-        public string? GetWeaponSettingKey(IWeaponGetter weapon, ILinkCache linkCache)
+        public string? GetWeaponSettingKey(IWeaponGetter weapon, ILinkCache linkCache, List<string>? preResolvedKeywords = null)
         {
             if (weapon == null || linkCache == null)
             {
@@ -325,7 +325,8 @@ namespace WeaponStatSynthesisPatcher
 
             string weaponName = weapon.Name?.String ?? string.Empty;
             WeaponSkill? skillType = GetWeaponSkillType(weapon);
-            List<string> keywords = GetWeaponKeywords(weapon, linkCache);
+            List<string> keywords = preResolvedKeywords ?? GetWeaponKeywords(weapon, linkCache);
+            string keywordsText = string.Join(", ", keywords);
             if (string.IsNullOrEmpty(weaponName) && keywords.Count == 0)
             {
                 DebugLog("   Weapon name and keywords are empty");
@@ -359,42 +360,53 @@ namespace WeaponStatSynthesisPatcher
                     continue;
                 }
 
-                // Process name patterns
-                bool nameMatch = true;
-                if (!string.IsNullOrWhiteSpace(settings.MatchLogicSettings.NamedIDs))
-                {
-                    DebugLog($"   Matching name patterns");
-                    nameMatch = IsMatch(weaponName, settings.MatchLogicSettings.NamedIDs);
-                    DebugLog($"   Name match: {nameMatch}");
-                }
-
-                // Process keyword patterns
-                bool keywordMatch = true;
-                if (!string.IsNullOrWhiteSpace(settings.MatchLogicSettings.KeywordIDs))
-                {
-                    DebugLog($"   Matching keyword patterns");
-                    keywordMatch = IsMatch(string.Join(", ", keywords), settings.MatchLogicSettings.KeywordIDs);
-                    DebugLog($"   Keyword match: {keywordMatch}");
-                }
+                bool hasNames = !string.IsNullOrWhiteSpace(settings.MatchLogicSettings.NamedIDs);
+                bool hasKeywords = !string.IsNullOrWhiteSpace(settings.MatchLogicSettings.KeywordIDs);
 
                 // Determine final match based on SearchLogic
                 bool finalMatch;
-                if (string.IsNullOrWhiteSpace(settings.MatchLogicSettings.NamedIDs))
+                if (!hasNames)
                 {
-                    // If only NamedIDs is empty, use keyword match
+                    DebugLog("   Matching keyword patterns");
+                    bool keywordMatch = IsMatch(keywordsText, settings.MatchLogicSettings.KeywordIDs);
+                    DebugLog($"   Keyword match: {keywordMatch}");
                     finalMatch = keywordMatch;
                 }
-                else if (string.IsNullOrWhiteSpace(settings.MatchLogicSettings.KeywordIDs))
+                else if (!hasKeywords)
                 {
-                    // If only KeywordIDs is empty, use name match
+                    DebugLog("   Matching name patterns");
+                    bool nameMatch = IsMatch(weaponName, settings.MatchLogicSettings.NamedIDs);
+                    DebugLog($"   Name match: {nameMatch}");
+                    finalMatch = nameMatch;
+                }
+                else if (settings.MatchLogicSettings.SearchLogic == LogicOperator.AND)
+                {
+                    // AND path is keyword-first for faster rejection on common one-keyword rules.
+                    DebugLog("   Matching keyword patterns (AND short-circuit first)");
+                    bool keywordMatch = IsMatch(keywordsText, settings.MatchLogicSettings.KeywordIDs);
+                    DebugLog($"   Keyword match: {keywordMatch}");
+                    if (!keywordMatch)
+                    {
+                        DebugLog($"   Match result for setting key {settingKey}: False (keyword short-circuit)");
+                        continue;
+                    }
+
+                    DebugLog("   Matching name patterns");
+                    bool nameMatch = IsMatch(weaponName, settings.MatchLogicSettings.NamedIDs);
+                    DebugLog($"   Name match: {nameMatch}");
                     finalMatch = nameMatch;
                 }
                 else
                 {
-                    // Both fields have patterns, use SearchLogic
-                    finalMatch = settings.MatchLogicSettings.SearchLogic == LogicOperator.AND
-                        ? nameMatch && keywordMatch
-                        : nameMatch || keywordMatch;
+                    DebugLog("   Matching name patterns");
+                    bool nameMatch = IsMatch(weaponName, settings.MatchLogicSettings.NamedIDs);
+                    DebugLog($"   Name match: {nameMatch}");
+
+                    DebugLog("   Matching keyword patterns");
+                    bool keywordMatch = IsMatch(keywordsText, settings.MatchLogicSettings.KeywordIDs);
+                    DebugLog($"   Keyword match: {keywordMatch}");
+
+                    finalMatch = nameMatch || keywordMatch;
                 }
                 DebugLog($"   Match result for setting key {settingKey}: {finalMatch}");
 
@@ -510,7 +522,7 @@ namespace WeaponStatSynthesisPatcher
             return foundMatch ? bestMatch : null;
         }
 
-        public MaterialOffsets? GetMaterialOffsets(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF)
+        public MaterialOffsets? GetMaterialOffsets(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF, List<string>? preResolvedKeywords = null)
         {
             if (weapon == null || linkCache == null)
             {
@@ -519,7 +531,7 @@ namespace WeaponStatSynthesisPatcher
             }
 
             string weaponName = weapon.Name?.String ?? "";
-            List<string> weaponKeywords = GetWeaponKeywords(weapon, linkCache);
+            List<string> weaponKeywords = preResolvedKeywords ?? GetWeaponKeywords(weapon, linkCache);
 
             if (weaponKeywords.Count == 0 && string.IsNullOrEmpty(weaponName))
             {
@@ -658,8 +670,8 @@ namespace WeaponStatSynthesisPatcher
         }
 
         public (int additionalDamage, float additionalReach, float additionalSpeed, float additionalStagger,
-                float additionalCriticalDamageOffset, float additionalCriticalDamageChanceMultiplier,
-                float additionalCriticalDamageMultiplier) GetVariantStats(IWeaponGetter weapon, ILinkCache linkCache)
+            float additionalCriticalDamageOffset, float additionalCriticalDamageChanceMultiplier,
+            float additionalCriticalDamageMultiplier) GetVariantStats(IWeaponGetter weapon, ILinkCache linkCache, List<string>? preResolvedKeywords = null)
         {
             int additionalDamage = 0;
             decimal additionalReach = 0m;
@@ -678,7 +690,7 @@ namespace WeaponStatSynthesisPatcher
             }
 
             // Get weapon keywords
-            var weaponKeywords = GetWeaponKeywords(weapon, linkCache);
+            var weaponKeywords = preResolvedKeywords ?? GetWeaponKeywords(weapon, linkCache);
 
             // Check all variants for matches
             foreach (var variant in _settings.Variants.Variants)

@@ -57,60 +57,6 @@ namespace WeaponStatSynthesisPatcher
         public float FinalCriticalChanceMult { get; set; }
         public string ProcessingResult { get; set; } = string.Empty;
         public string InKeywords { get; set; } = string.Empty;
-
-        public string ToCsvLine()
-        {
-            return string.Join(",",
-                EscapeCsv(EditorID),
-                EscapeCsv(Name),
-                InDamage,
-                InSpeed,
-                InReach,
-                InStagger,
-                InCriticalDamage,
-                InCriticalChanceMult,
-                UsesTemplate,
-                IsPlayable,
-                EscapeCsv(SettingsKey),
-                EscapeCsv(Material),
-                MaterialDamageOffset?.ToString() ?? "",
-                IsSpecial,
-                IsIgnored,
-                EscapeCsv(Variant),
-                VariantDamageOffset,
-                VariantReachOffset,
-                VariantSpeedOffset,
-                VariantStaggerOffset,
-                VariantCriticalDamageOffset,
-                VariantCriticalChanceMultOffset,
-                VariantCriticalDamageMultOffset,
-                SettingsDamageOffset,
-                SettingsSpeedOffset,
-                SettingsReachOffset,
-                SettingsStaggerOffset,
-                SettingsCriticalDamageOffset,
-                SettingsCriticalChanceMultOffset,
-                SettingsCriticalDamageMultOffset,
-                FinalDamage,
-                FinalSpeed,
-                FinalReach,
-                FinalStagger,
-                FinalCriticalDamage,
-                FinalCriticalChanceMult,
-                EscapeCsv(ProcessingResult),
-                EscapeCsv(InKeywords)
-            );
-        }
-
-        private static string EscapeCsv(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return "";
-            if (value.Contains(",") || value.Contains("\"") || value.Contains("\n"))
-            {
-                return $"\"{value.Replace("\"", "\"\"")}\"";
-            }
-            return value;
-        }
     }
 
     public class Program
@@ -118,7 +64,6 @@ namespace WeaponStatSynthesisPatcher
         static Lazy<Settings> Settings = null!;
         private static WeaponDataManager? _weaponDataManager;
         private static List<WeaponDebugInfo> _processedWeapons = new();
-
         public static async Task<int> Main(string[] args)
         {
             return await SynthesisPipeline.Instance
@@ -228,111 +173,107 @@ namespace WeaponStatSynthesisPatcher
             }
             Console.WriteLine();
 
-            // Verify form keys in special_weapons.json
-            VerifyFormKeys(state);
-
-            // Process weapons from plugins
-            foreach (var modGetter in state.LoadOrder.PriorityOrder)
+            // Verify form keys in special_weapons.json only in debug mode
+            if (Settings.Value.DebugMode)
             {
+                VerifyFormKeys(state);
+            }
+
+            // Process weapons in a single pass across winning overrides.
+            var loggedProcessedMods = new HashSet<ModKey>();
+            foreach (var weapon in state.LoadOrder.PriorityOrder.Weapon().WinningOverrides())
+            {
+                var sourceMod = weapon.FormKey.ModKey;
+                var sourcePluginName = sourceMod.FileName.String;
                 var shouldProcess = Settings.Value.PluginFilter switch
                 {
                     PluginFilter.AllPlugins => true,
-                    PluginFilter.ExcludePlugins => !pluginExcludeList.Contains(modGetter.ModKey.FileName.String),
-                    PluginFilter.IncludePlugins => pluginIncludeList.Contains(modGetter.ModKey.FileName.String),
+                    PluginFilter.ExcludePlugins => !pluginExcludeList.Contains(sourcePluginName),
+                    PluginFilter.IncludePlugins => pluginIncludeList.Contains(sourcePluginName),
                     _ => true
                 };
 
-                if (!shouldProcess) continue;
-
-                _weaponDataManager?.DebugLog($"========================================");
-                Console.WriteLine($"Processing mod: {modGetter.ModKey.FileName}");
-                _weaponDataManager?.DebugLog($"========================================");
-
-                // Process each weapon from the current mod
-                foreach (var weapon in state.LoadOrder.PriorityOrder.Weapon().WinningOverrides()
-                    .Where(w => w.FormKey.ModKey == modGetter.ModKey))
+                if (!shouldProcess)
                 {
-                    _weaponDataManager?.DebugLog($"------------------------------------------");
+                    continue;
+                }
+
+                if (loggedProcessedMods.Add(sourceMod))
+                {
+                    _weaponDataManager?.DebugLog("========================================");
+                    Console.WriteLine($"Processing mod: {sourceMod.FileName}");
+                    _weaponDataManager?.DebugLog("========================================");
+                }
+
+                _weaponDataManager?.DebugLog("------------------------------------------");
+                _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
+                _weaponDataManager?.DebugLog("------------------------------------------");
+                bool isSpecialWeapon = _weaponDataManager?.IsSpecialWeapon(weapon) ?? false;
+                _weaponDataManager?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
+
+                // Check if weapon is bound
+                bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
+                              (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
+
+                // Skip if weapon is not playable and is not bound
+                if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isBound)
+                {
+                    _weaponDataManager?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
+                    continue;
+                }
+
+                // Skip if weapon uses a template
+                if (weapon.Template?.FormKey != null &&
+                    !weapon.Template.FormKey.IsNull &&
+                    weapon.Template.FormKey.ToString() != "Null" &&
+                    !isSpecialWeapon)
+                {
+                    _weaponDataManager?.DebugLog($"Skipping template weapon: {weapon.EditorID}");
+                    continue;
+                }
+
+                // Check if weapon should be ignored
+                var formKeyString = weapon.FormKey.ToString();
+                if (formKeyString != null && ignoredWeaponFormKeys.Contains(formKeyString) && !isSpecialWeapon)
+                {
+                    _weaponDataManager?.DebugLog($"Weapon {weapon.EditorID} is in ignoredWeaponFormKeys list");
+                    continue;
+                }
+
+                // Resolve keywords once and reuse for downstream checks.
+                var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
+
+                // Skip dummy weapons
+                bool isDummyWeapon = weaponKeywords.Any(k => k.Contains("Dummy", StringComparison.OrdinalIgnoreCase));
+                if (isDummyWeapon)
+                {
+                    _weaponDataManager?.DebugLog($"Skipping dummy weapon: {weapon.EditorID}");
+                    continue;
+                }
+
+                // Get weapon setting key
+                var weaponSettingKey = _weaponDataManager?.GetWeaponSettingKey(weapon, state.LinkCache, weaponKeywords);
+                if (weaponSettingKey == null)
+                {
+                    _weaponDataManager?.DebugLog($"Warning: Could not determine weapon setting key for {weapon.EditorID}");
+                    continue;
+                }
+
+                // Process weapon based on if it is a special weapon or not
+                if (isSpecialWeapon)
+                {
+                    _weaponDataManager?.DebugLog($"Processing special weapon: {weapon.EditorID}");
+                    ProcessSpecialWeapon(weapon, state, weaponSettingKey, weaponKeywords);
+                }
+                else
+                {
                     _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
-                    _weaponDataManager?.DebugLog($"------------------------------------------");
-                    bool isSpecialWeapon = _weaponDataManager?.IsSpecialWeapon(weapon) ?? false;
-                    _weaponDataManager?.DebugLog($"Is EDID {weapon.EditorID} a Special Weapon: {isSpecialWeapon}");
-
-                    // Check if weapon is bound
-                    bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
-                                  (weapon.Name?.String?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false);
-
-                    // Skip if weapon is not playable and is not bound
-                    if (weapon.Data?.Flags.HasFlag(WeaponData.Flag.NonPlayable) == true && !isSpecialWeapon && !isBound)
-                    {
-                        _weaponDataManager?.DebugLog($"Skipping non-playable weapon: {weapon.EditorID}");
-                        continue;
-                    }
-
-                    // Skip if weapon uses a template
-                    if (weapon.Template?.FormKey != null &&
-                        !weapon.Template.FormKey.IsNull &&
-                        weapon.Template.FormKey.ToString() != "Null" &&
-                        !isSpecialWeapon)
-                    {
-                        _weaponDataManager?.DebugLog($"Skipping template weapon: {weapon.EditorID}");
-                        continue;
-                    }
-
-                    // Check if weapon should be ignored
-                    var formKeyString = weapon.FormKey.ToString();
-                    if (formKeyString != null && ignoredWeaponFormKeys.Contains(formKeyString) && !isSpecialWeapon)
-                    {
-                        _weaponDataManager?.DebugLog($"Weapon {weapon.EditorID} is in ignoredWeaponFormKeys list");
-                        continue;
-                    }
-
-                    // Skip dummy weapons
-                    var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
-                    bool isDummyWeapon = weaponKeywords.Any(k => k.Contains("Dummy", StringComparison.OrdinalIgnoreCase));
-                    if (isDummyWeapon)
-                    {
-                        _weaponDataManager?.DebugLog($"Skipping dummy weapon: {weapon.EditorID}");
-                        continue;
-                    }
-
-                    // Get weapon setting key
-                    var weaponSettingKey = _weaponDataManager?.GetWeaponSettingKey(weapon, state.LinkCache);
-                    if (weaponSettingKey == null)
-                    {
-                        _weaponDataManager?.DebugLog($"Warning: Could not determine weapon setting key for {weapon.EditorID}");
-                        continue;
-                    }
-
-                    // Process weapon based on if it is a special weapon or not
-                    if (isSpecialWeapon)
-                    {
-                        _weaponDataManager?.DebugLog($"Processing special weapon: {weapon.EditorID}");
-                        ProcessSpecialWeapon(weapon, state, weaponSettingKey);
-                    }
-                    else
-                    {
-                        _weaponDataManager?.DebugLog($"Processing weapon: {weapon.EditorID}");
-                        ProcessWeapon(weapon, state, weaponSettingKey);
-                    }
+                    ProcessWeapon(weapon, state, weaponSettingKey, weaponKeywords);
                 }
             }
 
-            // Output debug information if debug mode is enabled
-            if (Settings.Value.DebugMode && _processedWeapons.Count > 0)
-            {
-                var header = "EditorID,Name,InDamage,InSpeed,InReach,InStagger,InCriticalDamage,InCriticalChanceMult,UsesTemplate,IsPlayable,SettingsKey,Material,MaterialDamageOffset,IsSpecial,IsIgnored,Variant,VariantDamageOffset,VariantReachOffset,VariantSpeedOffset,VariantStaggerOffset,VariantCriticalDamageOffset,VariantCriticalChanceMultOffset,VariantCriticalDamageMultOffset,SettingsDamageOffset,SettingsSpeedOffset,SettingsReachOffset,SettingsStaggerOffset,SettingsCriticalDamageOffset,SettingsCriticalChanceMultOffset,SettingsCriticalDamageMultOffset,FinalDamage,FinalSpeed,FinalReach,FinalStagger,FinalCriticalDamage,FinalCriticalChanceMult,ProcessingResult,InKeywords";
-
-                Console.WriteLine("\n=== Weapon Debug Information ===");
-                Console.WriteLine(header);
-                foreach (var weapon in _processedWeapons)
-                {
-                    Console.WriteLine(weapon.ToCsvLine());
-                }
-                Console.WriteLine($"\nTotal weapons processed: {_processedWeapons.Count}");
-            }
         }
-        private static void ProcessSpecialWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey)
+        private static void ProcessSpecialWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey, List<string>? preResolvedKeywords = null)
         {
             if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
             {
@@ -369,7 +310,7 @@ namespace WeaponStatSynthesisPatcher
             }
 
             // Get weapon keywords
-            var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
+            var weaponKeywords = preResolvedKeywords ?? _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
             debugInfo.InKeywords = string.Join(";", weaponKeywords);
 
             // Get default weapon stats
@@ -516,7 +457,7 @@ namespace WeaponStatSynthesisPatcher
             if (Settings.Value.DebugMode) _processedWeapons.Add(debugInfo);
         }
 
-        private static void ProcessWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey)
+        private static void ProcessWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey, List<string>? preResolvedKeywords = null)
         {
             if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
             {
@@ -620,7 +561,7 @@ namespace WeaponStatSynthesisPatcher
             else
             {
                 // Get material offsets for non-bound weapons
-                var materialOffsets = _weaponDataManager?.GetMaterialOffsets(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers);
+                var materialOffsets = _weaponDataManager?.GetMaterialOffsets(weapon, state.LinkCache, Settings.Value.WACCFMaterialTiers, preResolvedKeywords);
                 if (materialOffsets == null)
                 {
                     _weaponDataManager?.DebugLog($"Warning: Could not determine material offsets for {weapon.EditorID}. Skipping.");
@@ -638,7 +579,7 @@ namespace WeaponStatSynthesisPatcher
                 debugInfo.MaterialDamageOffset = materialOffsets.Value.DamageOffset;
 
                 // Get variant settings for non-bound weapons
-                var variantStats = _weaponDataManager?.GetVariantStats(weapon, state.LinkCache);
+                var variantStats = _weaponDataManager?.GetVariantStats(weapon, state.LinkCache, preResolvedKeywords);
                 if (variantStats != null)
                 {
                     (additionalVariantDamage, additionalVariantReach, additionalVariantSpeed, additionalVariantStagger,
@@ -664,7 +605,7 @@ namespace WeaponStatSynthesisPatcher
                 }
 
                 // Get weapon keywords for material checks
-                List<string> weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
+                List<string> weaponKeywords = preResolvedKeywords ?? _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
                 debugInfo.InKeywords = string.Join(";", weaponKeywords);
 
                 // Apply Stalhrim-specific bonuses if applicable
