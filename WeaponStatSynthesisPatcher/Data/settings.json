@@ -1,0 +1,783 @@
+{
+  "DebugMode": true,
+  "PluginFilter": "AllPlugins",
+  "PluginIncludeList": "Skyrim.esm;Dawnguard.esm;Dragonborn.esm;ccasvsse001-almsivi.esm;ccbgssse001-fish.esm;ccbgssse003-zombies.esl;ccbgssse005-goldbrand.esl;ccbgssse006-stendarshammer.esl;ccbgssse007-chrysamere.esl;ccmtysse001-knightsofthenine.esl;ccbgssse018-shadowrend.esl;ccbgssse008-wraithguard.esl;ccffbsse001-imperialdragon.esl;ccbgssse016-umbra.esm;ccbgssse031-advcyrus.esm;ccbgssse059-ba_dragonplate.esl;ccbgssse067-daedinv.esm;ccbgssse068-bloodfall.esl;ccbgssse069-contest.esl;ccvsvsse003-necroarts.esl;ccbgssse025-advdsgs.esm;ccedhsse003-redguard.esl;cckrtsse001_altar.esl;ccbgssse006-stendarshammer.esl;Skyrim Extended Cut - Saints and Seducers.esp;MoonAndStar_MAS.esp;Dwarfsphere.esp;Midwood Isle.esp;Gray Fox Cowl.esm;Wyrmstooth.esp;BSAssets.esm;BSHeartland.esm;Thaumaturgy.esp;MysticismMagic.esp;Adamant.esp;Artificer.esp;Bound Armory Extravaganza.esp;KhajiitWillFollow.esp;NewArmoury.esp;Skyrim On Skooma.esp;Inigo.esp;WZOblivionArtifacts.esp;Destroy the Dark Brotherhood - Quest Expansion.esp;BeyondSkyrimMerchant.esp;aMidianborn_Skyforge_Weapons.esp;DawnguardArsenal.esp;RMB SPID - Realistic Armors.esp;Summermyst - Enchantments of Skyrim.esp;SkyrimSpearMechanic.esp;Lore Weapon Expansion - Daedric Crescent.esp;Lore Weapon Expansion.esp;Lore Weapon Expansion - Goldbrand.esp;Lore Weapon Expansion - Relics of the Crusader.esp;Skyrim Weapons Expansion.esp;Weapons Armor Clothing & Clutter Fixes.esp;BSMBonemoldSet.esp;PrvtI_DaedricKatanas.esp;Prvti_ElvenSteel.esp;PrvtI_ImperialSilver.esp;PrvtI_BSBonemold.esp;Prvti_DragonCultWeapons.esp;PrvtI_BrumaArmory.esp;PrvtI_BSMerchantArmory.esp;PrvtI_LunarArmory.esp;Prvti_AshenArmory.esp;PrvtIRoyalArmory.esp;PrvtI_HeavyArmory.esp;KatanaCrafting.esp;Requiem.esp;Requiem - Creation Club.esp;Spear of Skyrim.esp;",
+  "PluginExcludeList": "",
+  "IgnoredWeaponFormKeys": "02F2F4:Skyrim.esm;0E3C16:Skyrim.esm;0AE086:Skyrim.esm;0398E6:Dragonborn.esm;0179C9:Dragonborn.esm;0206F2:Dragonborn.esm;000801:ccbgssse019-staffofsheogorath.esl;000850:ccbgssse020-graycowl.esl;000854:ccvsvsse004-beafarmer.esl;59F322:Skyrim Extended Cut - Saints and Seducers.esp;59F323:Skyrim Extended Cut - Saints and Seducers.esp;014FBA:MoonAndStar_MAS.esp;014FC0:MoonAndStar_MAS.esp;00341D:Gray Fox Cowl.esm;4A12C8:Wyrmstooth.esp;00090A:College Of Winterhold - Quest Expansion.esp;013209:BeyondSkyrimMerchant.esp;10F6D4:Bound Armory Extravaganza.esp;10F6DA:Bound Armory Extravaganza.esp;00084D:ccbgssse001-fish.esm;00084E:ccbgssse001-fish.esm;00084F:ccbgssse001-fish.esm;000850:ccbgssse001-fish.esm;01F25A:Skyrim.esm;01F25B:Skyrim.esm",
+  "WACCFMaterialTiers": false,
+  "StalhrimStaggerBonus": 0.1,
+  "StalhrimDamageBonus": 1,
+  "BoundWeaponParsing": "CalculateFromMods",
+  "WeaponAttributeEnablers": {
+    "EnableDamage": true,
+    "EnableReach": true,
+    "EnableSpeed": true,
+    "EnableStagger": true,
+    "EnableCriticalDamage": true,
+    "EnableCriticalDamageChanceMultiplier": true
+  },
+  "Variants": {
+    "Variants": {
+      "Eastern 1h": {
+        "NameIDs": "eastern",
+        "ExcludeIDs": "WeapTypeDagger;katana;wakizashi;wakizushi",
+        "Skill": "OneHanded",
+        "AdditionalDamage": -1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.1,
+        "AdditionalStagger": -0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Eastern 2h": {
+        "NameIDs": "eastern",
+        "ExcludeIDs": "dai-katana;daikatana;dai katana;nodachi",
+        "Skill": "TwoHanded",
+        "AdditionalDamage": -1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.1,
+        "AdditionalStagger": -0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Cyrodiilic 1h": {
+        "NameIDs": "cyrodiilic;cyrodilic;cyrodiil;cyrodil",
+        "ExcludeIDs": "",
+        "Skill": "OneHanded",
+        "AdditionalDamage": 1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": -0.1,
+        "AdditionalStagger": 0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Cyrodiilic 2h": {
+        "NameIDs": "cyrodiilic;cyrodilic;cyrodiil;cyrodil",
+        "ExcludeIDs": "",
+        "Skill": "TwoHanded",
+        "AdditionalDamage": 1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": -0.1,
+        "AdditionalStagger": 0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Third Era 1h": {
+        "NameIDs": "third era",
+        "ExcludeIDs": "",
+        "Skill": "OneHanded",
+        "AdditionalDamage": 2,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": -0.15,
+        "AdditionalStagger": 0.1,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Third Era 2h": {
+        "NameIDs": "third era",
+        "ExcludeIDs": "",
+        "Skill": "TwoHanded",
+        "AdditionalDamage": 2,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": -0.15,
+        "AdditionalStagger": 0.1,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Fine 1h": {
+        "NameIDs": "fine",
+        "ExcludeIDs": "",
+        "Skill": "OneHanded",
+        "AdditionalDamage": 1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.0,
+        "AdditionalStagger": 0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Fine 2h": {
+        "NameIDs": "fine",
+        "ExcludeIDs": "",
+        "Skill": "TwoHanded",
+        "AdditionalDamage": 1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.0,
+        "AdditionalStagger": 0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Perfect 1h": {
+        "NameIDs": "perfect",
+        "ExcludeIDs": "",
+        "Skill": "OneHanded",
+        "AdditionalDamage": 1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.1,
+        "AdditionalStagger": 0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Perfect 2h": {
+        "NameIDs": "perfect",
+        "ExcludeIDs": "",
+        "Skill": "TwoHanded",
+        "AdditionalDamage": 1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.1,
+        "AdditionalStagger": 0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Rusty 1h": {
+        "NameIDs": "rusty",
+        "ExcludeIDs": "",
+        "Skill": "OneHanded",
+        "AdditionalDamage": -1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.0,
+        "AdditionalStagger": -0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      },
+      "Rusty 2h": {
+        "NameIDs": "rusty",
+        "ExcludeIDs": "",
+        "Skill": "TwoHanded",
+        "AdditionalDamage": -1,
+        "AdditionalReach": 0.0,
+        "AdditionalSpeed": 0.0,
+        "AdditionalStagger": -0.05,
+        "AdditionalCriticalDamageOffset": 0.0,
+        "AdditionalCriticalDamageChanceMultiplier": 0.0,
+        "AdditionalCriticalDamageMultiplier": 0.0
+      }
+    }
+  },
+  "Daggers": {
+    "Weapons": {
+      "Dagger": {
+        "Enabled": true,
+        "Damage": 4,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 0.7,
+        "Speed": 1.3,
+        "Stagger": 0.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeDagger"
+        }
+      },
+      "Tanto": {
+        "Enabled": true,
+        "Damage": 4,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 0.7,
+        "Speed": 1.3,
+        "Stagger": 0.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "tanto",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeDagger"
+        }
+      },
+      "Claw": {
+        "Enabled": true,
+        "Damage": 4,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 0.7,
+        "Speed": 1.3,
+        "Stagger": 0.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "claw",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeClaw"
+        }
+      }
+    }
+  },
+  "OnehandedSwords": {
+    "Weapons": {
+      "Sword": {
+        "Enabled": true,
+        "Damage": 7,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 1.0,
+        "Stagger": 0.75,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeSword"
+        }
+      },
+      "Rapier": {
+        "Enabled": true,
+        "Damage": 5,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.1,
+        "Speed": 1.1,
+        "Stagger": 0.65,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "rapier",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeRapier"
+        }
+      },
+      "Wakizashi": {
+        "Enabled": true,
+        "Damage": 5,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 0.9,
+        "Speed": 1.25,
+        "Stagger": 0.65,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "wakizashi;ninjato",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeSword"
+        }
+      },
+      "Shortsword": {
+        "Enabled": true,
+        "Damage": 6,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 0.9,
+        "Speed": 1.15,
+        "Stagger": 0.65,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "shortsword",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeShortsword"
+        }
+      },
+      "Katana": {
+        "Enabled": true,
+        "Damage": 6,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 1.2,
+        "Stagger": 0.7,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "katana;akaviri sword;blades sword;bolar's oathblade;shadow's edge;dragonbane",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeKatana"
+        }
+      },
+      "Scimitar": {
+        "Enabled": true,
+        "Damage": 7,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 0.95,
+        "Speed": 1.1,
+        "Stagger": 0.75,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "scimitar;heartsplitter;blade of yokuda;bloodscythe;soulrender;viper's fang;boneshaver",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeSword"
+        }
+      }
+    }
+  },
+  "OnehandedSpears": {
+    "Weapons": {
+      "Javelin": {
+        "Enabled": true,
+        "Damage": 5,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 1.2,
+        "Stagger": 0.65,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "javelin",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeJavelin"
+        }
+      },
+      "Onehanded Spear": {
+        "Enabled": true,
+        "Damage": 6,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.3,
+        "Speed": 1.1,
+        "Stagger": 0.7,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "spear",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeSpear"
+        }
+      },
+      "Shortspear": {
+        "Enabled": true,
+        "Damage": 7,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.2,
+        "Speed": 0.9,
+        "Stagger": 0.75,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "shortspear",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeShortspear"
+        }
+      }
+    }
+  },
+  "OnehandedBluntWeapons": {
+    "Weapons": {
+      "Mace": {
+        "Enabled": true,
+        "Damage": 9,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 0.8,
+        "Stagger": 1.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeMace"
+        }
+      },
+      "Club": {
+        "Enabled": true,
+        "Damage": 7,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 1.0,
+        "Stagger": 0.9,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "club",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeClub"
+        }
+      },
+      "Maul": {
+        "Enabled": true,
+        "Damage": 10,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 0.7,
+        "Stagger": 1.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "maul;hammer;mallet",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeMaul"
+        }
+      }
+    }
+  },
+  "OnehandedAxes": {
+    "Weapons": {
+      "War Axe": {
+        "Enabled": true,
+        "Damage": 8,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 1.0,
+        "Speed": 0.9,
+        "Stagger": 0.85,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeWarAxe"
+        }
+      },
+      "Hatchet": {
+        "Enabled": true,
+        "Damage": 7,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 0.85,
+        "Speed": 1.1,
+        "Stagger": 0.8,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "hatchet",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeHatchet"
+        }
+      }
+    }
+  },
+  "TwohandedSwords": {
+    "Weapons": {
+      "Greatsword": {
+        "Enabled": true,
+        "Damage": 15,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.3,
+        "Speed": 0.75,
+        "Stagger": 1.1,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeGreatSword"
+        }
+      },
+      "Glaive": {
+        "Enabled": true,
+        "Damage": 13,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.6,
+        "Speed": 0.8,
+        "Stagger": 1.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "glaive",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeGlaive"
+        }
+      },
+      "DaiKatana": {
+        "Enabled": true,
+        "Damage": 14,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.3,
+        "Speed": 0.85,
+        "Stagger": 1.05,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "dai-katana;daikatana;dai katana;nodachi",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeGreatSword"
+        }
+      }
+    }
+  },
+  "TwohandedSpears": {
+    "Weapons": {
+      "Pike": {
+        "Enabled": true,
+        "Damage": 11,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.7,
+        "Speed": 0.9,
+        "Stagger": 1.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "pike",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypePike"
+        }
+      },
+      "Twohanded Spear": {
+        "Enabled": true,
+        "Damage": 12,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.6,
+        "Speed": 0.8,
+        "Stagger": 1.05,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "spear;halfpike;half pike",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeSpear"
+        }
+      },
+      "Trident": {
+        "Enabled": true,
+        "Damage": 14,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.5,
+        "Speed": 0.7,
+        "Stagger": 1.1,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "trident",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeTrident"
+        }
+      }
+    }
+  },
+  "TwohandedBluntWeapons": {
+    "Weapons": {
+      "Warhammer": {
+        "Enabled": true,
+        "Damage": 18,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.3,
+        "Speed": 0.6,
+        "Stagger": 1.25,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeWarhammer"
+        }
+      },
+      "Quarterstaff, shorter": {
+        "Enabled": true,
+        "Damage": 11,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.2,
+        "Speed": 1.0,
+        "Stagger": 1.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "shortstaff",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeQuarterStaff"
+        }
+      },
+      "Quarterstaff": {
+        "Enabled": true,
+        "Damage": 10,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.5,
+        "Speed": 1.1,
+        "Stagger": 1.0,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "battle staff;battlestaff;quarterstaff;quarter staff",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeQtrStaff"
+        }
+      },
+      "LongMace": {
+        "Enabled": true,
+        "Damage": 17,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.3,
+        "Speed": 0.65,
+        "Stagger": 1.2,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "longmace;long mace",
+          "SearchLogic": "OR",
+          "KeywordIDs": "ShWeapTypeLongMace"
+        }
+      }
+    }
+  },
+  "TwohandedAxes": {
+    "Weapons": {
+      "Battleaxe": {
+        "Enabled": true,
+        "Damage": 16,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.3,
+        "Speed": 0.7,
+        "Stagger": 1.15,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeBattleaxe"
+        }
+      },
+      "Halberd, shorter": {
+        "Enabled": true,
+        "Damage": 15,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.45,
+        "Speed": 0.75,
+        "Stagger": 1.1,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "halberd;pole axe;poleaxe",
+          "SearchLogic": "AND",
+          "KeywordIDs": "ShWeapTypeHalberd"
+        }
+      },
+      "Halberd": {
+        "Enabled": true,
+        "Damage": 15,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.55,
+        "Speed": 0.65,
+        "Stagger": 1.1,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "halberd",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeHalberd;WeapTypeBattleaxe"
+        }
+      },
+      "Greatclub": {
+        "Enabled": true,
+        "Damage": 15,
+        "BoundWeaponAdditionalDamage": 1,
+        "BoundMysticWeaponAdditionalDamage": 6,
+        "Reach": 1.34,
+        "Speed": 0.8,
+        "Stagger": 1.1,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "TwoHanded",
+          "NamedIDs": "greatclub;club",
+          "SearchLogic": "AND",
+          "KeywordIDs": "WeapTypeBattleaxe"
+        }
+      }
+    }
+  },
+  "Others": {
+    "Weapons": {
+      "Whip": {
+        "Enabled": true,
+        "Damage": 6,
+        "BoundWeaponAdditionalDamage": 2,
+        "BoundMysticWeaponAdditionalDamage": 7,
+        "Reach": 2.0,
+        "Speed": 0.9,
+        "Stagger": 0.4,
+        "CriticalDamageOffset": 0.0,
+        "CriticalDamageChanceMultiplier": 1.0,
+        "CriticalDamageMultiplier": 1.0,
+        "MatchLogicSettings": {
+          "Skill": "OneHanded",
+          "NamedIDs": "whip",
+          "SearchLogic": "OR",
+          "KeywordIDs": "WeapTypeWhip"
+        }
+      }
+    }
+  }
+}
