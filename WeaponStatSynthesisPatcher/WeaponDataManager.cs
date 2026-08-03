@@ -657,15 +657,24 @@ namespace WeaponStatSynthesisPatcher
 
         public DefaultWeaponStatsData? GetDefaultWeaponStats(List<string> weaponKeywords)
         {
-            foreach (var keyword in weaponKeywords)
+            if (weaponKeywords == null || weaponKeywords.Count == 0)
             {
-                var stats = _defaultWeaponStatsData.FirstOrDefault(d =>
-                    string.Equals(d.Keyword, keyword, StringComparison.OrdinalIgnoreCase));
-                if (stats != null)
+                return null;
+            }
+
+            // Match by JSON priority: first entry in default stats that matches any weapon keyword wins.
+            var keywordSet = weaponKeywords
+                .Where(k => !string.IsNullOrWhiteSpace(k))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var stats in _defaultWeaponStatsData)
+            {
+                if (!string.IsNullOrWhiteSpace(stats.Keyword) && keywordSet.Contains(stats.Keyword))
                 {
                     return stats;
                 }
             }
+
             return null;
         }
 

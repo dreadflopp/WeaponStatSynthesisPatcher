@@ -65,7 +65,7 @@ namespace WeaponStatSynthesisPatcher
                 }
             }
 
-            // Step 4: Sort settings into groups
+            // Step 4: Split settings by logic
             var orSettings = allSettings.Where(s => s.Settings.MatchLogicSettings.SearchLogic == LogicOperator.OR).ToList();
             var andSettings = allSettings.Where(s => s.Settings.MatchLogicSettings.SearchLogic == LogicOperator.AND).ToList();
 
@@ -97,7 +97,9 @@ namespace WeaponStatSynthesisPatcher
             ProcessAndNameOnlySettings(andNameOnlySettings.Select(s => s.Settings).ToList());
             ProcessAndKeywordOnlySettings(andKeywordOnlySettings.Select(s => s.Settings).ToList());
 
-            // Step 7: Sort all enabled settings by priority
+            // Step 7: Sort all enabled settings by priority.
+            // Priority is explicit to avoid broad vanilla rules preempting narrower custom rules:
+            // A) non-vanilla OR, B) non-vanilla AND, C) vanilla OR, D) vanilla AND.
             _sortedSettings.Clear();
 
             // Helper function to sort settings by NamedIDs
@@ -223,21 +225,58 @@ namespace WeaponStatSynthesisPatcher
                 return result;
             }
 
-            // First add all enabled OR settings
+            void AddAndSettingsBySpecificity(List<(string Key, WeaponSettings Settings)> andGroup)
+            {
+                var andComplete = andGroup.Where(s =>
+                    !string.IsNullOrWhiteSpace(s.Settings.MatchLogicSettings.NamedIDs) &&
+                    !string.IsNullOrWhiteSpace(s.Settings.MatchLogicSettings.KeywordIDs)).ToList();
+
+                var andNameOnly = andGroup.Where(s =>
+                    !string.IsNullOrWhiteSpace(s.Settings.MatchLogicSettings.NamedIDs) &&
+                    string.IsNullOrWhiteSpace(s.Settings.MatchLogicSettings.KeywordIDs)).ToList();
+
+                var andKeywordOnly = andGroup.Where(s =>
+                    string.IsNullOrWhiteSpace(s.Settings.MatchLogicSettings.NamedIDs) &&
+                    !string.IsNullOrWhiteSpace(s.Settings.MatchLogicSettings.KeywordIDs)).ToList();
+
+                _sortedSettings.AddRange(SortSettingsByNamedIDs(andComplete));
+                _sortedSettings.AddRange(SortSettingsByNamedIDs(andNameOnly));
+                _sortedSettings.AddRange(andKeywordOnly); // No need to sort keyword-only settings
+            }
+
             var enabledOrSettings = orSettings.Where(s => s.Settings.Enabled).ToList();
-            _sortedSettings.AddRange(SortSettingsByNamedIDs(enabledOrSettings));
-            _logger($"Enabled OR settings: {_sortedSettings.Count}");
+            var enabledAndSettings = andSettings.Where(s => s.Settings.Enabled).ToList();
 
-            // Then add all enabled AND settings with both fields
-            var enabledAndCompleteSettings = andCompleteSettings.Where(s => s.Settings.Enabled).ToList();
-            _sortedSettings.AddRange(SortSettingsByNamedIDs(enabledAndCompleteSettings));
-            _logger($"Enabled AND complete settings: {_sortedSettings.Count}");
+            var nonVanillaOrSettings = enabledOrSettings
+                .Where(s => !VanillaWeaponTypes.IsVanillaWeaponType(s.Key))
+                .ToList();
+            var vanillaOrSettings = enabledOrSettings
+                .Where(s => VanillaWeaponTypes.IsVanillaWeaponType(s.Key))
+                .ToList();
+            var nonVanillaAndSettings = enabledAndSettings
+                .Where(s => !VanillaWeaponTypes.IsVanillaWeaponType(s.Key))
+                .ToList();
+            var vanillaAndSettings = enabledAndSettings
+                .Where(s => VanillaWeaponTypes.IsVanillaWeaponType(s.Key))
+                .ToList();
 
-            // Finally add all enabled AND settings with only one field
-            var enabledAndNameOnlySettings = andNameOnlySettings.Where(s => s.Settings.Enabled).ToList();
-            var enabledAndKeywordOnlySettings = andKeywordOnlySettings.Where(s => s.Settings.Enabled).ToList();
-            _sortedSettings.AddRange(SortSettingsByNamedIDs(enabledAndNameOnlySettings));
-            _sortedSettings.AddRange(enabledAndKeywordOnlySettings); // No need to sort keyword-only settings
+            _logger($"Non-vanilla OR settings: {nonVanillaOrSettings.Count}");
+            _logger($"Non-vanilla AND settings: {nonVanillaAndSettings.Count}");
+            _logger($"Vanilla OR settings: {vanillaOrSettings.Count}");
+            _logger($"Vanilla AND settings: {vanillaAndSettings.Count}");
+
+            // A) non-vanilla OR
+            _sortedSettings.AddRange(SortSettingsByNamedIDs(nonVanillaOrSettings));
+
+            // B) non-vanilla AND
+            AddAndSettingsBySpecificity(nonVanillaAndSettings);
+
+            // C) vanilla OR
+            _sortedSettings.AddRange(SortSettingsByNamedIDs(vanillaOrSettings));
+
+            // D) vanilla AND
+            AddAndSettingsBySpecificity(vanillaAndSettings);
+
             _logger($"Final sorted settings count: {_sortedSettings.Count}");
 
             // Log final state

@@ -812,6 +812,14 @@
     "form_key": "05F05D:Gray Fox Cowl.esm"
   },
   {
+    "editor_id": "manny_GF_Weapon_DawnOfMan",
+    "form_key": "7D317B:Gray Fox Cowl.esm"
+  },
+  {
+    "editor_id": "manny_GF_Weapon_ScorchOfTheUndead",
+    "form_key": "851D0A:Gray Fox Cowl.esm"
+  },
+  {
     "editor_id": "WTBrokenSteelSword",
     "form_key": "716525:Wyrmstooth.esp"
   },
@@ -1314,5 +1322,37 @@
   {
     "editor_id": "REQ_Weapon_Alikr_Sword",
     "form_key": "ADDD6E:Requiem.esp"
+  },
+  {
+    "editor_id": "MAG_SwordofSolitude",
+    "form_key": "000837:Artificer.esp"
+  },
+  {
+    "editor_id": "MAG_HammerofthePale",
+    "form_key": "00083A:Artificer.esp"
+  },
+  {
+    "editor_id": "MAG_Defiler",
+    "form_key": "000985:Artificer.esp"
+  },
+  {
+    "editor_id": "MAG_CuratesDagger",
+    "form_key": "0009B3:Artificer.esp"
+  },
+  {
+    "editor_id": "EVGSiren_AyleidSword",
+    "form_key": "54B244:evgSIRENROOT.esm"
+  },
+  {
+    "editor_id": "EVGSiren_AyleidStaffThunderbolt",
+    "form_key": "54B247:evgSIRENROOT.esm"
+  },
+  {
+    "editor_id": "NibeneseKatana",
+    "form_key": "00080A:FerrumNibenis.esl"
+  },
+  {
+    "editor_id": "NibenBronzeWarhammer",
+    "form_key": "00080B:FerrumNibenis.esl"
   }
 ]
