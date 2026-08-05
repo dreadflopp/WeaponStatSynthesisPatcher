@@ -1354,5 +1354,27 @@
   {
     "editor_id": "NibenBronzeWarhammer",
     "form_key": "00080B:FerrumNibenis.esl"
+  },
+  {
+    "editor_id": "GRVEArkaynMace",
+    "form_key": "2CCCEA:FalkreathShades.esp"
+  },
+  {
+    "editor_id": "GRVEArkaynMaceNoEnchant",
+    "form_key": "58E72A:FalkreathShades.esp"
+  },
+  {
+    "editor_id": "RQ01_Scimitar",
+    "form_key": "0CBC9C:DSQuestPack.esp"
+  },
+  {
+    "editor_id": "MDDwarvenMace",
+    "form_key": "00080C:Slays-Many-Beasts Quest Mod.esp",
+    "damage_offset": 2,
+    "speed_offset": 0.0,
+    "reach_offset": 0.0,
+    "stagger_offset": 0.0,
+    "critical_damage_offset": 0.0,
+    "critical_damage_chance_multiplier_offset": 0.0
   }
 ]

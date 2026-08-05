@@ -610,6 +610,28 @@ namespace WeaponStatSynthesisPatcher
                 weapon.FormKey == formKey);
             return isSpecial;
         }
+
+        /// <summary>
+        /// Gets special weapon metadata for a weapon by exact FormKey match.
+        /// </summary>
+        public SpecialWeaponData? GetSpecialWeaponData(IWeaponGetter weapon)
+        {
+            if (weapon == null)
+            {
+                return null;
+            }
+
+            var specialWeapons = GetLoadedData(ref _specialWeapons);
+            if (specialWeapons == null || specialWeapons.Count == 0)
+            {
+                return null;
+            }
+
+            return specialWeapons.FirstOrDefault(sw =>
+                !string.IsNullOrEmpty(sw.FormKey) &&
+                FormKey.TryFactory(sw.FormKey, out var formKey) &&
+                weapon.FormKey == formKey);
+        }
         /// <summary>
         /// Checks if the input value (weapon name or keywords) matches any of the given patterns.
         /// Used for both name matching and keyword matching.

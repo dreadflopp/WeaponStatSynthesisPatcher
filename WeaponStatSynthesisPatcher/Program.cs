@@ -379,6 +379,9 @@ namespace WeaponStatSynthesisPatcher
                 return;
             }
 
+            // Get optional per-weapon special overrides.
+            var specialWeaponData = _weaponDataManager?.GetSpecialWeaponData(weapon);
+
             // Get weapon keywords
             var weaponKeywords = preResolvedKeywords ?? _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
             debugInfo.InKeywords = string.Join(";", weaponKeywords);
@@ -438,6 +441,40 @@ namespace WeaponStatSynthesisPatcher
             decimal staggerOffset = (decimal)weaponOverride.Data.Stagger - defaultStats.Stagger;
             int criticalDamageOffset = weaponOverride.Critical.Damage - weaponOverride.BasicStats.Damage / 2;
             decimal criticalDamageChanceMultiplierOffset = (decimal)weaponOverride.Critical.PercentMult - defaultStats.CriticalChanceMult;
+
+            // If special weapon JSON provides manual offsets, override computed offsets field-by-field.
+            if (specialWeaponData != null)
+            {
+                if (specialWeaponData.DamageOffset.HasValue)
+                {
+                    damageOffset = specialWeaponData.DamageOffset.Value;
+                }
+
+                if (specialWeaponData.SpeedOffset.HasValue)
+                {
+                    speedOffset = (decimal)specialWeaponData.SpeedOffset.Value;
+                }
+
+                if (specialWeaponData.ReachOffset.HasValue)
+                {
+                    reachOffset = (decimal)specialWeaponData.ReachOffset.Value;
+                }
+
+                if (specialWeaponData.StaggerOffset.HasValue)
+                {
+                    staggerOffset = (decimal)specialWeaponData.StaggerOffset.Value;
+                }
+
+                if (specialWeaponData.CriticalDamageOffset.HasValue)
+                {
+                    criticalDamageOffset = (int)MathF.Round(specialWeaponData.CriticalDamageOffset.Value);
+                }
+
+                if (specialWeaponData.CriticalDamageChanceMultiplierOffset.HasValue)
+                {
+                    criticalDamageChanceMultiplierOffset = (decimal)specialWeaponData.CriticalDamageChanceMultiplierOffset.Value;
+                }
+            }
 
             _weaponDataManager?.DebugLog($"Offsets: " +
                 $"   Damage: {damageOffset}, " +
