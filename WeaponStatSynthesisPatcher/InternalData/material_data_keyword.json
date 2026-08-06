@@ -4,13 +4,7 @@
     "damage_offset_1h": -1,
     "damage_offset_2h": -2,
     "damage_offset_1h_waccf": -1,
-    "damage_offset_2h_waccf": -2,
-    "reach_offset": 0.0,
-    "speed_offset": 0.0,
-    "stagger_offset": 0.0,
-    "critical_damage_offset": 0.0,
-    "critical_damage_chance_multiplier_offset": 0.0,
-    "critical_damage_multiplier_offset": 0.0
+    "damage_offset_2h_waccf": -2
   },
   {
     "keyword": "WeapMaterialIron",
@@ -62,6 +56,13 @@
     "damage_offset_2h_waccf": 5
   },
   {
+    "keyword": "PI_WeapMaterialArgonian",
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3,
+    "damage_offset_1h_waccf": 2,
+    "damage_offset_2h_waccf": 3
+  },
+  {
     "keyword": "WeapMaterialDwarven",
     "damage_offset_1h": 3,
     "damage_offset_2h": 4,
@@ -102,6 +103,20 @@
     "damage_offset_2h": 5,
     "damage_offset_1h_waccf": 3,
     "damage_offset_2h_waccf": 4
+  },
+  {
+    "keyword": "DLC2ArmorMaterialChitinLight",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
+  },
+  {
+    "keyword": "DLC2ArmorMaterialChitinHeavy",
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5,
+    "damage_offset_1h_waccf": 4,
+    "damage_offset_2h_waccf": 5
   },
   {
     "keyword": "ccBGSSSE025_WeapMaterialGolden",

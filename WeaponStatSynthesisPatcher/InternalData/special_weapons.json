@@ -1369,12 +1369,42 @@
   },
   {
     "editor_id": "MDDwarvenMace",
-    "form_key": "00080C:Slays-Many-Beasts Quest Mod.esp",
-    "damage_offset": 2,
-    "speed_offset": 0.0,
-    "reach_offset": 0.0,
-    "stagger_offset": 0.0,
-    "critical_damage_offset": 0.0,
-    "critical_damage_chance_multiplier_offset": 0.0
+    "form_key": "00080C:Mysteries of the Dwemer - Quest Mod.esp"
+  },
+  {
+    "editor_id": "FVS_Scimitar_Velehk",
+    "form_key": "000804:Finding_VelehkSain.esp"
+  },
+  {
+    "editor_id": "000FCGulvarsAxe",
+    "form_key": "05E754:ForgottenCity.esp"
+  },
+  {
+    "editor_id": "FTH01_Weapon_Seline",
+    "form_key": "02F28B:Fortune's Trade House.esp"
+  },
+  {
+    "editor_id": "ktDwemerFork_Dagger",
+    "form_key": "017EC0:ktWeaponPackSE.esp"
+  },
+  {
+    "editor_id": "ccBGSSSE013_Bloodthirst",
+    "form_key": "000C92:ccbgssse013-dawnfang.esl"
+  },
+  {
+    "editor_id": "ccBGSSSE013_Dawnfang",
+    "form_key": "000D63:ccbgssse013-dawnfang.esl"
+  },
+  {
+    "editor_id": "BBTE_WEAP_DLC2BloodskalBladeReplica",
+    "form_key": "000908:Bloodskal Blade - Tweaks and Enhancements.esp" 
+  },
+  {
+    "editor_id": "PI_ArgonianBoneSpearUnique",
+    "form_key": "000A7D:PrvtI_ArgonianWeapons.esp"
+  },
+  {
+    "editor_id": "PI_ArgonianSwordUnique",
+    "form_key": "000A86:PrvtI_ArgonianWeapons.esp"
   }
 ]
