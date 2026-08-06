@@ -314,10 +314,23 @@ namespace WeaponStatSynthesisPatcher
                 var weaponKeywords = _weaponDataManager?.GetWeaponKeywords(weapon, state.LinkCache) ?? new List<string>();
 
                 // Skip dummy weapons
-                bool isDummyWeapon = weaponKeywords.Any(k => k.Contains("Dummy", StringComparison.OrdinalIgnoreCase));
-                if (isDummyWeapon)
+                if (weaponKeywords.Any(k => k.Contains("Dummy", StringComparison.OrdinalIgnoreCase)))
                 {
                     _weaponDataManager?.DebugLog($"Skipping dummy weapon: {weapon.EditorID}");
+                    continue;
+                }
+
+                // Skip if weapon is a bow
+                if (weaponKeywords.Any(k => k.Equals("WeapTypeBow", StringComparison.OrdinalIgnoreCase)))
+                {
+                    _weaponDataManager?.DebugLog($"Skipping bow weapon: {weapon.EditorID}");
+                    continue;
+                }
+
+                // Skip if weapon is staff
+                if (weaponKeywords.Any(k => k.Equals("WeapTypeStaff", StringComparison.OrdinalIgnoreCase)))
+                {
+                    _weaponDataManager?.DebugLog($"Skipping staff weapon: {weapon.EditorID}");
                     continue;
                 }
 
