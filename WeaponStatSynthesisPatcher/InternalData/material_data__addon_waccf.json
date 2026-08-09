@@ -1,0 +1,130 @@
+[  
+  {
+    "title": "Iron",
+    "identifiers": [
+      "WeapMaterialIron"
+    ],
+    "damage_offset_1h": 0,
+    "damage_offset_2h": 1
+  },
+  {
+    "title": "Orcish",
+    "identifiers": [
+      "WeapMaterialOrcish"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Dwarven",
+    "identifiers": [
+      "WeapMaterialDwarven"
+    ],
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3
+  },
+  {
+    "title": "Orichalcum",
+    "identifiers": [
+      "orichalcum"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Forsworn",
+    "identifiers": [
+      "forsworn"
+    ],
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3
+  },  
+  {
+    "title": "Draugr Honed",
+    "identifiers": [
+      "WeapMaterialDraugrHoned"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Elven",
+    "identifiers": [
+      "WeapMaterialElven"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Ayleid",
+    "identifiers": [
+      "ayleid"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Stalhrim",
+    "identifiers": [
+      "DLC2WeaponMaterialStalhrim"
+    ],
+    "damage_offset_1h": 6,
+    "damage_offset_2h": 7
+  },
+  {
+    "title": "Ignited Ashen",
+    "identifiers": [
+      "ignited ashen"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 8
+  },
+  {
+    "title": "Aetherium",
+    "identifiers": [
+      "DLC1LD_CraftingMaterialAetherium"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9
+  },
+  {
+    "title": "Daedric",
+    "identifiers": [
+      "WeapMaterialDaedric"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 9
+  },
+  {
+    "title": "Dragonbone",
+    "identifiers": [
+      "DLC1WeapMaterialDragonbone"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 8
+  },
+  {
+    "title": "Dragon Cult",
+    "identifiers": [
+      "dragon cult"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10
+  },
+  {
+    "title": "Amber",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialAmber"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10
+  },
+  {
+    "title": "Madness",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialMadness"
+    ],
+    "damage_offset_1h": 9,
+    "damage_offset_2h": 11
+  }
+]

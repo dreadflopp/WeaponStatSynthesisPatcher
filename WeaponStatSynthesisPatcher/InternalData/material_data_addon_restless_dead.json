@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Draugr",
+    "identifiers": [
+      "WeapMaterialDraugr"
+    ],
+    "damage_offset_1h": 0,
+    "damage_offset_2h": 0
+  },
+  {
+    "title": "Draugr Honed",
+    "identifiers": [
+      "WeapMaterialDraugrHoned"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  }
+]

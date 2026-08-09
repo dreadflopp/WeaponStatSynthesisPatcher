@@ -1,0 +1,34 @@
+[  
+  {
+    "title": "Golden",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialGolden"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Dark",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialDark"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },  
+  {
+    "title": "Amber",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialAmber"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9
+  },
+  {
+    "title": "Madness",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialMadness"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10
+  }
+]

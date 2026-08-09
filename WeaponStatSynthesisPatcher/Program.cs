@@ -2,13 +2,11 @@ using Mutagen.Bethesda;
 using Mutagen.Bethesda.Synthesis;
 using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.Plugins;
-using Mutagen.Bethesda.Plugins.Cache;
 using Mutagen.Bethesda.Plugins.Records;
 using Mutagen.Bethesda.Plugins.Order;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
@@ -97,7 +95,9 @@ namespace WeaponStatSynthesisPatcher
                             };
                         }
 
-                        var settings = SettingsFileStore.Load(state.ExtraSettingsDataPath);
+                        var settings = SettingsFileStore.Load(
+                            state.ExtraSettingsDataPath,
+                            state.DefaultSettingsDataPath);
                         var window = new SettingsWindow(settings, state.ExtraSettingsDataPath)
                         {
                             ShowInTaskbar = true
@@ -146,7 +146,9 @@ namespace WeaponStatSynthesisPatcher
 
         public static void RunPatch(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            CurrentSettings = SettingsFileStore.Load(state.ExtraSettingsDataPath);
+            CurrentSettings = SettingsFileStore.Load(
+                state.ExtraSettingsDataPath,
+                state.DefaultSettingsDataPath);
 
             // Create WeaponDataManager instance with the new Settings structure
             _weaponDataManager = new WeaponDataManager(CurrentSettings, Console.WriteLine, state);
@@ -154,8 +156,6 @@ namespace WeaponStatSynthesisPatcher
             // Print settings
             _weaponDataManager?.DebugLog($"Settings:");
             _weaponDataManager?.DebugLog($"  - PluginFilter: {CurrentSettings.PluginFilter}");
-            _weaponDataManager?.DebugLog($"  - WACCFMaterialTiers: {CurrentSettings.WACCFMaterialTiers}");
-            _weaponDataManager?.DebugLog($"  - EnableRestlessDeadNerfs: {CurrentSettings.EnableRestlessDeadNerfs}");
             _weaponDataManager?.DebugLog($"  - StalhrimStaggerBonus: {CurrentSettings.StalhrimStaggerBonus}");
             _weaponDataManager?.DebugLog($"  - StalhrimDamageBonus: {CurrentSettings.StalhrimDamageBonus}");
             _weaponDataManager?.DebugLog($"  - BoundWeaponParsing: {CurrentSettings.BoundWeaponParsing}");
@@ -243,7 +243,7 @@ namespace WeaponStatSynthesisPatcher
             }
             Console.WriteLine();
 
-            // Verify form keys in special_weapons.json only in debug mode
+            // Verify unique weapon form keys from settings only in debug mode
             if (CurrentSettings.DebugMode)
             {
                 VerifyFormKeys(state);
@@ -356,6 +356,39 @@ namespace WeaponStatSynthesisPatcher
             }
 
         }
+
+        private static int ApplyDamageMultiplierWithMinimumStep(int baseDamage, decimal multiplier)
+        {
+            decimal multipliedDamage = Math.Round(baseDamage * multiplier, MidpointRounding.AwayFromZero);
+            int roundedDamage = (int)multipliedDamage;
+            int delta = roundedDamage - baseDamage;
+
+            if (delta == 0)
+            {
+                if (multiplier < 1m)
+                {
+                    delta = -1;
+                }
+                else if (multiplier > 1m)
+                {
+                    delta = 1;
+                }
+            }
+
+            return baseDamage + delta;
+        }
+
+        private static decimal ApplyMultiplier(decimal value, decimal multiplier)
+        {
+            return value * multiplier;
+        }
+
+        private static float RoundAndClampStat(decimal value)
+        {
+            decimal roundedValue = Math.Round(value, 2, MidpointRounding.AwayFromZero);
+            return WeaponDataManager.ClampFloat((float)roundedValue);
+        }
+
         private static void ProcessSpecialWeapon(IWeaponGetter weapon, IPatcherState<ISkyrimMod, ISkyrimModGetter> state, string weaponSettingKey, List<string>? preResolvedKeywords = null)
         {
             if (weapon == null || state == null || string.IsNullOrEmpty(weaponSettingKey))
@@ -432,7 +465,6 @@ namespace WeaponStatSynthesisPatcher
 
             _weaponDataManager?.DebugLog($"Default stats: " +
                 $"   Damage: {defaultStats.Damage}, " +
-                $"   DamageWaccf: {defaultStats.DamageWaccf}, " +
                 $"   Speed: {defaultStats.Speed}, " +
                 $"   Reach: {defaultStats.Reach}, " +
                 $"   Stagger: {defaultStats.Stagger}, " +
@@ -515,22 +547,22 @@ namespace WeaponStatSynthesisPatcher
 
             if (enablers.EnableSpeed)
             {
-                weaponOverride.Data.Speed = WeaponDataManager.ClampFloat((float)((decimal)settings.Speed + (decimal)speedOffset));
+                weaponOverride.Data.Speed = RoundAndClampStat((decimal)settings.Speed + speedOffset);
             }
 
             if (enablers.EnableReach)
             {
-                weaponOverride.Data.Reach = WeaponDataManager.ClampFloat((float)((decimal)settings.Reach + (decimal)reachOffset));
+                weaponOverride.Data.Reach = RoundAndClampStat((decimal)settings.Reach + reachOffset);
             }
 
             if (enablers.EnableStagger)
             {
-                weaponOverride.Data.Stagger = WeaponDataManager.ClampFloat((float)((decimal)settings.Stagger + staggerOffset));
+                weaponOverride.Data.Stagger = RoundAndClampStat((decimal)settings.Stagger + staggerOffset);
             }
 
             if (enablers.EnableCriticalDamageChanceMultiplier)
             {
-                weaponOverride.Critical.PercentMult = WeaponDataManager.ClampFloat((float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)criticalDamageChanceMultiplierOffset));
+                weaponOverride.Critical.PercentMult = RoundAndClampStat((decimal)settings.CriticalDamageChanceMultiplier + criticalDamageChanceMultiplierOffset);
             }
 
             if (enablers.EnableCriticalDamage)
@@ -648,21 +680,22 @@ namespace WeaponStatSynthesisPatcher
 
             // Initialize material offsets with default values
             int additionalMaterialDamage = 0;
-            float additionalMaterialReach = 0.0f;
-            float additionalMaterialSpeed = 0.0f;
-            float additionalMaterialStagger = 0.0f;
-            float additionalMaterialCriticalDamageOffset = 0.0f;
-            float additionalMaterialCriticalDamageChanceMultiplier = 0.0f;
-            float additionalMaterialCriticalDamageMultiplier = 0.0f;
 
             // Initialize variant stats with default values
             int additionalVariantDamage = 0;
+            decimal additionalVariantDamageMultiplier = 1.0m;
             float additionalVariantReach = 0.0f;
+            decimal additionalVariantReachMultiplier = 1.0m;
             float additionalVariantSpeed = 0.0f;
+            decimal additionalVariantSpeedMultiplier = 1.0m;
             float additionalVariantStagger = 0.0f;
+            decimal additionalVariantStaggerMultiplier = 1.0m;
             float additionalVariantCriticalDamageOffset = 0.0f;
+            decimal additionalVariantCriticalDamageOffsetMultiplier = 1.0m;
             float additionalVariantCriticalDamageChanceMultiplier = 0.0f;
+            decimal additionalVariantCriticalDamageChanceMultiplierMultiplier = 1.0m;
             float additionalVariantCriticalDamageMultiplier = 0.0f;
+            decimal additionalVariantCriticalDamageMultiplierMultiplier = 1.0m;
 
             // Check if weapon is bound
             bool isBound = (weapon.EditorID?.Contains("bound", StringComparison.OrdinalIgnoreCase) ?? false) ||
@@ -681,7 +714,7 @@ namespace WeaponStatSynthesisPatcher
             else
             {
                 // Get material offsets for non-bound weapons
-                var materialOffsets = _weaponDataManager?.GetMaterialOffsets(weapon, state.LinkCache, CurrentSettings.WACCFMaterialTiers, preResolvedKeywords);
+                var materialOffsets = _weaponDataManager?.GetMaterialOffsets(weapon, state.LinkCache, preResolvedKeywords);
                 if (materialOffsets == null)
                 {
                     _weaponDataManager?.DebugLog($"Warning: Could not determine material offsets for {weapon.EditorID}. Skipping.");
@@ -690,21 +723,19 @@ namespace WeaponStatSynthesisPatcher
                     return;
                 }
                 additionalMaterialDamage = materialOffsets.Value.DamageOffset;
-                additionalMaterialReach = materialOffsets.Value.ReachOffset;
-                additionalMaterialSpeed = materialOffsets.Value.SpeedOffset;
-                additionalMaterialStagger = materialOffsets.Value.StaggerOffset;
-                additionalMaterialCriticalDamageOffset = materialOffsets.Value.CriticalDamageOffset;
-                additionalMaterialCriticalDamageChanceMultiplier = materialOffsets.Value.CriticalDamageChanceMultiplierOffset;
-                additionalMaterialCriticalDamageMultiplier = materialOffsets.Value.CriticalDamageMultiplierOffset;
                 debugInfo.MaterialDamageOffset = materialOffsets.Value.DamageOffset;
 
                 // Get variant settings for non-bound weapons
                 var variantStats = _weaponDataManager?.GetVariantStats(weapon, state.LinkCache, preResolvedKeywords);
                 if (variantStats != null)
                 {
-                    (additionalVariantDamage, additionalVariantReach, additionalVariantSpeed, additionalVariantStagger,
-                     additionalVariantCriticalDamageOffset, additionalVariantCriticalDamageChanceMultiplier,
-                     additionalVariantCriticalDamageMultiplier) = variantStats.Value;
+                    (additionalVariantDamage, additionalVariantDamageMultiplier,
+                     additionalVariantReach, additionalVariantReachMultiplier,
+                     additionalVariantSpeed, additionalVariantSpeedMultiplier,
+                     additionalVariantStagger, additionalVariantStaggerMultiplier,
+                     additionalVariantCriticalDamageOffset, additionalVariantCriticalDamageOffsetMultiplier,
+                     additionalVariantCriticalDamageChanceMultiplier, additionalVariantCriticalDamageChanceMultiplierMultiplier,
+                     additionalVariantCriticalDamageMultiplier, additionalVariantCriticalDamageMultiplierMultiplier) = variantStats.Value;
 
                     debugInfo.VariantDamageOffset = additionalVariantDamage;
                     debugInfo.VariantReachOffset = additionalVariantReach;
@@ -716,12 +747,19 @@ namespace WeaponStatSynthesisPatcher
 
                     _weaponDataManager?.DebugLog($"Weapon variant stats: " +
                         $"   AdditionalDamage: {additionalVariantDamage}, " +
+                        $"   DamageMultiplier: {additionalVariantDamageMultiplier}, " +
                         $"   AdditionalReach: {additionalVariantReach}, " +
+                        $"   ReachMultiplier: {additionalVariantReachMultiplier}, " +
                         $"   AdditionalSpeed: {additionalVariantSpeed}, " +
+                        $"   SpeedMultiplier: {additionalVariantSpeedMultiplier}, " +
                         $"   AdditionalStagger: {additionalVariantStagger}, " +
+                        $"   StaggerMultiplier: {additionalVariantStaggerMultiplier}, " +
                         $"   AdditionalCriticalDamageOffset: {additionalVariantCriticalDamageOffset}, " +
+                        $"   CriticalDamageOffsetMultiplier: {additionalVariantCriticalDamageOffsetMultiplier}, " +
                         $"   AdditionalCriticalDamageChanceMultiplier: {additionalVariantCriticalDamageChanceMultiplier}, " +
-                        $"   AdditionalCriticalDamageMultiplier: {additionalVariantCriticalDamageMultiplier}");
+                        $"   CriticalDamageChanceMultiplierMultiplier: {additionalVariantCriticalDamageChanceMultiplierMultiplier}, " +
+                        $"   AdditionalCriticalDamageMultiplier: {additionalVariantCriticalDamageMultiplier}, " +
+                        $"   CriticalDamageMultiplierMultiplier: {additionalVariantCriticalDamageMultiplierMultiplier}");
                 }
 
                 // Get weapon keywords for material checks
@@ -752,26 +790,6 @@ namespace WeaponStatSynthesisPatcher
                     }
                 }
 
-                // if material is glass and waccf is enabled, apply glass critical damage bonus of 0.5
-                if (CurrentSettings.WACCFMaterialTiers)
-                {
-                    bool isGlass = weaponKeywords.Contains("WeapMaterialGlass");
-                    bool isDaedric = weaponKeywords.Contains("WeapMaterialDaedric");
-                    bool isFalmerHoned = weaponKeywords.Contains("WeapMaterialFalmerHoned");
-                    bool isWarAxe = weaponKeywords.Contains("WeapTypeWarAxe");
-                    bool isWarHammer = weaponKeywords.Contains("WeapTypeWarhammer");
-                    _weaponDataManager?.DebugLog($"WACCFMaterialTiers: {CurrentSettings.WACCFMaterialTiers}, checking if glass or daedric warhammer or falmer honed waraxe");
-                    _weaponDataManager?.DebugLog($"isGlass: {isGlass}, isDaedric: {isDaedric}, isFalmerHoned: {isFalmerHoned}, isWarAxe: {isWarAxe}, isWarHammer: {isWarHammer}");
-                    if (isGlass || (isDaedric && isWarHammer) || (isFalmerHoned && isWarAxe))
-                    {
-                        _weaponDataManager?.DebugLog($"Adding critical damage bonus of 0.5");
-                        criticalDamageOffset += 0.5m;
-                    }
-                    else
-                    {
-                        _weaponDataManager?.DebugLog($"No glass or daedric warhammer or falmer honed waraxe, not adding critical damage bonus");
-                    }
-                }
             }
 
             // Apply stats (checking enablers)
@@ -779,35 +797,47 @@ namespace WeaponStatSynthesisPatcher
 
             if (enablers.EnableDamage)
             {
-                weaponOverride.BasicStats.Damage = WeaponDataManager.ClampUshort(settings.Damage + damageOffset + additionalMaterialDamage + additionalVariantDamage);
+                int baseDamage = settings.Damage + damageOffset + additionalMaterialDamage;
+                int multipliedDamage = ApplyDamageMultiplierWithMinimumStep(baseDamage, additionalVariantDamageMultiplier);
+                weaponOverride.BasicStats.Damage = WeaponDataManager.ClampUshort(multipliedDamage + additionalVariantDamage);
             }
 
             if (enablers.EnableSpeed)
             {
-                weaponOverride.Data.Speed = WeaponDataManager.ClampFloat((float)((decimal)settings.Speed + (decimal)additionalMaterialSpeed + (decimal)additionalVariantSpeed));
+                decimal baseSpeed = (decimal)settings.Speed;
+                decimal multipliedSpeed = ApplyMultiplier(baseSpeed, additionalVariantSpeedMultiplier);
+                weaponOverride.Data.Speed = RoundAndClampStat(multipliedSpeed + (decimal)additionalVariantSpeed);
             }
 
             if (enablers.EnableReach)
             {
-                weaponOverride.Data.Reach = WeaponDataManager.ClampFloat((float)((decimal)settings.Reach + (decimal)additionalMaterialReach + (decimal)additionalVariantReach));
+                decimal baseReach = (decimal)settings.Reach;
+                decimal multipliedReach = ApplyMultiplier(baseReach, additionalVariantReachMultiplier);
+                weaponOverride.Data.Reach = RoundAndClampStat(multipliedReach + (decimal)additionalVariantReach);
             }
 
             if (enablers.EnableStagger)
             {
-                weaponOverride.Data.Stagger = WeaponDataManager.ClampFloat((float)((decimal)settings.Stagger + staggerOffset + (decimal)additionalMaterialStagger + (decimal)additionalVariantStagger));
+                decimal baseStagger = (decimal)settings.Stagger + staggerOffset;
+                decimal multipliedStagger = ApplyMultiplier(baseStagger, additionalVariantStaggerMultiplier);
+                weaponOverride.Data.Stagger = RoundAndClampStat(multipliedStagger + (decimal)additionalVariantStagger);
             }
 
             if (enablers.EnableCriticalDamageChanceMultiplier)
             {
-                weaponOverride.Critical.PercentMult = WeaponDataManager.ClampFloat((float)((decimal)settings.CriticalDamageChanceMultiplier + (decimal)additionalMaterialCriticalDamageChanceMultiplier + (decimal)additionalVariantCriticalDamageChanceMultiplier));
+                decimal baseCriticalChanceMultiplier = (decimal)settings.CriticalDamageChanceMultiplier;
+                decimal multipliedCriticalChanceMultiplier = ApplyMultiplier(baseCriticalChanceMultiplier, additionalVariantCriticalDamageChanceMultiplierMultiplier);
+                weaponOverride.Critical.PercentMult = RoundAndClampStat(multipliedCriticalChanceMultiplier + (decimal)additionalVariantCriticalDamageChanceMultiplier);
             }
 
             // Apply critical damage stats
             if (enablers.EnableCriticalDamage)
             {
                 decimal halfDamage = (decimal)weaponOverride.BasicStats.Damage / 2m;
-                decimal finalCriticalDamageOffset = (decimal)settings.CriticalDamageOffset + (decimal)additionalMaterialCriticalDamageOffset + (decimal)additionalVariantCriticalDamageOffset + criticalDamageOffset;
-                decimal criticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier + (decimal)additionalMaterialCriticalDamageMultiplier + (decimal)additionalVariantCriticalDamageMultiplier;
+                decimal baseCriticalDamageOffset = (decimal)settings.CriticalDamageOffset + criticalDamageOffset;
+                decimal finalCriticalDamageOffset = ApplyMultiplier(baseCriticalDamageOffset, additionalVariantCriticalDamageOffsetMultiplier) + (decimal)additionalVariantCriticalDamageOffset;
+                decimal baseCriticalDamageMultiplier = (decimal)settings.CriticalDamageMultiplier;
+                decimal criticalDamageMultiplier = ApplyMultiplier(baseCriticalDamageMultiplier, additionalVariantCriticalDamageMultiplierMultiplier) + (decimal)additionalVariantCriticalDamageMultiplier;
                 decimal criticalDamage = Math.Floor(criticalDamageMultiplier * (halfDamage + finalCriticalDamageOffset));
                 weaponOverride.Critical.Damage = WeaponDataManager.ClampUshort((int)criticalDamage);
                 _weaponDataManager?.DebugLog($"Critical damage: {criticalDamage}");
@@ -853,19 +883,17 @@ namespace WeaponStatSynthesisPatcher
         }
 
         /// <summary>
-        /// Verifies that all form keys in the special_weapons.json file are correct by looking up each editor ID.
+        /// Verifies that all unique weapon form keys in settings are correct by looking up each editor ID.
         /// </summary>
         private static void VerifyFormKeys(IPatcherState<ISkyrimMod, ISkyrimModGetter> state)
         {
-            Console.WriteLine("Verifying form keys in special_weapons.json...");
+            Console.WriteLine("Verifying form keys in Unique Weapons settings...");
 
             try
             {
-                var specialWeaponsPath = state.RetrieveInternalFile("special_weapons.json");
-                string jsonContent = File.ReadAllText(specialWeaponsPath);
-                var specialWeapons = System.Text.Json.JsonSerializer.Deserialize<List<SpecialWeaponData>>(jsonContent) ?? new List<SpecialWeaponData>();
+                var specialWeapons = CurrentSettings.UniqueWeapons ?? new List<SpecialWeaponData>();
 
-                _weaponDataManager?.DebugLog($"Loaded {specialWeapons.Count} special weapons from JSON file.");
+                _weaponDataManager?.DebugLog($"Loaded {specialWeapons.Count} unique weapons from settings.");
 
                 // Lists to store valid, invalid, and skipped entries
                 var validEntries = new List<(string EditorID, string FormKey)>();
@@ -988,7 +1016,7 @@ namespace WeaponStatSynthesisPatcher
                 Console.WriteLine("=== INVALID FORM KEYS ===");
                 if (invalidEntries.Count == 0)
                 {
-                    Console.WriteLine("No invalid form keys found.");
+                    Console.WriteLine("No invalid unique weapon form keys found.");
                 }
                 else
                 {
@@ -1001,7 +1029,7 @@ namespace WeaponStatSynthesisPatcher
                 _weaponDataManager?.DebugLog("\n=== SKIPPED FORM KEYS ===");
                 if (skippedEntries.Count == 0)
                 {
-                    _weaponDataManager?.DebugLog("No skipped form keys found.");
+                    _weaponDataManager?.DebugLog("No skipped unique weapon form keys found.");
                 }
                 else
                 {
@@ -1011,7 +1039,7 @@ namespace WeaponStatSynthesisPatcher
                     }
                 }
 
-                Console.WriteLine($"\nSummary: {validEntries.Count} valid, {invalidEntries.Count} invalid, {skippedEntries.Count} skipped form keys.\n");
+                Console.WriteLine($"\nSummary: {validEntries.Count} valid, {invalidEntries.Count} invalid, {skippedEntries.Count} skipped unique weapon form keys.\n");
 
                 // Print suggested form keys
                 if (suggestedFormKeys.Count > 0)

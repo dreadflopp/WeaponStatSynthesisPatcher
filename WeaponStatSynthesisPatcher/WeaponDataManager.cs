@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Text.Json.Serialization;
 using Mutagen.Bethesda;
 using Noggog;
+using Newtonsoft.Json;
 #pragma warning disable CA1416 
 
 namespace WeaponStatSynthesisPatcher
@@ -20,86 +21,88 @@ namespace WeaponStatSynthesisPatcher
     public struct MaterialOffsets
     {
         public int DamageOffset;
-        public float ReachOffset;
-        public float SpeedOffset;
-        public float StaggerOffset;
-        public float CriticalDamageOffset;
-        public float CriticalDamageChanceMultiplierOffset;
-        public float CriticalDamageMultiplierOffset;
 
         public static MaterialOffsets Zero => new()
         {
-            DamageOffset = 0,
-            ReachOffset = 0f,
-            SpeedOffset = 0f,
-            StaggerOffset = 0f,
-            CriticalDamageOffset = 0f,
-            CriticalDamageChanceMultiplierOffset = 0f,
-            CriticalDamageMultiplierOffset = 0f
+            DamageOffset = 0
         };
-    }
-
-    public class MaterialData
-    {
-        [JsonPropertyName("keyword")]
-        public string Keyword { get; set; } = "";
-
-        [JsonPropertyName("damage_offset_1h")]
-        public int DamageOffset1h { get; set; }
-
-        [JsonPropertyName("damage_offset_2h")]
-        public int DamageOffset2h { get; set; }
-
-        [JsonPropertyName("damage_offset_1h_waccf")]
-        public int DamageOffset1hWaccf { get; set; }
-
-        [JsonPropertyName("damage_offset_2h_waccf")]
-        public int DamageOffset2hWaccf { get; set; }
-
-        [JsonPropertyName("reach_offset")]
-        public float ReachOffset { get; set; }
-
-        [JsonPropertyName("speed_offset")]
-        public float SpeedOffset { get; set; }
-
-        [JsonPropertyName("stagger_offset")]
-        public float StaggerOffset { get; set; }
-
-        [JsonPropertyName("critical_damage_offset")]
-        public float CriticalDamageOffset { get; set; }
-
-        [JsonPropertyName("critical_damage_chance_multiplier_offset")]
-        public float CriticalDamageChanceMultiplierOffset { get; set; }
-
-        [JsonPropertyName("critical_damage_multiplier_offset")]
-        public float CriticalDamageMultiplierOffset { get; set; }
     }
 
     public class SpecialWeaponData
     {
+        [JsonProperty("editor_id")]
         [JsonPropertyName("editor_id")]
         public string EditorID { get; set; } = string.Empty;
 
+        [JsonProperty("EditorID")]
+        private string EditorIdLegacy
+        {
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    EditorID = value;
+                }
+            }
+        }
+
+        [JsonProperty("form_key")]
         [JsonPropertyName("form_key")]
         public string FormKey { get; set; } = string.Empty;
 
+        [JsonProperty("FormKey")]
+        private string FormKeyLegacy
+        {
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    FormKey = value;
+                }
+            }
+        }
+
+        [JsonProperty("damage_offset")]
         [JsonPropertyName("damage_offset")]
         public int? DamageOffset { get; set; }
 
+        [JsonProperty("DamageOffset")]
+        private int? DamageOffsetLegacy { set => DamageOffset = value; }
+
+        [JsonProperty("speed_offset")]
         [JsonPropertyName("speed_offset")]
         public float? SpeedOffset { get; set; }
 
+        [JsonProperty("SpeedOffset")]
+        private float? SpeedOffsetLegacy { set => SpeedOffset = value; }
+
+        [JsonProperty("reach_offset")]
         [JsonPropertyName("reach_offset")]
         public float? ReachOffset { get; set; }
 
+        [JsonProperty("ReachOffset")]
+        private float? ReachOffsetLegacy { set => ReachOffset = value; }
+
+        [JsonProperty("stagger_offset")]
         [JsonPropertyName("stagger_offset")]
         public float? StaggerOffset { get; set; }
 
+        [JsonProperty("StaggerOffset")]
+        private float? StaggerOffsetLegacy { set => StaggerOffset = value; }
+
+        [JsonProperty("critical_damage_offset")]
         [JsonPropertyName("critical_damage_offset")]
         public float? CriticalDamageOffset { get; set; }
 
+        [JsonProperty("CriticalDamageOffset")]
+        private float? CriticalDamageOffsetLegacy { set => CriticalDamageOffset = value; }
+
+        [JsonProperty("critical_damage_chance_multiplier_offset")]
         [JsonPropertyName("critical_damage_chance_multiplier_offset")]
         public float? CriticalDamageChanceMultiplierOffset { get; set; }
+
+        [JsonProperty("CriticalDamageChanceMultiplierOffset")]
+        private float? CriticalDamageChanceMultiplierOffsetLegacy { set => CriticalDamageChanceMultiplierOffset = value; }
     }
 
     public class DefaultWeaponStatsData
@@ -109,9 +112,6 @@ namespace WeaponStatSynthesisPatcher
 
         [JsonPropertyName("damage")]
         public int Damage { get; set; }
-
-        [JsonPropertyName("damage_waccf")]
-        public int DamageWaccf { get; set; }
 
         [JsonPropertyName("speed")]
         public decimal Speed { get; set; }
@@ -133,8 +133,7 @@ namespace WeaponStatSynthesisPatcher
     {
         private readonly Settings _settings;
         private static Action<string>? _logger;
-        private static List<MaterialData> _materialDataKeyword = new();
-        private static List<MaterialData> _materialDataName = new();
+        private static List<WeaponMaterialSetting> _materialSettings = new();
         private static List<SpecialWeaponData> _specialWeapons = new();
         private static List<DefaultWeaponStatsData> _defaultWeaponStatsData = new();
         private readonly IPatcherState<ISkyrimMod, ISkyrimModGetter> _state;
@@ -176,21 +175,11 @@ namespace WeaponStatSynthesisPatcher
         {
             try
             {
-                var materialNamePath = _state.RetrieveInternalFile("material_data_name.json");
-                var materialKeywordPath = _state.RetrieveInternalFile("material_data_keyword.json");
-                var specialWeaponsPath = _state.RetrieveInternalFile("special_weapons.json");
                 var defaultWeaponStatsPath = _state.RetrieveInternalFile("default_weapon_stats.json");
 
-                _materialDataName = LoadJsonData<List<MaterialData>>(materialNamePath) ?? new List<MaterialData>();
-                _materialDataKeyword = LoadJsonData<List<MaterialData>>(materialKeywordPath) ?? new List<MaterialData>();
-                _specialWeapons = LoadJsonData<List<SpecialWeaponData>>(specialWeaponsPath) ?? new List<SpecialWeaponData>();
+                _materialSettings = _settings.WeaponMaterials?.Select(CloneMaterial).ToList() ?? new List<WeaponMaterialSetting>();
+                _specialWeapons = _settings.UniqueWeapons?.ToList() ?? new List<SpecialWeaponData>();
                 _defaultWeaponStatsData = LoadJsonData<List<DefaultWeaponStatsData>>(defaultWeaponStatsPath) ?? new List<DefaultWeaponStatsData>();
-
-                // Sort only name-based material data by keyword length in descending order
-                if (_materialDataName != null)
-                {
-                    _materialDataName = _materialDataName.OrderByDescending(m => m.Keyword.Length).ToList();
-                }
 
                 DebugLog("Material data loaded successfully");
             }
@@ -231,7 +220,7 @@ namespace WeaponStatSynthesisPatcher
         {
             try
             {
-                if (_materialDataKeyword.Count == 0 || _materialDataName.Count == 0 || _specialWeapons.Count == 0)
+                if (_materialSettings.Count == 0 || _defaultWeaponStatsData.Count == 0)
                 {
                     LoadWeaponAndMaterialData();
                 }
@@ -243,8 +232,18 @@ namespace WeaponStatSynthesisPatcher
                 return dataField; // Return the existing data even if it's empty
             }
         }
-        public List<SpecialWeaponData> GetLoadedSpecialWeapons() { return GetLoadedData(ref _specialWeapons); }
 
+        private static WeaponMaterialSetting CloneMaterial(WeaponMaterialSetting source)
+        {
+            return new WeaponMaterialSetting
+            {
+                Title = source.Title,
+                Enabled = source.Enabled,
+                Identifiers = source.Identifiers?.ToList() ?? new List<string>(),
+                DamageOffset1h = source.DamageOffset1h,
+                DamageOffset2h = source.DamageOffset2h
+            };
+        }
         /// <summary>
         /// Gets the weapon skill type (1h or 2h) based on the weapon's Skill property
         /// If weapon Skill is Skill.OneHanded, return WeaponSkill.OneHanded
@@ -423,9 +422,8 @@ namespace WeaponStatSynthesisPatcher
 
         private MaterialOffsets? CalculateMaterialOffsets(
             string input,
-            List<MaterialData> materialData,
-            WeaponSkill weaponSkill,
-            bool includeWACCF)
+            List<WeaponMaterialSetting> materialData,
+            WeaponSkill weaponSkill)
         {
             int highestDamageOffset = int.MinValue;
             MaterialOffsets? bestMatch = null;
@@ -433,56 +431,44 @@ namespace WeaponStatSynthesisPatcher
 
             foreach (var material in materialData)
             {
-                if (string.IsNullOrEmpty(material.Keyword))
+                if (!material.Enabled)
                 {
-                    DebugLog($"   Warning: material {System.Text.Json.JsonSerializer.Serialize(material)} keyword is null");
                     continue;
                 }
 
-                // Create a regex pattern that matches the word as a whole word
-                string pattern = $"\\b{Regex.Escape(material.Keyword)}\\b";
-                DebugLog($"   Checking material pattern: {pattern}");
+                var identifiers = material.Identifiers ?? new List<string>();
+                if (identifiers.Count == 0)
+                {
+                    continue;
+                }
 
-                if (Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase))
+                var hasIdentifierMatch = identifiers.Any(identifier =>
+                {
+                    if (string.IsNullOrWhiteSpace(identifier))
+                    {
+                        return false;
+                    }
+
+                    string pattern = $"\\b{Regex.Escape(identifier)}\\b";
+                    DebugLog($"   Checking material pattern: {pattern}");
+                    return Regex.IsMatch(input, pattern, RegexOptions.IgnoreCase);
+                });
+
+                if (hasIdentifierMatch)
                 {
                     foundMatch = true;
                     int damageOffset = weaponSkill == WeaponSkill.OneHanded
-                        ? (includeWACCF ? material.DamageOffset1hWaccf : material.DamageOffset1h)
-                        : (includeWACCF ? material.DamageOffset2hWaccf : material.DamageOffset2h);
-
-                    if (_settings.EnableRestlessDeadNerfs)
-                    {
-                        int restlessDeadReduction = material.Keyword switch
-                        {
-                            "WeapMaterialDraugr" when weaponSkill == WeaponSkill.OneHanded => 1,
-                            "WeapMaterialDraugr" => 2,
-                            "WeapMaterialDraugrHoned" => 3,
-                            _ => 0
-                        };
-
-                        if (restlessDeadReduction > 0)
-                        {
-                            DebugLog($"   Applying The Restless Dead material nerf to {material.Keyword}: -{restlessDeadReduction} damage offset");
-                            damageOffset -= restlessDeadReduction;
-                        }
-                    }
+                        ? material.DamageOffset1h ?? 0
+                        : material.DamageOffset2h ?? 0;
 
                     DebugLog($"   {(weaponSkill == WeaponSkill.OneHanded ? "One-handed" : "Two-handed")} weapon, damage offset: {damageOffset}");
-                    DebugLog($"   Additional offsets - Reach: {material.ReachOffset}, Speed: {material.SpeedOffset}, Stagger: {material.StaggerOffset}");
-                    DebugLog($"   Critical offsets - Damage: {material.CriticalDamageOffset}, Chance Mult: {material.CriticalDamageChanceMultiplierOffset}, Damage Mult: {material.CriticalDamageMultiplierOffset}");
 
                     if (damageOffset > highestDamageOffset)
                     {
                         highestDamageOffset = damageOffset;
                         bestMatch = new MaterialOffsets
                         {
-                            DamageOffset = damageOffset,
-                            ReachOffset = material.ReachOffset,
-                            SpeedOffset = material.SpeedOffset,
-                            StaggerOffset = material.StaggerOffset,
-                            CriticalDamageOffset = material.CriticalDamageOffset,
-                            CriticalDamageChanceMultiplierOffset = material.CriticalDamageChanceMultiplierOffset,
-                            CriticalDamageMultiplierOffset = material.CriticalDamageMultiplierOffset
+                            DamageOffset = damageOffset
                         };
                         DebugLog($"   New best match with damage offset: {highestDamageOffset}");
                     }
@@ -492,22 +478,22 @@ namespace WeaponStatSynthesisPatcher
             return foundMatch ? bestMatch : null;
         }
 
-        private MaterialOffsets? GetNameBasedMaterialOffsets(string weaponName, WeaponSkill weaponSkill, bool includeWACCF)
+        private MaterialOffsets? GetNameBasedMaterialOffsets(string weaponName, WeaponSkill weaponSkill)
         {
-            var materialDataName = GetLoadedData(ref _materialDataName);
-            return CalculateMaterialOffsets(weaponName, materialDataName, weaponSkill, includeWACCF);
+            var materialData = GetLoadedData(ref _materialSettings);
+            return CalculateMaterialOffsets(weaponName, materialData, weaponSkill);
         }
 
-        private MaterialOffsets? GetKeywordBasedMaterialOffsets(List<string> weaponKeywords, WeaponSkill weaponSkill, bool includeWACCF)
+        private MaterialOffsets? GetKeywordBasedMaterialOffsets(List<string> weaponKeywords, WeaponSkill weaponSkill)
         {
-            var materialData = GetLoadedData(ref _materialDataKeyword);
+            var materialData = GetLoadedData(ref _materialSettings);
             int highestDamageOffset = int.MinValue;
             MaterialOffsets? bestMatch = null;
             bool foundMatch = false;
 
             foreach (var keyword in weaponKeywords)
             {
-                var offsets = CalculateMaterialOffsets(keyword, materialData, weaponSkill, includeWACCF);
+                var offsets = CalculateMaterialOffsets(keyword, materialData, weaponSkill);
                 if (offsets.HasValue)
                 {
                     foundMatch = true;
@@ -522,7 +508,7 @@ namespace WeaponStatSynthesisPatcher
             return foundMatch ? bestMatch : null;
         }
 
-        public MaterialOffsets? GetMaterialOffsets(IWeaponGetter weapon, ILinkCache linkCache, bool includeWACCF, List<string>? preResolvedKeywords = null)
+        public MaterialOffsets? GetMaterialOffsets(IWeaponGetter weapon, ILinkCache linkCache, List<string>? preResolvedKeywords = null)
         {
             if (weapon == null || linkCache == null)
             {
@@ -563,11 +549,10 @@ namespace WeaponStatSynthesisPatcher
             // Try name-based offset first
             if (!string.IsNullOrEmpty(weaponName))
             {
-                var nameBasedOffsets = GetNameBasedMaterialOffsets(weaponName, weaponSkill.Value, includeWACCF);
+                var nameBasedOffsets = GetNameBasedMaterialOffsets(weaponName, weaponSkill.Value);
                 if (nameBasedOffsets.HasValue)
                 {
-                    DebugLog($"   Found name-based offsets - Damage: {nameBasedOffsets.Value.DamageOffset}, Reach: {nameBasedOffsets.Value.ReachOffset}, Speed: {nameBasedOffsets.Value.SpeedOffset}, Stagger: {nameBasedOffsets.Value.StaggerOffset}");
-                    DebugLog($"   Critical offsets - Damage: {nameBasedOffsets.Value.CriticalDamageOffset}, Chance Mult: {nameBasedOffsets.Value.CriticalDamageChanceMultiplierOffset}, Damage Mult: {nameBasedOffsets.Value.CriticalDamageMultiplierOffset}");
+                    DebugLog($"   Found name-based offset - Damage: {nameBasedOffsets.Value.DamageOffset}");
                     return nameBasedOffsets.Value;
                 }
             }
@@ -575,11 +560,10 @@ namespace WeaponStatSynthesisPatcher
             // Try keyword-based offset if name-based failed
             if (weaponKeywords.Count > 0)
             {
-                var keywordBasedOffsets = GetKeywordBasedMaterialOffsets(weaponKeywords, weaponSkill.Value, includeWACCF);
+                var keywordBasedOffsets = GetKeywordBasedMaterialOffsets(weaponKeywords, weaponSkill.Value);
                 if (keywordBasedOffsets.HasValue)
                 {
-                    DebugLog($"   Found keyword-based offsets - Damage: {keywordBasedOffsets.Value.DamageOffset}, Reach: {keywordBasedOffsets.Value.ReachOffset}, Speed: {keywordBasedOffsets.Value.SpeedOffset}, Stagger: {keywordBasedOffsets.Value.StaggerOffset}");
-                    DebugLog($"   Critical offsets - Damage: {keywordBasedOffsets.Value.CriticalDamageOffset}, Chance Mult: {keywordBasedOffsets.Value.CriticalDamageChanceMultiplierOffset}, Damage Mult: {keywordBasedOffsets.Value.CriticalDamageMultiplierOffset}");
+                    DebugLog($"   Found keyword-based offset - Damage: {keywordBasedOffsets.Value.DamageOffset}");
                     return keywordBasedOffsets.Value;
                 }
             }
@@ -700,24 +684,33 @@ namespace WeaponStatSynthesisPatcher
             return null;
         }
 
-        public (int additionalDamage, float additionalReach, float additionalSpeed, float additionalStagger,
-            float additionalCriticalDamageOffset, float additionalCriticalDamageChanceMultiplier,
-            float additionalCriticalDamageMultiplier) GetVariantStats(IWeaponGetter weapon, ILinkCache linkCache, List<string>? preResolvedKeywords = null)
+        public (int additionalDamage, decimal damageMultiplier, float additionalReach, decimal reachMultiplier,
+            float additionalSpeed, decimal speedMultiplier, float additionalStagger, decimal staggerMultiplier,
+            float additionalCriticalDamageOffset, decimal criticalDamageOffsetMultiplier,
+            float additionalCriticalDamageChanceMultiplier, decimal criticalDamageChanceMultiplierMultiplier,
+            float additionalCriticalDamageMultiplier, decimal criticalDamageMultiplierMultiplier) GetVariantStats(IWeaponGetter weapon, ILinkCache linkCache, List<string>? preResolvedKeywords = null)
         {
             int additionalDamage = 0;
+            decimal damageMultiplier = 1m;
             decimal additionalReach = 0m;
+            decimal reachMultiplier = 1m;
             decimal additionalSpeed = 0m;
+            decimal speedMultiplier = 1m;
             decimal additionalStagger = 0m;
+            decimal staggerMultiplier = 1m;
             decimal additionalCriticalDamageOffset = 0m;
+            decimal criticalDamageOffsetMultiplier = 1m;
             decimal additionalCriticalDamageChanceMultiplier = 0m;
+            decimal criticalDamageChanceMultiplierMultiplier = 1m;
             decimal additionalCriticalDamageMultiplier = 0m;
+            decimal criticalDamageMultiplierMultiplier = 1m;
 
             // Get weapon skill type
             var weaponSkill = GetWeaponSkillType(weapon);
             if (weaponSkill == null)
             {
                 DebugLog($"Could not determine weapon skill type for {weapon.EditorID}");
-                return (additionalDamage, 0f, 0f, 0f, 0f, 0f, 0f);
+                return (additionalDamage, 1m, 0f, 1m, 0f, 1m, 0f, 1m, 0f, 1m, 0f, 1m, 0f, 1m);
             }
 
             // Get weapon keywords
@@ -774,22 +767,36 @@ namespace WeaponStatSynthesisPatcher
                 if (nameOrKeywordMatch && skillMatch && !exclusionMatch)
                 {
                     additionalDamage += variant.Value.AdditionalDamage;
+                    damageMultiplier *= (decimal)variant.Value.DamageMultiplier;
                     additionalReach += (decimal)variant.Value.AdditionalReach;
+                    reachMultiplier *= (decimal)variant.Value.ReachMultiplier;
                     additionalSpeed += (decimal)variant.Value.AdditionalSpeed;
+                    speedMultiplier *= (decimal)variant.Value.SpeedMultiplier;
                     additionalStagger += (decimal)variant.Value.AdditionalStagger;
+                    staggerMultiplier *= (decimal)variant.Value.StaggerMultiplier;
                     additionalCriticalDamageOffset += (decimal)variant.Value.AdditionalCriticalDamageOffset;
+                    criticalDamageOffsetMultiplier *= (decimal)variant.Value.CriticalDamageOffsetMultiplier;
                     additionalCriticalDamageChanceMultiplier += (decimal)variant.Value.AdditionalCriticalDamageChanceMultiplier;
+                    criticalDamageChanceMultiplierMultiplier *= (decimal)variant.Value.CriticalDamageChanceMultiplierMultiplier;
                     additionalCriticalDamageMultiplier += (decimal)variant.Value.AdditionalCriticalDamageMultiplier;
+                    criticalDamageMultiplierMultiplier *= (decimal)variant.Value.CriticalDamageMultiplierMultiplier;
                 }
             }
 
             return (additionalDamage,
+                    damageMultiplier,
                     (float)additionalReach,
+                    reachMultiplier,
                     (float)additionalSpeed,
+                    speedMultiplier,
                     (float)additionalStagger,
+                    staggerMultiplier,
                     (float)additionalCriticalDamageOffset,
+                    criticalDamageOffsetMultiplier,
                     (float)additionalCriticalDamageChanceMultiplier,
-                    (float)additionalCriticalDamageMultiplier);
+                    criticalDamageChanceMultiplierMultiplier,
+                    (float)additionalCriticalDamageMultiplier,
+                    criticalDamageMultiplierMultiplier);
         }
 
         public WeaponSettings? GetWeaponSettings(string weaponSettingKey)

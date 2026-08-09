@@ -38,22 +38,30 @@
             </ScrollViewer>
         </Border>
 
-        <DockPanel Grid.Row="1"
-                   Grid.ColumnSpan="3"
-                   Margin="0,12,0,0"
-                   LastChildFill="False">
+        <Grid Grid.Row="1"
+              Grid.ColumnSpan="3"
+              Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             <TextBlock x:Name="StatusText"
+                       Grid.Column="0"
                        VerticalAlignment="Center"
-                       Foreground="#555"/>
-            <Button x:Name="CloseButton"
-                    Content="Close"
-                    Width="120"
-                    Margin="8,0,0,0"
-                    DockPanel.Dock="Right"/>
+                       Foreground="#555"
+                       TextTrimming="CharacterEllipsis"
+                       ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
             <Button x:Name="SaveButton"
+                    Grid.Column="1"
                     Content="Save"
                     Width="120"
-                    DockPanel.Dock="Right"/>
-        </DockPanel>
+                    Margin="8,0,0,0"/>
+            <Button x:Name="CloseButton"
+                    Grid.Column="2"
+                    Content="Close"
+                    Width="120"
+                    Margin="8,0,0,0"/>
+        </Grid>
     </Grid>
 </Window>

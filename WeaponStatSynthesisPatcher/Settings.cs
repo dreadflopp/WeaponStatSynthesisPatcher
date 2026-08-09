@@ -1,28 +1,19 @@
-using Mutagen.Bethesda.Plugins;
-using Mutagen.Bethesda.Skyrim;
 using Mutagen.Bethesda.WPF.Reflection.Attributes;
 using System.ComponentModel;
-using Mutagen.Bethesda.Synthesis.Settings;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace WeaponStatSynthesisPatcher
 {
     public enum WeaponSkill
     {
         [SettingName("Onehanded")]
-        [Tooltip("Weapons wielded with one hand")]
         OneHanded,
 
         [SettingName("Twohanded")]
-        [Tooltip("Weapons wielded with two hands")]
         TwoHanded
     }
 
@@ -30,15 +21,12 @@ namespace WeaponStatSynthesisPatcher
     public enum PluginFilter
     {
         [SettingName("All Plugins")]
-        [Tooltip("Process all plugins in the load order")]
         AllPlugins,
 
         [SettingName("Exclude Plugins")]
-        [Tooltip("Process all plugins except those in the exclude list")]
         ExcludePlugins,
 
         [SettingName("Include Plugins")]
-        [Tooltip("Only process plugins in the include list")]
         IncludePlugins
     }
 
@@ -46,11 +34,9 @@ namespace WeaponStatSynthesisPatcher
     public enum LogicOperator
     {
         [SettingName("AND")]
-        [Tooltip("All criteria must match")]
         AND,
 
         [SettingName("OR")]
-        [Tooltip("At least one criteria must match")]
         OR
     }
 
@@ -58,15 +44,12 @@ namespace WeaponStatSynthesisPatcher
     public enum BoundWeaponParsing
     {
         [SettingName("From Settings")]
-        [Tooltip("Use the damage values specified in settings")]
         FromSettings,
 
         [SettingName("Calculate From Mods")]
-        [Tooltip("Calculate damage based on mod edits")]
         CalculateFromMods,
 
         [SettingName("Ignore Weapon")]
-        [Tooltip("Skip bound weapons entirely")]
         IgnoreWeapon
     }
 
@@ -81,50 +64,77 @@ namespace WeaponStatSynthesisPatcher
     public class WeaponAttributeEnablers
     {
         [SettingName("Enable Damage Edits")]
-        [Tooltip("Enable or disable damage attribute edits")]
         [JsonProperty]
         public bool EnableDamage { get; set; }
 
         [SettingName("Enable Reach Edits")]
-        [Tooltip("Enable or disable reach attribute edits")]
         [JsonProperty]
         public bool EnableReach { get; set; }
 
         [SettingName("Enable Speed Edits")]
-        [Tooltip("Enable or disable speed attribute edits")]
         [JsonProperty]
         public bool EnableSpeed { get; set; }
 
         [SettingName("Enable Stagger Edits")]
-        [Tooltip("Enable or disable stagger attribute edits")]
         [JsonProperty]
         public bool EnableStagger { get; set; }
 
         [SettingName("Enable Critical Damage Edits")]
-        [Tooltip("Enable or disable critical damage edits (damage and multiplier)")]
         [JsonProperty]
         public bool EnableCriticalDamage { get; set; }
 
         [SettingName("Enable Critical Damage Chance Multiplier Edits")]
-        [Tooltip("Enable or disable critical damage chance multiplier edits")]
         [JsonProperty]
         public bool EnableCriticalDamageChanceMultiplier { get; set; }
+    }
+
+        [JsonObject(MemberSerialization.OptIn)]
+    public class WeaponMaterialSetting
+    {
+        [SettingName("Title")]
+        [JsonProperty("title")]
+        public string Title { get; set; } = string.Empty;
+
+        [SettingName("Enabled")]
+        [JsonProperty("enabled")]
+        public bool Enabled { get; set; } = true;
+
+        [SettingName("Identifiers")]
+        [JsonProperty("identifiers")]
+        public List<string> Identifiers { get; set; } = new();
+
+        [SettingName("1H Damage Offset")]
+        [JsonProperty("damage_offset_1h")]
+        public int? DamageOffset1h { get; set; }
+
+        [SettingName("2H Damage Offset")]
+        [JsonProperty("damage_offset_2h")]
+        public int? DamageOffset2h { get; set; }
     }
 
     public class VariantCategory
     {
         [JsonProperty]
         [SettingName("Variants (add more by adding panes)")]
-        [Tooltip("Variants of weapons identified by specific words in their names. Stats are applied on top of the weapon stats.")]
         public Dictionary<string, VariantSettings> Variants { get; set; } = new();
     }
 
     [JsonObject(MemberSerialization.OptIn)]
     public class Settings
     {
-        public Settings()
+        public const int CurrentSettingsVersion = 1;
+
+        public Settings() : this(loadBundledDefaults: true)
         {
-            TryLoadBundledDefaults();
+        }
+
+        internal Settings(bool loadBundledDefaults)
+        {
+            if (loadBundledDefaults)
+            {
+                TryLoadBundledDefaults();
+                EnsureWeaponMaterialsInitialized();
+            }
         }
 
         private void TryLoadBundledDefaults()
@@ -158,63 +168,55 @@ namespace WeaponStatSynthesisPatcher
             }
         }
 
+        [Browsable(false)]
+        [JsonProperty(Order = -100)]
+        public int SettingsVersion { get; set; } = CurrentSettingsVersion;
+
         [SettingName("Debug Mode")]
-        [Tooltip("Enable debug output")]
         [JsonProperty]
         public bool DebugMode { get; set; }
 
         [SettingName("Plugin Processing")]
-        [Tooltip("Choose which plugins to process")]
         [JsonProperty(ItemConverterType = typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public PluginFilter PluginFilter { get; set; }
 
         [SettingName("Plugin Include List")]
-        [Tooltip("List of plugins to include (semicolon separated)")]
         [JsonProperty]
         public string PluginIncludeList { get; set; } = string.Empty;
 
         [SettingName("Plugin Exclude List")]
-        [Tooltip("List of plugins to exclude (semicolon separated)")]
         [JsonProperty]
         public string PluginExcludeList { get; set; } = string.Empty;
 
         [SettingName("Ignored Weapons Form Keys (semicolon separated)")]
-        [Tooltip("List of weapon form keys to ignore (semicolon separated)")]
         [JsonProperty]
         public string IgnoredWeaponFormKeys { get; set; } = string.Empty;
 
-        [SettingName("WACCF material tiers and stat changes")]
-        [Tooltip("Enable support for WACCF material tiers and stat changes")]
-        [JsonProperty]
-        public bool WACCFMaterialTiers { get; set; }
-
-        [SettingName("Enable support for 'The Restless Dead' nerfs")]
-        [Tooltip("Reduce damage for Ancient Nord weapons. Enable this if you use the mod 'The Restless Dead'.")]
-        [JsonProperty]
-        public bool EnableRestlessDeadNerfs { get; set; }
+        [SettingName("Weapon Materials")]
+        [JsonProperty("WeaponMaterials")]
+        public List<WeaponMaterialSetting> WeaponMaterials { get; set; } = new();
 
         [SettingName("Stalhrim stagger bonus (default vanilla value is 0.1, WACCF value is 0)")]
-        [Tooltip("Enable support for Stalhrim stagger bonus, if current stagger is greater than 0")]
         [JsonProperty]
         public float StalhrimStaggerBonus { get; set; }
 
         [SettingName("Stalhrim War Axe and Mace damage bonus (default vanilla value is 1, WACCF value is 0)")]
-        [Tooltip("Enable support for Stalhrim War Axe and Mace damage bonus")]
         [JsonProperty]
         public int StalhrimDamageBonus { get; set; }
 
         [SettingName("Read bound weapon damage from settings, calculate mod offsets or ignore")]
-        [Tooltip("Choose how to parse bound weapons")]
         [JsonProperty]
         public BoundWeaponParsing BoundWeaponParsing { get; set; }
 
         [SettingName("Weapon Attribute Enablers")]
-        [Tooltip("Global enablers/disablers for weapon attribute edits")]
         [JsonProperty]
         public WeaponAttributeEnablers WeaponAttributeEnablers { get; set; } = new WeaponAttributeEnablers();
 
         [JsonProperty]
         public VariantCategory Variants { get; set; } = new VariantCategory();
+
+        [JsonProperty("Unique Weapons")]
+        public List<SpecialWeaponData> UniqueWeapons { get; set; } = new();
 
         // Weapon categories
         [JsonProperty]
@@ -260,6 +262,78 @@ namespace WeaponStatSynthesisPatcher
             yield return TwohandedAxes;
             yield return Others;
         }
+
+        public void EnsureDefaultWeaponMaterialsPresent()
+        {
+            EnsureWeaponMaterialsInitialized();
+
+            var defaultMaterials = LoadBundledWeaponMaterials();
+            if (defaultMaterials.Count == 0)
+            {
+                return;
+            }
+
+            var existingTitles = WeaponMaterials
+                .Where(m => !string.IsNullOrWhiteSpace(m.Title))
+                .Select(m => m.Title)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var material in defaultMaterials)
+            {
+                if (existingTitles.Add(material.Title))
+                {
+                    WeaponMaterials.Add(material);
+                }
+            }
+        }
+
+        private void EnsureWeaponMaterialsInitialized()
+        {
+            if (WeaponMaterials.Count > 0)
+            {
+                return;
+            }
+
+            WeaponMaterials = LoadBundledWeaponMaterials();
+        }
+
+        public static List<WeaponMaterialSetting> LoadBundledWeaponMaterials()
+        {
+            try
+            {
+                var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                if (string.IsNullOrWhiteSpace(assemblyDirectory))
+                {
+                    return new List<WeaponMaterialSetting>();
+                }
+
+                var defaultPath = Path.Combine(assemblyDirectory, "InternalData", "material_data.json");
+                if (!File.Exists(defaultPath))
+                {
+                    return new List<WeaponMaterialSetting>();
+                }
+
+                var json = File.ReadAllText(defaultPath);
+                var materials = JsonConvert.DeserializeObject<List<WeaponMaterialSetting>>(json);
+                return materials?.Select(CloneMaterial).ToList() ?? new List<WeaponMaterialSetting>();
+            }
+            catch
+            {
+                return new List<WeaponMaterialSetting>();
+            }
+        }
+
+        private static WeaponMaterialSetting CloneMaterial(WeaponMaterialSetting source)
+        {
+            return new WeaponMaterialSetting
+            {
+                Title = source.Title,
+                Enabled = source.Enabled,
+                Identifiers = source.Identifiers?.ToList() ?? new List<string>(),
+                DamageOffset1h = source.DamageOffset1h,
+                DamageOffset2h = source.DamageOffset2h
+            };
+        }
     }
 
     [JsonObject(MemberSerialization.OptIn)]
@@ -271,57 +345,46 @@ namespace WeaponStatSynthesisPatcher
         }
 
         [SettingName("Enabled")]
-        [Tooltip("Whether this weapon type is enabled")]
         [JsonProperty]
         public bool Enabled { get; set; }
 
         [SettingName("Damage")]
-        [Tooltip("Base damage of the weapon")]
         [JsonProperty]
         public ushort Damage { get; set; }
 
         [SettingName("Bound weapon additional damage")]
-        [Tooltip("Additional damage for bound weapons, added to the base damage")]
         [JsonProperty]
         public int BoundWeaponAdditionalDamage { get; set; }
 
         [SettingName("Bound Mystic Weapon additional damage")]
-        [Tooltip("Additional damage for bound mystic weapons, added to the base damage")]
         [JsonProperty]
         public int BoundMysticWeaponAdditionalDamage { get; set; }
 
         [SettingName("Reach")]
-        [Tooltip("Reach of the weapon")]
         [JsonProperty]
         public float Reach { get; set; }
 
         [SettingName("Speed")]
-        [Tooltip("Speed of the weapon")]
         [JsonProperty]
         public float Speed { get; set; }
 
         [SettingName("Stagger")]
-        [Tooltip("Stagger of the weapon")]
         [JsonProperty]
         public float Stagger { get; set; }
 
         [SettingName("Critical Damage Offset")]
-        [Tooltip("Critical damage offset of the weapon. Default vanilla value is 0")]
         [JsonProperty]
         public float CriticalDamageOffset { get; set; }
 
         [SettingName("Critical Damage Chance Multiplier")]
-        [Tooltip("Critical damage chance multiplier of the weapon. Default vanilla value is 1")]
         [JsonProperty]
         public float CriticalDamageChanceMultiplier { get; set; }
 
         [SettingName("Critical Damage Multiplier")]
-        [Tooltip("Critical damage multiplier of the weapon. Default vanilla value is 1")]
         [JsonProperty]
         public float CriticalDamageMultiplier { get; set; }
 
         [SettingName("Match Logic")]
-        [Tooltip("Weapon match logic")]
         [JsonProperty]
         public MatchLogicSettings MatchLogicSettings { get; set; }
     }
@@ -329,78 +392,90 @@ namespace WeaponStatSynthesisPatcher
     public class VariantSettings
     {
         [SettingName("Has in keywords or in name")]
-        [Tooltip("If not empty, the variant will be used. Semicolon separated list of words to search for in the weapon's keywords or name.")]
         [JsonProperty]
         public string NameIDs { get; set; } = string.Empty;
 
         [SettingName("Exclude if has this name or keyword")]
-        [Tooltip("If not empty, the variant will be excluded if the weapon has any of these in its name or keywords. Semicolon separated list.")]
         [JsonProperty]
         public string ExcludeIDs { get; set; } = string.Empty;
 
         [SettingName("Skill")]
-        [Tooltip("Skill required to use the weapon")]
         [JsonProperty]
         public WeaponSkill Skill { get; set; }
 
         [SettingName("Additional Damage Offset")]
-        [Tooltip("Damage added to the base damage")]
         [JsonProperty]
         public int AdditionalDamage { get; set; }
 
+        [SettingName("Damage Multiplier")]
+        [JsonProperty]
+        public decimal DamageMultiplier { get; set; } = 1.0m;
+
         [SettingName("Additional Reach Offset")]
-        [Tooltip("Reach offset added to the base reach")]
         [JsonProperty]
         public float AdditionalReach { get; set; }
 
+        [SettingName("Reach Multiplier")]
+        [JsonProperty]
+        public decimal ReachMultiplier { get; set; } = 1.0m;
+
         [SettingName("Additional Speed Offset")]
-        [Tooltip("Speed offset added to the base speed")]
         [JsonProperty]
         public float AdditionalSpeed { get; set; }
 
+        [SettingName("Speed Multiplier")]
+        [JsonProperty]
+        public decimal SpeedMultiplier { get; set; } = 1.0m;
+
         [SettingName("Additional Stagger Offset")]
-        [Tooltip("Stagger offset added to the base stagger")]
         [JsonProperty]
         public float AdditionalStagger { get; set; }
 
+        [SettingName("Stagger Multiplier")]
+        [JsonProperty]
+        public decimal StaggerMultiplier { get; set; } = 1.0m;
+
         [SettingName("Additional Critical Damage Offset")]
-        [Tooltip("Critical damage offset added to the base critical damage")]
         [JsonProperty]
         public float AdditionalCriticalDamageOffset { get; set; }
 
+        [SettingName("Critical Damage Offset Multiplier")]
+        [JsonProperty]
+        public decimal CriticalDamageOffsetMultiplier { get; set; } = 1.0m;
+
         [SettingName("Additional Critical Damage Chance Multiplier")]
-        [Tooltip("Critical damage chance multiplier added to the base critical damage chance")]
         [JsonProperty]
         public float AdditionalCriticalDamageChanceMultiplier { get; set; }
 
+        [SettingName("Critical Chance Multiplier Multiplier")]
+        [JsonProperty]
+        public decimal CriticalDamageChanceMultiplierMultiplier { get; set; } = 1.0m;
+
         [SettingName("Additional Critical Damage Multiplier")]
-        [Tooltip("Critical damage multiplier added to the base critical damage multiplier")]
         [JsonProperty]
         public float AdditionalCriticalDamageMultiplier { get; set; }
+
+        [SettingName("Critical Damage Multiplier Multiplier")]
+        [JsonProperty]
+        public decimal CriticalDamageMultiplierMultiplier { get; set; } = 1.0m;
     }
 
     [JsonObject(MemberSerialization.OptIn)]
     public class MatchLogicSettings
     {
         [SettingName("Skill")]
-        [Tooltip("Skill required to use the weapon")]
         [JsonProperty]
         public WeaponSkill Skill { get; set; }
 
         [SettingName("Has in name")]
-        [Tooltip(
-        "Identify which weapons to patch by name. Semicolon separated list."
-        )]
         [JsonProperty]
         public string NamedIDs { get; set; } = string.Empty;
 
         [SettingName("AND/OR")]
-        [Tooltip("Use name and/or keywords, blank input fields are ignored")]
         [JsonProperty]
         public LogicOperator SearchLogic { get; set; }
 
         [SettingName("Has keywords")]
-        [Tooltip("Identify which weapons to patch by keywords. Semicolon separated list.")]
         [JsonProperty]
         public string KeywordIDs { get; set; } = string.Empty;
     }

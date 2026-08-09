@@ -1,0 +1,396 @@
+[
+  {
+    "title": "Wood",
+    "identifiers": [
+      "WeapMaterialWood"
+    ],
+    "damage_offset_1h": -1,
+    "damage_offset_2h": -2
+  },
+  {
+    "title": "Iron",
+    "identifiers": [
+      "WeapMaterialIron"
+    ],
+    "damage_offset_1h": 0,
+    "damage_offset_2h": 0
+  },
+  {
+    "title": "Steel",
+    "identifiers": [
+      "WeapMaterialSteel"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Grummite",
+    "identifiers": [
+      "grummite"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Bonemold",
+    "identifiers": [
+      "bonemold"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Elven Steel",
+    "identifiers": [
+      "elven steel"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Imperial",
+    "identifiers": [
+      "WeapMaterialImperial"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 3
+  },
+  {
+    "title": "Silver",
+    "identifiers": [
+      "WeapMaterialSilver"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Draugr",
+    "identifiers": [
+      "WeapMaterialDraugr"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Ghost",
+    "identifiers": [
+      "WeapMaterialGhost"
+    ],
+    "damage_offset_1h": 1,
+    "damage_offset_2h": 2
+  },
+  {
+    "title": "Orcish",
+    "identifiers": [
+      "WeapMaterialOrcish"
+    ],
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3
+  },
+  {
+    "title": "Lunar Steel",
+    "identifiers": [
+      "lunar steel"
+    ],
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3
+  },
+  {
+    "title": "Dragon Priest",
+    "identifiers": [
+      "dragon priest"
+    ],
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3
+  },
+  {
+    "title": "Argonian",
+    "identifiers": [
+      "PI_WeapMaterialArgonian",
+      "Argoninan"
+    ],
+    "damage_offset_1h": 2,
+    "damage_offset_2h": 3
+  },
+  {
+    "title": "Dwarven",
+    "identifiers": [
+      "WeapMaterialDwarven"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Smothered Ashen",
+    "identifiers": [
+      "smothered ashen"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Orichalcum",
+    "identifiers": [
+      "orichalcum"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Falmer",
+    "identifiers": [
+      "WeapMaterialFalmer"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Dawnguard",
+    "identifiers": [
+      "dawnguard"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Forsworn",
+    "identifiers": [
+      "forsworn"
+    ],
+    "damage_offset_1h": 3,
+    "damage_offset_2h": 4
+  },
+  {
+    "title": "Silver Polished",
+    "identifiers": [
+      "ShWeapMaterialSilverPolished"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Nordic",
+    "identifiers": [
+      "DLC2WeaponMaterialNordic"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Nord Hero",
+    "identifiers": [
+      "nord hero"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Honed Ancient Imperial",
+    "identifiers": [
+      "honed ancient imperial"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Draugr Honed",
+    "identifiers": [
+      "WeapMaterialDraugrHoned"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Elven",
+    "identifiers": [
+      "WeapMaterialElven"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Chitin Light",
+    "identifiers": [
+      "DLC2ArmorMaterialChitinLight"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Chitin Heavy",
+    "identifiers": [
+      "DLC2ArmorMaterialChitinHeavy"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Skyforge",
+    "identifiers": [
+      "skyforge"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Redguard",
+    "identifiers": [
+      "redguard"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Blades",
+    "identifiers": [
+      "blades"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Akaviri",
+    "identifiers": [
+      "akaviri"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Honed Lunar Steel",
+    "identifiers": [
+      "honed lunar steel"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Golden",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialGolden"
+    ],
+    "damage_offset_1h": 4,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Dark",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialDark"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 5
+  },
+  {
+    "title": "Falmer Honed",
+    "identifiers": [
+      "WeapMaterialFalmerHoned"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Ayleid",
+    "identifiers": [
+      "ayleid"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Glass",
+    "identifiers": [
+      "WeapMaterialGlass"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Imperial Silver",
+    "identifiers": [
+      "imperial silver"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Dawnguard Elite",
+    "identifiers": [
+      "dawnguard elite",
+      "dg elite"
+    ],
+    "damage_offset_1h": 5,
+    "damage_offset_2h": 6
+  },
+  {
+    "title": "Ebony",
+    "identifiers": [
+      "WeapMaterialEbony"
+    ],
+    "damage_offset_1h": 6,
+    "damage_offset_2h": 7
+  },
+  {
+    "title": "Stalhrim",
+    "identifiers": [
+      "DLC2WeaponMaterialStalhrim"
+    ],
+    "damage_offset_1h": 6,
+    "damage_offset_2h": 8
+  },
+  {
+    "title": "Ignited Ashen",
+    "identifiers": [
+      "ignited ashen"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 8
+  },
+  {
+    "title": "Aetherium",
+    "identifiers": [
+      "DLC1LD_CraftingMaterialAetherium"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9
+  },
+  {
+    "title": "Daedric",
+    "identifiers": [
+      "WeapMaterialDaedric"
+    ],
+    "damage_offset_1h": 7,
+    "damage_offset_2h": 9
+  },
+  {
+    "title": "Dragonbone",
+    "identifiers": [
+      "DLC1WeapMaterialDragonbone"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10
+  },
+  {
+    "title": "Dragon Cult",
+    "identifiers": [
+      "dragon cult"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10
+  },
+  {
+    "title": "Amber",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialAmber"
+    ],
+    "damage_offset_1h": 8,
+    "damage_offset_2h": 10
+  },
+  {
+    "title": "Madness",
+    "identifiers": [
+      "ccBGSSSE025_WeapMaterialMadness"
+    ],
+    "damage_offset_1h": 9,
+    "damage_offset_2h": 11
+  }
+]
