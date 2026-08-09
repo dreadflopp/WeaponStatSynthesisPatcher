@@ -10,10 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mutagen.Bethesda" Version="0.42.0" />
-    <PackageReference Include="Mutagen.Bethesda.Synthesis" Version="0.26.0" />
-    <PackageReference Include="Mutagen.Bethesda.Skyrim" Version="0.42.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Mutagen.Bethesda.Skyrim" Version="0.53.1" />
+    <PackageReference Include="Mutagen.Bethesda.Synthesis" Version="0.35.5" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>
