@@ -250,6 +250,10 @@
   },
   "Unique Weapons": [
     {
+      "editor_id": "DA02Dagger",
+      "form_key": "079B1D:Skyrim.esm"
+    },
+    {
       "editor_id": "MAG_DLC1VampireKatana",
       "form_key": "000843:Katanas of Skyrim.esp",
       "damage_offset": 3
