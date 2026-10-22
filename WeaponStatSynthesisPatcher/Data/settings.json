@@ -2106,12 +2106,12 @@
       },
       "Twohanded Spear": {
         "Enabled": true,
-        "Damage": 14,
+        "Damage": 13,
         "BoundWeaponAdditionalDamage": 1,
         "BoundMysticWeaponAdditionalDamage": 6,
         "Reach": 1.5,
-        "Speed": 0.7,
-        "Stagger": 1.0,
+        "Speed": 0.85,
+        "Stagger": 0.9,
         "CriticalDamageOffset": 0.0,
         "CriticalDamageChanceMultiplier": 1.0,
         "CriticalDamageMultiplier": 1.0,
@@ -2298,7 +2298,7 @@
         "BoundWeaponAdditionalDamage": 1,
         "BoundMysticWeaponAdditionalDamage": 6,
         "Reach": 1.34,
-        "Speed": 0.7,
+        "Speed": 0.75,
         "Stagger": 1.1,
         "CriticalDamageOffset": 0.0,
         "CriticalDamageChanceMultiplier": 1.0,
@@ -2316,7 +2316,7 @@
     "Weapons": {
       "Whip": {
         "Enabled": true,
-        "Damage": 6,
+        "Damage": 5,
         "BoundWeaponAdditionalDamage": 2,
         "BoundMysticWeaponAdditionalDamage": 7,
         "Reach": 2.0,
