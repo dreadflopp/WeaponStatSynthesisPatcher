@@ -250,6 +250,41 @@
   },
   "Unique Weapons": [
     {
+      "editor_id": "zzTRD_RD_DraugrBossWarlordGathrik_Battleaxe02",
+      "form_key": "42B099:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossWarlordGathrik_Battleaxe03",
+      "form_key": "42B09B:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossWarlordGathrik_Battleaxe04",
+      "form_key": "42B09C:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossWarlordGathrik_Battleaxe05",
+      "form_key": "42B09D:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossCuralmil_Sword02",
+      "form_key": "1FE02A:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossCuralmil_Sword03",
+      "form_key": "1FE037:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossCuralmil_Sword04",
+      "form_key": "1FE039:The Restless Dead.esp"
+    },
+    {
+      "editor_id": "zzTRD_RD_DraugrBossCuralmil_Sword05",
+      "form_key": "1FE03A:The Restless Dead.esp"
+    },{
+      "editor_id": "zzTRD_RD_DraugrBossCuralmil_Sword06",
+      "form_key": "1FE03B:The Restless Dead.esp"
+    },
+    {
       "editor_id": "DA02Dagger",
       "form_key": "079B1D:Skyrim.esm"
     },
